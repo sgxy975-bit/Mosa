@@ -1,0 +1,1185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Proof of Skill</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#eef1f3;--surface:#ffffff;--surface-2:#f5f7f8;--sunk:#e4e8ec;
+  --ink:#121820;--ink-2:#46515e;--ink-3:#808b98;--line:#d7dde3;
+  --accent:#2445c9;--accent-hover:#1b37a6;--accent-ink:#ffffff;--accent-soft:#e2e8fc;
+  --seal:#a86a12;--seal-soft:#f6e9d1;
+  --ok:#147a52;--ok-soft:#dcf0e6;--warn:#a6680b;--warn-soft:#f8ead2;--bad:#bf3328;--bad-soft:#f8dedb;
+  --shadow:0 1px 2px rgb(18 24 32 / .06),0 8px 24px -12px rgb(18 24 32 / .18);
+  --f-display:"Schibsted Grotesk","Helvetica Neue",Arial,sans-serif;
+  --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r:12px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1318;--surface:#171c23;--surface-2:#1c222a;--sunk:#232a33;
+  --ink:#e7ebef;--ink-2:#a8b2be;--ink-3:#6e7987;--line:#2a323c;
+  --accent:#7d95ff;--accent-hover:#97aaff;--accent-ink:#0b1030;--accent-soft:#1f2850;
+  --seal:#e2a64a;--seal-soft:#3b2c14;
+  --ok:#47c391;--ok-soft:#15342a;--warn:#e9ad48;--warn-soft:#3a2c13;--bad:#f07a6e;--bad-soft:#41201d;
+  --shadow:0 1px 2px rgb(0 0 0 / .4),0 10px 28px -14px rgb(0 0 0 / .6);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1318;--surface:#171c23;--surface-2:#1c222a;--sunk:#232a33;
+  --ink:#e7ebef;--ink-2:#a8b2be;--ink-3:#6e7987;--line:#2a323c;
+  --accent:#7d95ff;--accent-hover:#97aaff;--accent-ink:#0b1030;--accent-soft:#1f2850;
+  --seal:#e2a64a;--seal-soft:#3b2c14;
+  --ok:#47c391;--ok-soft:#15342a;--warn:#e9ad48;--warn-soft:#3a2c13;--bad:#f07a6e;--bad-soft:#41201d;
+  --shadow:0 1px 2px rgb(0 0 0 / .4),0 10px 28px -14px rgb(0 0 0 / .6);color-scheme:dark}
+
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--f-body);-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--surface)}
+button,input,textarea,select{font:inherit;color:inherit}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+.mono{font-family:var(--f-mono);font-size:.86em}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--ink-2)}
+.faint{color:var(--ink-3)}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+h1{font-size:clamp(30px,4.2vw,46px);line-height:1.05;font-weight:800}
+h2{font-size:22px;font-weight:700}
+h3{font-size:16px;font-weight:700}
+p{margin:0}
+.eyebrow{font:500 12px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.top-in{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:20px;height:64px}
+.brand{display:flex;align-items:center;gap:10px;font:800 17px/1 var(--f-display);text-decoration:none;color:var(--ink);white-space:nowrap;background:none;border:0;cursor:pointer;padding:0}
+.brand svg{width:30px;height:30px;color:var(--seal)}
+.steps{display:flex;gap:2px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+.steps::-webkit-scrollbar{display:none}
+.step{display:flex;align-items:center;gap:8px;border:0;background:none;padding:8px 12px;border-radius:9px;cursor:pointer;white-space:nowrap;color:var(--ink-2);font-size:14px}
+.step b{font:500 11px/1 var(--f-mono);width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1.5px solid var(--line);color:var(--ink-3)}
+.step:hover{background:var(--surface-2)}
+.step.on{color:var(--ink);font-weight:600}
+.step.on b{border-color:var(--accent);background:var(--accent);color:var(--accent-ink)}
+.step.done b{border-color:var(--ok);color:var(--ok)}
+.step.locked{color:var(--ink-3)}
+.step svg{width:13px;height:13px}
+.top-tools{display:flex;gap:8px;align-items:center}
+.mode{font:500 11px/1 var(--f-mono);padding:6px 8px;border-radius:6px;background:var(--sunk);color:var(--ink-2);letter-spacing:.04em}
+.mode.live{background:var(--ok-soft);color:var(--ok)}
+
+.page{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:36px 72px}
+.page-in{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+.head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px}
+.head > div:not(.tabs){display:flex;flex-direction:column;gap:8px;min-width:0}
+.grid2{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:900px){.grid2{grid-template-columns:minmax(0,1fr)}.step span{display:none}}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px;display:flex;flex-direction:column;gap:18px;min-width:0}
+.panel.raised{box-shadow:var(--shadow);border-color:transparent}
+.panel-h{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 18px;border-radius:10px;border:1px solid transparent;cursor:pointer;font-weight:600;font-size:14.5px;white-space:nowrap;transition:background .15s,border-color .15s,opacity .15s;text-decoration:none}
+.btn svg{width:18px;height:18px}
+.btn-primary{background:var(--accent);color:var(--accent-ink)}
+.btn-primary:hover:not(:disabled){background:var(--accent-hover)}
+.btn-secondary{background:var(--surface);border-color:var(--line);color:var(--ink)}
+.btn-secondary:hover:not(:disabled){border-color:var(--ink-3)}
+.btn-ghost{background:transparent;color:var(--ink-2)}
+.btn-ghost:hover:not(:disabled){background:var(--surface-2);color:var(--ink)}
+.btn-danger{background:var(--surface);border-color:var(--bad);color:var(--bad)}
+.btn-sm{height:34px;padding:0 12px;font-size:13px;border-radius:8px}
+.btn-lg{height:52px;padding:0 24px;font-size:16px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn[aria-busy="true"]{opacity:.85;cursor:progress}
+.spin{width:16px;height:16px;border-radius:50%;border:2px solid currentColor;border-right-color:transparent;animation:spin .7s linear infinite;flex:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-weight:600;font-size:13.5px}
+.input{display:flex;align-items:center;gap:10px;height:52px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);padding:0 14px;transition:border-color .15s}
+.input:focus-within{border-color:var(--accent)}
+.input.err{border-color:var(--bad)}
+.input svg{width:20px;height:20px;color:var(--ink-3);flex:none}
+.input input{border:0;outline:0;background:transparent;flex:1;min-width:0;height:100%;font-size:15.5px}
+textarea.ta{width:100%;min-height:170px;resize:vertical;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);padding:14px;outline:0;line-height:1.6}
+textarea.ta:focus{border-color:var(--accent)}
+.help{font-size:13px;color:var(--ink-3)}
+.errtext{font-size:13px;color:var(--bad)}
+
+.alert{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:10px;font-size:14px}
+.alert svg{width:20px;height:20px;flex:none;margin-top:1px}
+.alert.error{background:var(--bad-soft);color:var(--bad)}
+.alert.info{background:var(--accent-soft);color:var(--ink)}
+.alert .grow{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.alert .grow p{color:var(--ink)}
+
+.chip{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:13px;cursor:pointer;white-space:nowrap}
+.chip:hover{border-color:var(--ink-3)}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tag{display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 10px;border-radius:7px;background:var(--surface-2);border:1px solid var(--line);font-size:12.5px;white-space:nowrap}
+.tag.hl{background:var(--accent-soft);border-color:transparent;color:var(--accent);font-weight:600}
+.tag.seal{background:var(--seal-soft);border-color:transparent;color:var(--seal);font-weight:600}
+.tag svg{width:13px;height:13px}
+.pill{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 11px;border-radius:999px;font-size:12.5px;font-weight:600;white-space:nowrap}
+.pill i{width:7px;height:7px;border-radius:50%;background:currentColor}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.bad{background:var(--bad-soft);color:var(--bad)}
+.pill.idle{background:var(--sunk);color:var(--ink-2)}
+.pill.run{background:var(--accent-soft);color:var(--accent)}
+
+.stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.stat{padding:14px 16px;display:flex;flex-direction:column;gap:2px;border-right:1px solid var(--line);min-width:0}
+.stat:last-child{border-right:0}
+.stat b{font:700 22px/1.2 var(--f-display);font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--ink-3)}
+@media (max-width:760px){.stats{grid-template-columns:repeat(3,minmax(0,1fr))}.stat:nth-child(3){border-right:0}.stat:nth-child(-n+3){border-bottom:1px solid var(--line)}}
+.langbar{display:flex;height:10px;border-radius:5px;overflow:hidden;background:var(--sunk)}
+.langbar i{display:block;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:9px;height:9px;border-radius:3px}
+
+.progress{height:8px;border-radius:4px;background:var(--sunk);overflow:hidden}
+.progress i{display:block;height:100%;background:var(--accent);transition:width .35s ease}
+.checks{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.check{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--surface)}
+.check:last-child{border-bottom:0}
+.check .ic{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center}
+.check .ic svg{width:15px;height:15px}
+.check .ic.ok{background:var(--ok-soft);color:var(--ok)}
+.check .ic.warn{background:var(--warn-soft);color:var(--warn)}
+.check .ic.bad{background:var(--bad-soft);color:var(--bad)}
+.check .ic.idle{background:var(--sunk);color:var(--ink-3)}
+.check .t{font-weight:600;font-size:14px}
+.check .d{font-size:13px;color:var(--ink-2)}
+.check .w{font:500 12px var(--f-mono);color:var(--ink-3)}
+.check.pending{opacity:.55}
+
+.score{display:flex;align-items:center;gap:20px}
+.ring{--v:0;--c:var(--accent);width:120px;height:120px;border-radius:50%;flex:none;background:conic-gradient(var(--c) calc(var(--v)*1%),var(--sunk) 0);display:grid;place-items:center}
+.ring::before{content:"";grid-area:1/1;width:94px;height:94px;border-radius:50%;background:var(--surface)}
+.ring b{grid-area:1/1;z-index:1;font:800 32px/1 var(--f-display);font-variant-numeric:tabular-nums}
+.ring.sm{width:84px;height:84px}
+.ring.sm::before{width:64px;height:64px}
+.ring.sm b{font-size:22px}
+
+.qcard{border-radius:var(--r);background:var(--ink);color:var(--bg);padding:26px 28px;display:flex;flex-direction:column;gap:14px}
+.qcard .eyebrow{color:color-mix(in srgb,var(--bg) 60%,transparent)}
+.qcard p{font:600 21px/1.4 var(--f-display);text-wrap:pretty}
+.dots{display:flex;gap:6px}
+.dots i{flex:1;height:5px;border-radius:3px;background:color-mix(in srgb,var(--bg) 22%,transparent)}
+.dots i.on{background:var(--seal)}
+.dims{display:flex;flex-direction:column;gap:12px}
+.dim{display:grid;grid-template-columns:96px minmax(0,1fr) 30px;gap:10px;align-items:center;font-size:13.5px}
+.dim .bar{height:8px;border-radius:4px;background:var(--sunk);overflow:hidden}
+.dim .bar i{display:block;height:100%;background:var(--accent)}
+.dim b{font:500 13px var(--f-mono);text-align:right}
+.answer{border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--surface)}
+.answer .q{font-weight:600;font-size:14px}
+.answer .a{font-size:14px;color:var(--ink-2);white-space:pre-wrap;overflow-wrap:anywhere}
+.tip{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;padding:10px 12px;border-radius:8px;background:var(--seal-soft);color:var(--ink)}
+.tip svg{width:16px;height:16px;color:var(--seal);flex:none;margin-top:2px}
+.minis{display:flex;flex-wrap:wrap;gap:6px}
+
+.tabs{display:inline-flex;padding:4px;border-radius:11px;background:var(--sunk);gap:4px}
+.tabs .btn{height:38px}
+.tabs .btn.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgb(0 0 0 / .1)}
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:760px){.kpis{grid-template-columns:minmax(0,1fr)}}
+.kpi{display:flex;align-items:center;gap:16px;padding:18px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.kpi > div:not(.ring){display:flex;flex-direction:column;gap:4px;min-width:0}
+.kpi small{font-size:12.5px;color:var(--ink-3)}
+.verdict{display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:var(--r)}
+.verdict svg{width:28px;height:28px;flex:none}
+.verdict.ok{background:var(--ok-soft);color:var(--ok)}
+.verdict.warn{background:var(--warn-soft);color:var(--warn)}
+.verdict.bad{background:var(--bad-soft);color:var(--bad)}
+.verdict p{color:var(--ink);font-size:14px}
+
+.skills{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.skill{position:relative;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:20px;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+.skill.verified{border-color:color-mix(in srgb,var(--seal) 45%,var(--line))}
+.skill .stamp{position:absolute;top:14px;right:14px;width:46px;height:46px;color:var(--seal)}
+.skill.unverified .stamp{color:var(--ink-3);opacity:.5}
+.skill h3{padding-right:52px}
+.lv{display:flex;gap:4px}
+.lv i{width:22px;height:6px;border-radius:3px;background:var(--sunk)}
+.lv i.on{background:var(--seal)}
+.skill.unverified .lv i.on{background:var(--ink-3)}
+.ev{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--ink-2);margin:0;padding:0;list-style:none}
+.ev li{display:flex;gap:8px}
+.ev li::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--ink-3);margin-top:8px;flex:none}
+
+.mstatus{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:20px 22px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface)}
+.mstatus.on{border-color:color-mix(in srgb,var(--ok) 50%,var(--line));background:color-mix(in srgb,var(--ok-soft) 50%,var(--surface))}
+.mstatus .grow{flex:1;min-width:220px;display:flex;flex-direction:column;gap:4px}
+.beacon{width:14px;height:14px;border-radius:50%;background:var(--ink-3);flex:none;position:relative}
+.mstatus.on .beacon{background:var(--ok)}
+.mstatus.on .beacon::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--ok);animation:ping 1.6s ease-out infinite}
+@keyframes ping{from{opacity:.8;transform:scale(.6)}to{opacity:0;transform:scale(1.4)}}
+.people{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+@media (max-width:420px){.people{grid-template-columns:minmax(0,1fr)}}
+.person{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.person-h{display:flex;gap:12px;align-items:center}
+.avatar{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font:700 16px var(--f-display);flex:none;color:#fff}
+.person-h > div{flex:1;min-width:0}
+.person-h .n{font-weight:600}
+.match{font:800 22px/1 var(--f-display);font-variant-numeric:tabular-nums;text-align:right}
+.match small{display:block;font:500 11px var(--f-mono);color:var(--ink-3);margin-top:4px}
+.kv{display:flex;flex-direction:column;gap:6px}
+.kv > span{font-size:12px;color:var(--ink-3)}
+
+.empty{border:1.5px dashed var(--line);border-radius:var(--r);padding:36px 24px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+.empty svg{width:36px;height:36px;color:var(--ink-3)}
+.sk{border-radius:8px;background:linear-gradient(90deg,var(--sunk),var(--surface-2),var(--sunk));background-size:200% 100%;animation:sh 1.2s linear infinite}
+@keyframes sh{to{background-position:-200% 0}}
+.wtable{width:100%;border-collapse:collapse;font-size:14px}
+.wtable td{padding:9px 0;border-bottom:1px solid var(--line)}
+.wtable tr:last-child td{border-bottom:0}
+.wtable td:last-child{text-align:right;font-family:var(--f-mono);color:var(--ink-3);font-size:12.5px}
+.samples{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+.toasts{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:60;display:flex;flex-direction:column;gap:8px;max-width:min(380px,calc(100vw - 32px))}
+.toast{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:10px;background:var(--ink);color:var(--bg);font-size:14px;box-shadow:var(--shadow);animation:tin .2s ease-out}
+.toast svg{width:18px;height:18px;flex:none;margin-top:1px}
+.toast.success svg{color:var(--ok)}
+.toast.error svg{color:var(--bad)}
+@keyframes tin{from{transform:translateY(8px);opacity:0}}
+
+.scrim{position:fixed;inset:0;background:rgb(10 14 20 / .4);z-index:40}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(560px,100vw);background:var(--surface);z-index:50;display:flex;flex-direction:column;border-left:1px solid var(--line);box-shadow:var(--shadow);
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-right:env(safe-area-inset-right,0px)}
+.drawer-h{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line)}
+.drawer-h h2{font-size:18px;flex:1}
+.drawer-b{flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:16px}
+.drawer-f{padding:14px 20px;border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap}
+.code{width:100%;min-height:52vh;font:12.5px/1.55 var(--f-mono);border:1.5px solid var(--line);border-radius:10px;background:var(--surface-2);padding:12px;outline:0;resize:vertical;white-space:pre;overflow:auto;tab-size:2}
+.code:focus{border-color:var(--accent)}
+pre.code{min-height:0;max-height:60vh;margin:0}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.rng{display:flex;align-items:center;gap:12px}
+.rng input{flex:1}
+.rng output{font:500 13px var(--f-mono);min-width:64px;text-align:right}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}}
+</style>
+
+<header class="top"><div class="top-in" id="topbar"></div></header>
+<main class="page"><div class="page-in" id="view"></div></main>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<div id="devtools"></div>
+
+<script>
+(() => {
+const ICON = {
+  seal:'<path d="M12 2.5l2.2 1.6 2.7-.2.9 2.6 2.2 1.6-.8 2.6.8 2.6-2.2 1.6-.9 2.6-2.7-.2L12 19.5l-2.2-1.6-2.7.2-.9-2.6L4 13.9l.8-2.6L4 8.7l2.2-1.6.9-2.6 2.7.2z"/><path d="M8.8 11.4l2.2 2.2 4.2-4.4"/>',
+  github:'<path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 00-1.3-3.2 4.2 4.2 0 00-.1-3.2s-1.1-.3-3.5 1.3a12 12 0 00-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 00-.1 3.2A4.6 4.6 0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/>',
+  arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+  check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  x:'<path d="M6 6l12 12M18 6L6 18"/>',
+  alert:'<path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.5v.01"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.01"/>',
+  lock:'<rect x="5" y="11" width="14" height="9.5" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>',
+  refresh:'<path d="M20 11a8 8 0 00-14.5-4.5L4 8M4 4v4h4M4 13a8 8 0 0014.5 4.5L20 16M20 20v-4h-4"/>',
+  db:'<ellipse cx="12" cy="5.5" rx="7.5" ry="3"/><path d="M4.5 5.5v13c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-13M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3"/>',
+  bulb:'<path d="M9 17.5h6M10 21h4M12 3a6 6 0 00-3.5 10.9c.6.5 1 1.2 1 2V17h5v-1.1c0-.8.4-1.5 1-2A6 6 0 0012 3z"/>',
+  users:'<circle cx="9" cy="8.5" r="3.3"/><path d="M2.5 19.5a6.5 6.5 0 0113 0M16 5.4a3.3 3.3 0 010 6.3M18 13.5a6.5 6.5 0 013.5 6"/>',
+  send:'<path d="M4 12l16-8-6 16-3-7z"/><path d="M11 13l9-9"/>',
+  play:'<path d="M7 4.5l12 7.5-12 7.5z"/>',
+  report:'<path d="M6 3h8l4.5 4.5V21H6z"/><path d="M14 3v4.5h4.5M9 12.5h6M9 16.5h4"/>',
+  link:'<path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/>',
+  mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/>',
+  logout:'<path d="M14 4h4a2 2 0 012 2v12a2 2 0 01-2 2h-4"/><path d="M9 8l-4 4 4 4M5 12h10"/>',
+  login:'<path d="M10 4H6a2 2 0 00-2 2v12a2 2 0 002 2h4"/><path d="M15 8l4 4-4 4M19 12H9"/>',
+  copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5.5A1.5 1.5 0 0014.5 4h-9A1.5 1.5 0 004 5.5v9A1.5 1.5 0 005.5 16H8"/>',
+  ext:'<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/>',
+};
+const ic = (n, s='') => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${s}>${ICON[n]}</svg>`;
+const $ = (s, r=document) => r.querySelector(s);
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clone = o => JSON.parse(JSON.stringify(o));
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const ls = {
+  get(k){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch(e){ return null; } },
+  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} },
+  del(k){ try { localStorage.removeItem(k); } catch(e){} },
+};
+const hash = s => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
+const seeded = seed => () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+const fmtDate = d => { const t = new Date(d); return isNaN(t) ? '—' : t.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'}); };
+const LANG_COLORS = ['var(--accent)','var(--seal)','var(--ok)','var(--bad)','var(--ink-3)','var(--warn)'];
+
+const DEFAULT_MOCK = {
+  user: { name: "Alex Morgan", handle: "alexm", club: "Leeds Student Developers", seeking: ["UI Design", "User Research", "Backend"] },
+  rules: { private_keywords: ["private", "404"], verify_duration_ms: 4200, min_answer_chars: 20, questions_per_session: 5, verified_threshold: 70, partial_threshold: 40 },
+  repos: {
+    "octo-club/club-checkin": { title: "Club Check-in", description: "QR check-in and attendance analytics for student society events.", fork: false, stars: 14, forks: 3, commits: 86, active_days: 23, contributors: 3, readme_chars: 2400, claim_match: "pass", demo_url: "https://club-checkin.example.app", demo_up: true, created_at: "2026-06-02", last_push: "2026-10-19", languages: { TypeScript: 58, Python: 31, CSS: 11 } },
+    "octo-club/split-the-bill": { title: "Split the Bill", description: "Weekend hackathon prototype for splitting group expenses.", fork: false, stars: 2, forks: 0, commits: 9, active_days: 2, contributors: 1, readme_chars: 140, claim_match: "warn", demo_url: "", demo_up: false, created_at: "2026-03-12", last_push: "2026-03-14", languages: { JavaScript: 81, HTML: 19 } }
+  },
+  checks: [
+    { id: "repo_exists", label: "Repository exists", weight: 20, hint: "Can you walk us through the repository live and point to the code you wrote?" },
+    { id: "original_work", label: "Original work", weight: 10, hint: "This repository is a fork. What did you change compared with the original?" },
+    { id: "history_depth", label: "Commit history", weight: 15, hint: "There are few commits. How did development actually happen?" },
+    { id: "history_spread", label: "Work spread over time", weight: 15, hint: "Most work landed in a few days. How long did the project take, and is it still being developed?" },
+    { id: "team_match", label: "Team contributions", weight: 10, hint: "Who else worked on this, and what did each person own?" },
+    { id: "readme", label: "Documentation", weight: 10, hint: "A new user opens the repo. How do they find out what it does and how to run it?" },
+    { id: "claim_match", label: "Description matches code", weight: 10, hint: "Where in the code is the core feature from your description implemented?" },
+    { id: "demo_live", label: "Live demo", weight: 10, hint: "The demo link doesn't load. Can you show it working another way?" }
+  ],
+  interview: {
+    questions: [
+      "In two minutes, explain how {title} is built: where do the frontend, backend and data live?",
+      "Tell us about the hardest bug you hit in {title}. How did you find and fix it?",
+      "Who is {title} for, and how do you know they actually need it?",
+      "If usage grew tenfold tomorrow, which part of {title} would break first?",
+      "What would you build next, and why that before anything else?"
+    ]
+  },
+  skills: [
+    { name: "TypeScript", category: "Language", type: "language", language: "TypeScript", min_trust: 60 },
+    { name: "Python", category: "Language", type: "language", language: "Python", min_trust: 60 },
+    { name: "JavaScript", category: "Language", type: "language", language: "JavaScript", min_trust: 60 },
+    { name: "Git workflow", category: "Engineering practice", type: "check", check: "history_spread" },
+    { name: "Team collaboration", category: "Engineering practice", type: "check", check: "team_match" },
+    { name: "Shipping to users", category: "Engineering practice", type: "check", check: "demo_live" },
+    { name: "Technical communication", category: "Communication", type: "interview", dimension: "clarity", min_avg: 3 },
+    { name: "Evidence-based reasoning", category: "Communication", type: "interview", dimension: "evidence", min_avg: 3 }
+  ],
+  collaborators: [
+    { name: "Priya Shah", handle: "priyash", club: "Leeds Design Society", skills: ["UI Design", "Figma", "User Research"], seeking: ["TypeScript", "Backend"], project: "Accessible timetable app", availability: "Weekends", hue: 262 },
+    { name: "Tom Okafor", handle: "tomok", club: "Leeds Student Developers", skills: ["Backend", "Python", "PostgreSQL"], seeking: ["UI Design", "TypeScript"], project: "Society budget tracker", availability: "Weekday evenings", hue: 152 },
+    { name: "Mei Lin", handle: "meilin", club: "Product Management Society", skills: ["User Research", "Product Strategy"], seeking: ["TypeScript", "Shipping to users"], project: "Second-hand textbook exchange", availability: "Flexible", hue: 18 },
+    { name: "Jonas Weber", handle: "jweber", club: "Robotics Society", skills: ["C++", "Embedded", "Python"], seeking: ["Technical communication", "UI Design"], project: "Line-following robot kit", availability: "Weekends", hue: 205 },
+    { name: "Aisha Rahman", handle: "aishar", club: "Leeds Design Society", skills: ["UI Design", "Motion Design", "Branding"], seeking: ["JavaScript", "Git workflow"], project: "Campus events map", availability: "Weekday evenings", hue: 330 },
+    { name: "Sam Patel", handle: "sampat", club: "Data Science Society", skills: ["Python", "Data Analysis", "Backend"], seeking: ["Team collaboration", "TypeScript"], project: "Library seat availability", availability: "Flexible", hue: 95 }
+  ]
+};
+
+const DEFAULT_SETTINGS = { mode: 'mock', baseUrl: 'http://localhost:8000', latency: 650, failRate: 0 };
+let MOCK = ls.get('pos.mock') || clone(DEFAULT_MOCK);
+let SETTINGS = { ...DEFAULT_SETTINGS, ...(ls.get('pos.settings') || {}) };
+
+class ApiError extends Error {
+  constructor(message, status = 0, code = 'error') { super(message); this.status = status; this.code = code; }
+}
+
+const parseRepoUrl = raw => {
+  const s = String(raw || '').trim().replace(/\.git$/, '').replace(/\/+$/, '');
+  const m = s.match(/^(?:https?:\/\/)?(?:www\.)?github\.com\/([A-Za-z0-9-]{1,39})\/([A-Za-z0-9._-]{1,100})$/i);
+  return m ? { owner: m[1], name: m[2], key: `${m[1]}/${m[2]}`.toLowerCase(), url: `https://github.com/${m[1]}/${m[2]}` } : null;
+};
+const titleCase = s => s.replace(/[-_.]+/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+const DB = { projects: {}, tasks: {}, sessions: {}, matching: { joined: false, since: null } };
+
+const Mock = {
+  repoFor(parsed) {
+    const found = Object.entries(MOCK.repos || {}).find(([k]) => k.toLowerCase() === parsed.key);
+    if (found) return clone(found[1]);
+    const r = seeded(hash(parsed.key));
+    const langs = ['TypeScript','Python','JavaScript','Go','CSS','Swift'];
+    const a = langs[Math.floor(r()*langs.length)], b = langs.filter(l => l !== a)[Math.floor(r()*5)];
+    const share = 50 + Math.floor(r()*40);
+    const commits = 5 + Math.floor(r()*120);
+    return {
+      title: titleCase(parsed.name), description: `Student project ${parsed.name.replace(/[-_]/g,' ')}.`, fork: r() < .12,
+      stars: Math.floor(r()*40), forks: Math.floor(r()*8), commits, active_days: Math.max(1, Math.floor(commits / (2 + r()*4))),
+      contributors: 1 + Math.floor(r()*4), readme_chars: Math.floor(r()*3000), claim_match: r() < .7 ? 'pass' : 'warn',
+      demo_url: r() < .6 ? `https://${parsed.name.toLowerCase()}.example.app` : '', demo_up: r() < .8,
+      created_at: '2026-04-10', last_push: '2026-10-' + String(1 + Math.floor(r()*20)).padStart(2,'0'),
+      languages: { [a]: share, [b]: 100 - share }
+    };
+  },
+  evaluate(repo) {
+    const days = repo.active_days || 0;
+    const recent = (Date.now() - new Date(repo.last_push).getTime()) / 864e5 <= 90;
+    const status = {
+      repo_exists: ['pass', 'Public repository found'],
+      original_work: repo.fork ? ['warn', 'Forked from another repository'] : ['pass', 'Original repository, not a fork'],
+      history_depth: [repo.commits >= 30 ? 'pass' : repo.commits >= 10 ? 'warn' : 'fail', `${repo.commits} commits`],
+      history_spread: [days >= 7 && recent ? 'pass' : days >= 3 ? 'warn' : 'fail', `Commits on ${days} different days${recent ? '' : ', no activity in the last 90 days'}`],
+      team_match: [repo.contributors >= 2 ? 'pass' : 'warn', `${repo.contributors} contributor${repo.contributors === 1 ? '' : 's'}`],
+      readme: [repo.readme_chars >= 800 ? 'pass' : repo.readme_chars >= 200 ? 'warn' : 'fail', `README is ${repo.readme_chars.toLocaleString('en-GB')} characters`],
+      claim_match: [repo.claim_match || 'pass', repo.claim_match === 'pass' ? 'Description keywords appear in the code and README' : 'Only some description keywords appear in the repository'],
+      demo_live: !repo.demo_url ? ['warn', 'No demo link provided'] : repo.demo_up ? ['pass', 'Demo responds (HTTP 200)'] : ['fail', 'Demo link did not respond'],
+    };
+    return (MOCK.checks || []).map(c => {
+      const [s, d] = status[c.id] || ['skip', 'No rule for this check'];
+      return { id: c.id, label: c.label, weight: c.weight, status: s, detail: d, hint: s === 'pass' ? null : c.hint };
+    });
+  },
+  score(checks) {
+    const f = { pass: 1, warn: .5, fail: 0 };
+    const counted = checks.filter(c => c.status in f);
+    const total = counted.reduce((a, c) => a + c.weight, 0);
+    const s = total ? Math.round(100 * counted.reduce((a, c) => a + c.weight * f[c.status], 0) / total) : 0;
+    const R = MOCK.rules || {};
+    return { score: s, verdict: s >= (R.verified_threshold ?? 70) ? 'verified' : s >= (R.partial_threshold ?? 40) ? 'partial' : 'unverified' };
+  },
+  async submitProject({ url }) {
+    const p = parseRepoUrl(url);
+    if (!p) throw new ApiError('Enter a GitHub repository URL like https://github.com/owner/repository.', 422, 'invalid_url');
+    if ((MOCK.rules?.private_keywords || []).some(k => p.key.includes(k))) throw new ApiError(`We couldn't find ${p.owner}/${p.name}. Check the spelling, or make the repository public and try again.`, 404, 'not_found');
+    const repo = this.repoFor(p);
+    const id = 'prj_' + hash(p.key).toString(36);
+    DB.projects[id] = { id, url: p.url, owner: p.owner, name: p.name, ...repo, status: 'submitted', submitted_at: new Date().toISOString() };
+    return clone(DB.projects[id]);
+  },
+  async startVerification(pid) {
+    const proj = DB.projects[pid];
+    if (!proj) throw new ApiError('This project no longer exists. Submit it again.', 404);
+    const id = 'tsk_' + Date.now().toString(36);
+    proj.status = 'verifying';
+    DB.tasks[id] = { id, pid, started: Date.now(), duration: MOCK.rules?.verify_duration_ms ?? 4200, checks: this.evaluate(proj) };
+    return { id, status: 'running', progress: 0, step: 'Queued' };
+  },
+  async getTask(tid) {
+    const t = DB.tasks[tid];
+    if (!t) throw new ApiError('Verification task not found.', 404);
+    const progress = Math.min(100, Math.round((Date.now() - t.started) / t.duration * 100));
+    const shown = Math.floor(progress / 100 * t.checks.length);
+    const steps = ['Fetching repository', 'Reading commit history', 'Checking contributors', 'Reading README', 'Comparing description with code', 'Probing demo link', 'Scoring'];
+    if (progress < 100) return { id: tid, status: 'running', progress, step: steps[Math.min(steps.length - 1, Math.floor(progress / 100 * steps.length))], checks: t.checks.slice(0, shown) };
+    const res = this.score(t.checks);
+    const proj = DB.projects[t.pid];
+    Object.assign(proj, { status: res.verdict, trust: res.score, checks: t.checks, verified_at: new Date().toISOString() });
+    return { id: tid, status: 'done', progress: 100, step: 'Done', checks: t.checks, result: res };
+  },
+  async startInterview(pid) {
+    const proj = DB.projects[pid];
+    if (!proj?.checks) throw new ApiError('Verify the project before starting the interview.', 409);
+    const n = MOCK.rules?.questions_per_session ?? 5;
+    const bank = (MOCK.interview?.questions || []).map(q => q.replaceAll('{title}', proj.title));
+    const gaps = proj.checks.filter(c => c.hint).map(c => c.hint).slice(0, 2);
+    const plan = [...new Set([bank[0], ...gaps, ...bank.slice(1)].filter(Boolean))].slice(0, n);
+    if (!plan.length) throw new ApiError('The mock data has no interview questions. Add some under interview.questions.', 500);
+    const id = 'ses_' + Date.now().toString(36);
+    DB.sessions[id] = { id, pid, plan, answers: [] };
+    return { id, total: plan.length, index: 0, question: plan[0] };
+  },
+  grade(question, text, title) {
+    const units = (text.match(/[A-Za-z]+/g) || []).length + (text.match(/[一-鿿]/g) || []).length;
+    const depth = units < 15 ? 1 : units < 40 ? 2 : units < 90 ? 3 : units < 160 ? 4 : 5;
+    const ev = (text.match(/\d+%?|for example|e\.g\.|such as|we measured|tested|survey|interview|users? (said|told)|data/gi) || []).length;
+    const evidence = 1 + Math.min(4, ev);
+    const mk = (text.match(/\b(first|second|third|then|because|so that|however|finally|therefore)\b/gi) || []).length;
+    const clarity = units < 15 ? 1 : Math.min(5, 2 + mk);
+    const qt = new Set((question + ' ' + title).toLowerCase().match(/[a-z]{4,}/g) || []);
+    const at = new Set(text.toLowerCase().match(/[a-z]{4,}/g) || []);
+    const ov = [...qt].filter(w => at.has(w)).length / Math.max(1, qt.size);
+    const relevance = units < 5 ? 1 : Math.min(5, 2 + Math.round(ov * 8));
+    const scores = { clarity, evidence, depth, relevance };
+    const tips = {
+      clarity: 'Lead with your answer, then give two or three supporting points in order.',
+      evidence: 'Add one concrete number, test result or user quote to back up your claim.',
+      depth: 'Go one level deeper: why this approach, what you rejected, and what it cost.',
+      relevance: 'Answer the exact question first, then add context.'
+    };
+    const weakest = Object.keys(scores).reduce((a, b) => scores[a] <= scores[b] ? a : b);
+    const avg = Object.values(scores).reduce((a, b) => a + b, 0) / 4;
+    return { scores, score: Math.round(avg * 20), tip: tips[weakest], weakest };
+  },
+  async submitAnswer(sid, text) {
+    const s = DB.sessions[sid];
+    if (!s) throw new ApiError('Interview session expired. Start a new interview.', 404);
+    const min = MOCK.rules?.min_answer_chars ?? 20;
+    if (text.trim().length < min) throw new ApiError(`Write at least ${min} characters so the interviewer has something to assess.`, 422, 'too_short');
+    if (s.answers.length >= s.plan.length) throw new ApiError('All questions are already answered.', 409);
+    const q = s.plan[s.answers.length];
+    const fb = this.grade(q, text, DB.projects[s.pid]?.title || '');
+    s.answers.push({ question: q, answer: text, feedback: fb });
+    const i = s.answers.length;
+    const done = i >= s.plan.length;
+    if (done) {
+      const proj = DB.projects[s.pid];
+      proj.interview = { score: Math.round(s.answers.reduce((a, x) => a + x.feedback.score, 0) / i), dims: avgDims(s.answers), at: new Date().toISOString() };
+    }
+    return { feedback: fb, done, next: done ? null : { index: i, question: s.plan[i] }, total: s.plan.length };
+  },
+  async getReport(pid) {
+    const p = DB.projects[pid];
+    if (!p?.checks) throw new ApiError('No verification found for this project yet.', 404);
+    const iv = p.interview || null;
+    return {
+      project: { id: p.id, title: p.title, url: p.url },
+      trust: p.trust, verdict: p.status, checks: p.checks,
+      interview: iv ? iv.score : null, dims: iv ? iv.dims : null,
+      readiness: iv ? Math.round(.6 * iv.score + .4 * p.trust) : null,
+      generated_at: new Date().toISOString(), report_id: 'rep_' + hash(pid + (iv?.at || '')).toString(36)
+    };
+  },
+  async getSkills(pid) {
+    const p = DB.projects[pid];
+    if (!p?.checks) throw new ApiError('Verify the project to unlock skills.', 409);
+    const langs = p.languages || {};
+    const iv = p.interview;
+    return (MOCK.skills || []).map(sk => {
+      let verified = false, level = 0, evidence = [], reason = '';
+      if (sk.type === 'language') {
+        const share = langs[sk.language] || 0;
+        if (!share) return null;
+        verified = p.trust >= (sk.min_trust ?? 60);
+        level = Math.max(1, Math.min(5, Math.round(share / 20)));
+        evidence = [`${share}% of code in ${p.owner}/${p.name}`, `${p.commits} commits across ${p.active_days} days`];
+        reason = verified ? '' : `Needs a trust score of ${sk.min_trust ?? 60} (currently ${p.trust}).`;
+      } else if (sk.type === 'check') {
+        const c = p.checks.find(x => x.id === sk.check);
+        if (!c) return null;
+        verified = c.status === 'pass';
+        level = c.status === 'pass' ? 4 : c.status === 'warn' ? 2 : 1;
+        evidence = [c.detail];
+        reason = verified ? '' : `${c.label} check returned ${c.status}.`;
+      } else if (sk.type === 'interview') {
+        const v = iv?.dims?.[sk.dimension];
+        level = v ? Math.round(v) : 0;
+        verified = v != null && v >= (sk.min_avg ?? 3);
+        evidence = v != null ? [`Interview average ${v.toFixed(1)} / 5 on ${sk.dimension}`] : [];
+        reason = v == null ? 'Complete the AI interview to assess this skill.' : verified ? '' : `Needs an average of ${sk.min_avg ?? 3} / 5 (currently ${v.toFixed(1)}).`;
+      } else return null;
+      return { name: sk.name, category: sk.category, verified, level, evidence, reason };
+    }).filter(Boolean);
+  },
+  async getMatching() { return { joined: DB.matching.joined, visible_to: DB.matching.joined ? (MOCK.collaborators || []).length : 0 }; },
+  async setMatching(joined) {
+    DB.matching.joined = !!joined; DB.matching.since = joined ? new Date().toISOString() : null;
+    return this.getMatching();
+  },
+  async getCollaborators(verifiedSkills) {
+    const mine = new Set(verifiedSkills.map(s => s.toLowerCase()));
+    const want = new Set((MOCK.user?.seeking || []).map(s => s.toLowerCase()));
+    return (MOCK.collaborators || []).map(c => {
+      const brings = c.skills.filter(s => want.has(s.toLowerCase()));
+      const needs = c.seeking.filter(s => mine.has(s.toLowerCase()));
+      const m = Math.round(50 * brings.length / Math.max(1, want.size) + 50 * needs.length / Math.max(1, c.seeking.length));
+      return { ...c, match: m, brings, needs };
+    }).sort((a, b) => b.match - a.match);
+  },
+  async requestIntro(handle) {
+    if (!DB.matching.joined) throw new ApiError('Join matching before requesting an introduction.', 409);
+    const c = (MOCK.collaborators || []).find(x => x.handle === handle);
+    if (!c) throw new ApiError('This student is no longer in matching.', 404);
+    return { handle, status: 'requested' };
+  }
+};
+
+function avgDims(answers) {
+  const k = ['clarity', 'evidence', 'depth', 'relevance'], o = {};
+  k.forEach(d => o[d] = Math.round(answers.reduce((a, x) => a + x.feedback.scores[d], 0) / answers.length * 10) / 10);
+  return o;
+}
+
+const Http = {
+  async req(method, path, body) {
+    let r;
+    const base = SETTINGS.baseUrl.replace(/\/+$/, '');
+    try {
+      r = await fetch(base + path, { method, headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: body ? JSON.stringify(body) : undefined });
+    } catch (e) {
+      throw new ApiError(`Can't reach the API at ${base}. Check the base URL or switch to Mock mode in Mock Data.`, 0, 'network');
+    }
+    let data = null;
+    try { data = await r.json(); } catch (e) {}
+    if (r.status === 404 && !data?.detail) throw new ApiError(`The server doesn't have ${method} ${path} yet (HTTP 404).`, 404, 'missing_endpoint');
+    if (!r.ok) {
+      const d = data?.detail;
+      throw new ApiError(Array.isArray(d) ? d.map(x => x.msg).join('; ') : (d || `Request failed with HTTP ${r.status}.`), r.status);
+    }
+    return data;
+  },
+  normProject(p) {
+    const rp = parseRepoUrl(p.repo_url) || { owner: '—', name: p.title, url: p.repo_url };
+    return { id: p.id, url: rp.url, owner: rp.owner, name: rp.name, title: p.title, description: p.summary || '', stars: p.stars ?? null, forks: p.forks ?? null, commits: p.commits ?? null, active_days: p.active_days ?? null, contributors: p.contributors ?? null, last_push: p.updated_at, languages: p.languages || {}, status: p.status === 'new' ? 'submitted' : p.status, trust: p.trust_score };
+  },
+  normChecks(list) {
+    const L = Object.fromEntries((MOCK.checks || []).map(c => [c.id, c.label]));
+    return (list || []).map(c => ({ id: c.id, label: L[c.id] || c.id, weight: c.weight, status: c.status === 'skip' ? 'skip' : c.status, detail: c.detail, hint: c.interview_hint }));
+  },
+  async submitProject({ url }) {
+    const p = parseRepoUrl(url);
+    if (!p) throw new ApiError('Enter a GitHub repository URL like https://github.com/owner/repository.', 422, 'invalid_url');
+    return this.normProject(await this.req('POST', '/api/projects', { title: titleCase(p.name), repo_url: p.url, stage: 'mvp' }));
+  },
+  async startVerification(pid) { const t = await this.req('POST', `/api/projects/${pid}/verify`); this._pid = pid; return { id: t.id, status: 'running', progress: t.progress || 0, step: 'Queued' }; },
+  async getTask(tid) {
+    const t = await this.req('GET', `/api/tasks/${tid}`);
+    if (t.status === 'failed') throw new ApiError((t.error || 'Verification failed.').split('\n')[0], 500, 'task_failed');
+    if (t.status !== 'done') return { id: tid, status: 'running', progress: t.progress, step: (t.step || 'Working').replace(/^collect:/, 'Collecting '), checks: [] };
+    const p = await this.req('GET', `/api/projects/${t.payload.project_id}`);
+    return { id: tid, status: 'done', progress: 100, step: 'Done', checks: this.normChecks(p.verifications?.[0]?.checks), result: { score: t.result.score, verdict: t.result.verdict } };
+  },
+  async startInterview(pid) {
+    const s = await this.req('POST', '/api/interviews', { project_id: pid, persona: 'tech' });
+    return { id: s.id, total: s.plan.length, index: 0, question: s.turns[0].content };
+  },
+  async submitAnswer(sid, text) {
+    const r = await this.req('POST', `/api/interviews/${sid}/answer`, { content: text });
+    return { feedback: r.feedback, done: r.done, next: r.next_question ? { index: r.progress.answered, question: r.next_question } : null, total: r.progress.total };
+  },
+  async getReport(pid, sid) {
+    const p = await this.req('GET', `/api/projects/${pid}`);
+    let iv = null;
+    if (sid) {
+      const t = await this.req('POST', `/api/interviews/${sid}/finish`);
+      for (let i = 0; i < 30; i++) {
+        const x = await this.req('GET', `/api/tasks/${t.id}`);
+        if (x.status === 'done') { iv = x.result; break; }
+        if (x.status === 'failed') throw new ApiError('Report generation failed.', 500);
+        await sleep(800);
+      }
+    }
+    return { project: { id: p.id, title: p.title, url: p.repo_url }, trust: p.trust_score, verdict: p.status, checks: this.normChecks(p.verifications?.[0]?.checks), interview: iv?.overall ?? null, dims: iv?.dimensions ?? null, readiness: iv?.readiness ?? null, generated_at: new Date().toISOString(), report_id: 'rep_' + p.id };
+  },
+  async getSkills(pid) { return this.req('GET', `/api/projects/${pid}/skills`); },
+  async getMatching() { return this.req('GET', '/api/matching'); },
+  async setMatching(joined) { return this.req('POST', '/api/matching', { joined }); },
+  async getCollaborators(skills) { return this.req('GET', '/api/collaborators?skills=' + encodeURIComponent(skills.join(','))); },
+  async requestIntro(handle) { return this.req('POST', '/api/collaborators/intro', { handle }); },
+};
+
+const api = new Proxy({}, {
+  get: (_, name) => async (...args) => {
+    if (SETTINGS.mode === 'live') return Http[name](...args);
+    const quick = name === 'getTask';
+    await sleep(quick ? Math.min(250, SETTINGS.latency) : SETTINGS.latency * (.7 + Math.random() * .6));
+    if (Math.random() * 100 < SETTINGS.failRate) throw new ApiError(`Simulated server error on ${name} (HTTP 503). Try again.`, 503, 'simulated');
+    return Mock[name](...args);
+  }
+});
+
+const S = {
+  route: 'home',
+  urlDraft: '', urlError: '',
+  project: null,
+  task: null, checks: [],
+  session: null, question: null, answerDraft: '', answers: [], interviewDone: false,
+  report: null, skills: null, tab: 'report',
+  matching: null, collaborators: null, filter: 'All', intros: {},
+  pending: {}, errors: {},
+  toasts: [], dev: false, devTab: 'data'
+};
+const ROUTES = [
+  { id: 'home', label: 'Submit' },
+  { id: 'status', label: 'Project Status' },
+  { id: 'interview', label: 'AI Interview' },
+  { id: 'proof', label: 'Verification & Skills' },
+  { id: 'match', label: 'Find Collaborators' },
+];
+const verified = () => S.task?.status === 'done';
+const guard = id => {
+  if (id === 'status' && !S.project) return 'Submit a project first.';
+  if (['interview', 'proof', 'match'].includes(id) && !verified()) return 'Finish verification first.';
+  return null;
+};
+
+function setState(patch, opts = {}) { Object.assign(S, patch); if (!opts.silent) render(); }
+async function run(key, fn) {
+  if (S.pending[key]) return;
+  S.pending = { ...S.pending, [key]: true }; S.errors = { ...S.errors, [key]: null }; render();
+  try { return await fn(); }
+  catch (e) { S.errors = { ...S.errors, [key]: e.message || 'Something went wrong.' }; toast('error', e.message || 'Something went wrong.'); }
+  finally { S.pending = { ...S.pending, [key]: false }; render(); }
+}
+let toastId = 0;
+function toast(kind, text) {
+  const id = ++toastId;
+  S.toasts = [...S.toasts.slice(-3), { id, kind, text }];
+  renderToasts();
+  setTimeout(() => { S.toasts = S.toasts.filter(t => t.id !== id); renderToasts(); }, kind === 'error' ? 6000 : 3500);
+}
+
+function go(id) {
+  const why = guard(id);
+  if (why) { toast('info', why); return; }
+  S.route = id;
+  try { history.replaceState(null, '', '#' + id); } catch (e) {}
+  render();
+  scrollTo({ top: 0, behavior: 'smooth' });
+  onEnter(id);
+}
+function onEnter(id) {
+  if (id === 'interview' && !S.session && !S.pending.interview) startInterview();
+  if (id === 'proof') { if (!S.report && !S.pending.report) loadReport(); if (S.tab === 'skills' && !S.skills && !S.pending.skills) loadSkills(); }
+  if (id === 'match') loadMatching();
+}
+
+const btn = (label, { kind = 'primary', act = '', icon = '', busy = false, disabled = false, size = '', id = '', data = '' } = {}) =>
+  `<button type="button" class="btn btn-${kind} ${size}" ${id ? `id="${id}"` : ''} data-act="${act}" ${data} ${busy ? 'aria-busy="true" disabled' : ''} ${disabled ? 'disabled' : ''}>${busy ? '<span class="spin"></span>' : icon ? ic(icon) : ''}<span>${esc(label)}</span></button>`;
+const errorBox = (key, retryAct) => S.errors[key] ? `<div class="alert error" role="alert">${ic('alert')}<div class="grow"><p>${esc(S.errors[key])}</p>${retryAct ? `<div>${btn('Try again', { kind: 'secondary', size: 'btn-sm', act: retryAct, icon: 'refresh' })}</div>` : ''}</div></div>` : '';
+const statusPill = s => ({
+  submitted: '<span class="pill idle"><i></i>Ready to verify</span>',
+  verifying: '<span class="pill run"><i></i>Verifying</span>',
+  verified: '<span class="pill ok"><i></i>Verified</span>',
+  partial: '<span class="pill warn"><i></i>Partly verified</span>',
+  unverified: '<span class="pill bad"><i></i>Not verified</span>',
+}[s] || '<span class="pill idle"><i></i>Unknown</span>');
+const tone = s => s === 'pass' ? 'ok' : s === 'warn' ? 'warn' : s === 'fail' ? 'bad' : 'idle';
+const toneIcon = s => s === 'pass' ? 'check' : s === 'warn' ? 'alert' : s === 'fail' ? 'x' : 'info';
+const verdictTone = v => v === 'verified' ? 'ok' : v === 'partial' ? 'warn' : 'bad';
+const ringColor = v => v >= 70 ? 'var(--ok)' : v >= 40 ? 'var(--warn)' : 'var(--bad)';
+const dimLabel = { clarity: 'Clarity', evidence: 'Evidence', depth: 'Depth', relevance: 'Relevance' };
+
+function renderTop() {
+  const done = { home: !!S.project, status: verified(), interview: S.interviewDone, proof: !!S.skills, match: !!S.matching?.joined };
+  $('#topbar').innerHTML = `
+    <button class="brand" data-act="go" data-to="home" aria-label="Proof of Skill home">${ic('seal')}<span>Proof of Skill</span></button>
+    <nav class="steps" aria-label="Pages">${ROUTES.map((r, i) => {
+      const lock = guard(r.id);
+      return `<button class="step ${S.route === r.id ? 'on' : ''} ${done[r.id] && S.route !== r.id ? 'done' : ''} ${lock ? 'locked' : ''}" data-act="go" data-to="${r.id}" ${S.route === r.id ? 'aria-current="page"' : ''} ${lock ? `title="${esc(lock)}"` : ''}>
+        <b>${done[r.id] && S.route !== r.id ? ic('check', 'style="width:12px;height:12px"') : i + 1}</b><span>${r.label}</span>${lock ? ic('lock') : ''}</button>`;
+    }).join('')}</nav>
+    <div class="top-tools">
+      <span class="mode ${SETTINGS.mode === 'live' ? 'live' : ''}">${SETTINGS.mode === 'live' ? 'LIVE API' : 'MOCK'}</span>
+      <button class="btn btn-ghost btn-sm" data-act="dev-open">${ic('db')}<span>Mock Data</span></button>
+    </div>`;
+}
+
+const pages = {};
+
+pages.home = () => {
+  const samples = Object.keys(MOCK.repos || {});
+  const busy = S.pending.submit;
+  return `
+  <div class="grid2">
+    <section class="panel raised" style="padding:32px;gap:24px">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <span class="eyebrow">Step 1 · Submit</span>
+        <h1>Show what you built.<br>Prove what you can do.</h1>
+        <p class="muted" style="max-width:56ch">Paste a public GitHub repository. We check the code history, run a short AI interview about it, and turn the results into skills other students can trust.</p>
+      </div>
+      <form id="submitForm" novalidate style="display:flex;flex-direction:column;gap:14px">
+        <div class="field">
+          <label for="repoUrl">GitHub repository URL</label>
+          <div class="input ${S.urlError ? 'err' : ''}">${ic('github')}<input id="repoUrl" name="repoUrl" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://github.com/owner/repository" value="${esc(S.urlDraft)}" ${busy ? 'disabled' : ''} aria-invalid="${!!S.urlError}" aria-describedby="repoHelp"></div>
+          ${S.urlError ? `<span class="errtext" id="repoHelp">${esc(S.urlError)}</span>` : `<span class="help" id="repoHelp">Public repositories only. We read metadata and commits; we never change anything.</span>`}
+        </div>
+        ${errorBox('submit')}
+        <div class="row">
+          <button type="submit" class="btn btn-primary btn-lg" data-act="submit-project" ${busy ? 'aria-busy="true" disabled' : ''}>${busy ? '<span class="spin"></span>' : ic('arrow')}<span>${busy ? 'Submitting…' : 'Submit Project'}</span></button>
+        </div>
+      </form>
+      ${samples.length ? `<div class="samples"><span class="help">Try an example:</span>${samples.map(k => `<button type="button" class="chip" data-act="sample" data-url="https://github.com/${esc(k)}">${esc(k)}</button>`).join('')}<button type="button" class="chip" data-act="sample" data-url="https://github.com/octo-club/private-notes">octo-club/private-notes</button></div>` : ''}
+    </section>
+    <aside class="panel">
+      <div class="panel-h"><h3>What verification checks</h3><span class="eyebrow">Weight</span></div>
+      <table class="wtable"><tbody>${(MOCK.checks || []).map(c => `<tr><td>${esc(c.label)}</td><td>${c.weight}</td></tr>`).join('')}</tbody></table>
+      <p class="help">Pass counts in full, a warning counts half. ${MOCK.rules?.verified_threshold ?? 70}+ is verified, ${MOCK.rules?.partial_threshold ?? 40}–${(MOCK.rules?.verified_threshold ?? 70) - 1} is partly verified.</p>
+      ${S.project ? `<div class="alert info">${ic('info')}<div class="grow"><p>You already submitted <b>${esc(S.project.owner)}/${esc(S.project.name)}</b>.</p><div>${btn('Open project status', { kind: 'secondary', size: 'btn-sm', act: 'go', data: 'data-to="status"' })}</div></div></div>` : ''}
+    </aside>
+  </div>`;
+};
+
+pages.status = () => {
+  const p = S.project;
+  const langs = Object.entries(p.languages || {});
+  const t = S.task;
+  const running = t && t.status === 'running';
+  const isDone = verified();
+  const nVal = v => v == null ? '—' : Number(v).toLocaleString('en-GB');
+  const checks = isDone || running ? S.checks : [];
+  const all = (MOCK.checks || []);
+  const checkRows = all.map(c => {
+    const got = checks.find(x => x.id === c.id);
+    if (!got) return `<div class="check pending"><span class="ic idle">${running ? '<span class="spin" style="width:12px;height:12px;border-width:1.5px"></span>' : ic('info')}</span><div><div class="t">${esc(c.label)}</div><div class="d">${running ? 'Waiting…' : 'Not checked yet'}</div></div><span class="w">${c.weight}</span></div>`;
+    return `<div class="check"><span class="ic ${tone(got.status)}">${ic(toneIcon(got.status))}</span><div><div class="t">${esc(got.label)}</div><div class="d">${esc(got.detail)}</div></div><span class="w">${got.weight}</span></div>`;
+  }).join('');
+  const res = t?.result;
+  return `
+  <div class="head">
+    <div><span class="eyebrow">Step 2 · Project status</span><h1 style="font-size:clamp(26px,3.4vw,36px)">${esc(p.title)}</h1>
+      <div class="row"><a class="mono" href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.owner)}/${esc(p.name)} ${ic('ext', 'style="width:13px;height:13px;vertical-align:-1px"')}</a>${statusPill(isDone ? res.verdict : running ? 'verifying' : 'submitted')}</div></div>
+    <div class="row">${btn('Submit another', { kind: 'ghost', act: 'reset-project', size: 'btn-sm' })}</div>
+  </div>
+  <section class="panel">
+    ${p.description ? `<p class="muted">${esc(p.description)}</p>` : ''}
+    <div class="stats">
+      <div class="stat"><b>${nVal(p.stars)}</b><span>Stars</span></div>
+      <div class="stat"><b>${nVal(p.forks)}</b><span>Forks</span></div>
+      <div class="stat"><b>${nVal(p.commits)}</b><span>Commits</span></div>
+      <div class="stat"><b>${nVal(p.active_days)}</b><span>Active days</span></div>
+      <div class="stat"><b>${nVal(p.contributors)}</b><span>Contributors</span></div>
+      <div class="stat"><b style="font-size:15px;line-height:1.9">${fmtDate(p.last_push)}</b><span>Last push</span></div>
+    </div>
+    ${langs.length ? `<div style="display:flex;flex-direction:column;gap:8px"><div class="langbar">${langs.map(([l, v], i) => `<i style="width:${v}%;background:${LANG_COLORS[i % LANG_COLORS.length]}" title="${esc(l)} ${v}%"></i>`).join('')}</div><div class="legend">${langs.map(([l, v], i) => `<span><i style="background:${LANG_COLORS[i % LANG_COLORS.length]}"></i>${esc(l)} <span class="faint num">${v}%</span></span>`).join('')}</div></div>` : ''}
+  </section>
+  <div class="grid2">
+    <section class="panel">
+      <div class="panel-h"><h2>Verification</h2>${running ? `<span class="mono faint num">${t.progress}%</span>` : ''}</div>
+      ${!t && !S.pending.verify ? `<p class="muted">Verification reads the repository, scores eight checks and stores the evidence. It takes a few seconds.</p>` : ''}
+      ${running || S.pending.verify ? `<div style="display:flex;flex-direction:column;gap:8px"><div class="progress"><i style="width:${t?.progress || 2}%"></i></div><span class="help">${esc(t?.step || 'Queuing verification…')}</span></div>` : ''}
+      ${errorBox('verify', 'start-verification')}
+      <div class="checks">${checkRows}</div>
+    </section>
+    <aside class="panel raised">
+      ${isDone ? `
+        <div class="score"><div class="ring" style="--v:${res.score};--c:${ringColor(res.score)}"><b>${res.score}</b></div>
+          <div style="display:flex;flex-direction:column;gap:6px"><span class="eyebrow">Trust score</span>${statusPill(res.verdict)}<p class="help">${checks.filter(c => c.status === 'pass').length} of ${checks.length} checks passed</p></div></div>
+        <p class="muted">${res.verdict === 'verified' ? 'The evidence supports your project. The interview will test how well you can explain it.' : 'Some checks need attention. The interview will ask about them first, so prepare answers.'}</p>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          ${btn(S.interviewDone ? 'Review AI Interview' : 'Continue to AI Interview', { act: 'go', data: 'data-to="interview"', icon: 'mic', size: 'btn-lg' })}
+          ${btn('View Verification Report', { kind: 'secondary', act: 'view-report', icon: 'report' })}
+          ${btn('Run again', { kind: 'ghost', act: 'start-verification', icon: 'refresh', size: 'btn-sm' })}
+        </div>` : `
+        <div style="display:flex;flex-direction:column;gap:8px"><span class="eyebrow">Next step</span><h3>Verify ${esc(p.owner)}/${esc(p.name)}</h3><p class="muted">After verification you can take the AI interview and unlock your skills.</p></div>
+        ${btn(running || S.pending.verify ? 'Verifying…' : 'Start Verification', { act: 'start-verification', icon: 'play', size: 'btn-lg', busy: running || S.pending.verify })}`}
+    </aside>
+  </div>`;
+};
+
+pages.interview = () => {
+  if (S.pending.interview && !S.session) return `<div class="panel" style="gap:14px"><div class="sk" style="height:22px;width:40%"></div><div class="sk" style="height:120px"></div><div class="sk" style="height:180px"></div></div>`;
+  if (!S.session) return `<div class="empty">${ic('mic')}<h3>Interview not started</h3>${errorBox('interview')}${btn('Start interview', { act: 'start-interview', icon: 'play' })}</div>`;
+  const total = S.session.total, n = S.answers.length;
+  const dims = n ? avgDims(S.answers) : null;
+  const busy = S.pending.answer;
+  const min = MOCK.rules?.min_answer_chars ?? 20;
+  const len = S.answerDraft.trim().length;
+  return `
+  <div class="head"><div><span class="eyebrow">Step 3 · AI interview</span><h1 style="font-size:clamp(26px,3.4vw,36px)">Defend ${esc(S.project.title)}</h1><p class="muted">${total} questions. The first ones focus on what verification flagged.</p></div>
+    <span class="mono faint num">${Math.min(n + (S.interviewDone ? 0 : 1), total)} / ${total}</span></div>
+  <div class="grid2">
+    <div style="display:flex;flex-direction:column;gap:18px;min-width:0">
+      ${S.interviewDone ? `
+        <section class="panel raised">
+          <div class="score"><div class="ring" style="--v:${S.project.interviewScore};--c:${ringColor(S.project.interviewScore)}"><b>${S.project.interviewScore}</b></div>
+          <div style="display:flex;flex-direction:column;gap:6px"><span class="eyebrow">Interview complete</span><h2>You answered all ${total} questions</h2><p class="muted">Your report and skills are ready.</p></div></div>
+          <div class="row">${btn('View Verification Report', { act: 'view-report', icon: 'report' })}${btn('View Verified Skills', { kind: 'secondary', act: 'view-skills', icon: 'seal' })}${btn('Practise again', { kind: 'ghost', act: 'restart-interview', icon: 'refresh', size: 'btn-sm' })}</div>
+        </section>` : `
+        <section class="qcard">
+          <div class="dots">${Array.from({ length: total }, (_, i) => `<i class="${i <= n ? 'on' : ''}"></i>`).join('')}</div>
+          <span class="eyebrow">Question ${n + 1} of ${total}</span>
+          <p>${esc(S.question)}</p>
+        </section>
+        <section class="panel">
+          <div class="field">
+            <label for="answer">Your answer</label>
+            <textarea id="answer" class="ta" placeholder="Answer as you would out loud. Specific numbers and examples score higher." ${busy ? 'disabled' : ''}>${esc(S.answerDraft)}</textarea>
+            <div class="row" style="justify-content:space-between"><span class="help num" id="charCount">${len} characters${len < min ? ` · ${min - len} more needed` : ''}</span><span class="help">Ctrl + Enter to submit</span></div>
+          </div>
+          ${errorBox('answer')}
+          <div class="row">${btn(busy ? 'Scoring…' : 'Submit Answer', { act: 'submit-answer', icon: 'send', busy, disabled: len < min, id: 'submitAnswer' })}</div>
+        </section>`}
+      ${S.answers.length ? `<div style="display:flex;flex-direction:column;gap:12px"><h3>Your answers</h3>${S.answers.slice().reverse().map((a, ri) => {
+        const i = S.answers.length - ri;
+        return `<article class="answer"><div class="row" style="justify-content:space-between"><span class="eyebrow">Q${i}</span><span class="pill ${a.feedback.score >= 70 ? 'ok' : a.feedback.score >= 50 ? 'warn' : 'bad'}">${a.feedback.score} / 100</span></div>
+          <div class="q">${esc(a.question)}</div><div class="a">${esc(a.answer)}</div>
+          <div class="minis">${Object.entries(a.feedback.scores).map(([k, v]) => `<span class="tag">${dimLabel[k]} <b class="num">${v}</b>/5</span>`).join('')}</div>
+          <div class="tip">${ic('bulb')}<span>${esc(a.feedback.tip)}</span></div></article>`;
+      }).join('')}</div>` : ''}
+    </div>
+    <aside class="panel">
+      <div class="panel-h"><h3>Running scores</h3><span class="eyebrow">Avg / 5</span></div>
+      ${dims ? `<div class="dims">${Object.entries(dims).map(([k, v]) => `<div class="dim"><span>${dimLabel[k]}</span><span class="bar"><i style="width:${v / 5 * 100}%"></i></span><b class="num">${v.toFixed(1)}</b></div>`).join('')}</div>` : `<p class="help">Scores appear after your first answer. Each answer is rated 1–5 on clarity, evidence, depth and relevance.</p>`}
+      <div class="tip">${ic('bulb')}<span>Strong answers lead with a direct claim, back it with one number or example, and say what you would do differently.</span></div>
+    </aside>
+  </div>`;
+};
+
+pages.proof = () => {
+  const tabs = `<div class="tabs" role="tablist">
+    <button type="button" class="btn btn-ghost ${S.tab === 'report' ? 'on' : ''}" role="tab" aria-selected="${S.tab === 'report'}" data-act="view-report">${ic('report')}<span>View Verification Report</span></button>
+    <button type="button" class="btn btn-ghost ${S.tab === 'skills' ? 'on' : ''}" role="tab" aria-selected="${S.tab === 'skills'}" data-act="view-skills">${ic('seal')}<span>View Verified Skills</span></button></div>`;
+  return `
+  <div class="head"><div><span class="eyebrow">Step 4 · Verification & skills</span><h1 style="font-size:clamp(26px,3.4vw,36px)">${esc(S.project.title)}</h1></div>${tabs}</div>
+  ${S.tab === 'report' ? reportView() : skillsView()}`;
+};
+
+function reportView() {
+  if (S.pending.report && !S.report) return `<div class="kpis">${[0, 1, 2].map(() => '<div class="sk" style="height:120px"></div>').join('')}</div><div class="sk" style="height:300px"></div>`;
+  if (!S.report) return `<div class="empty">${ic('report')}<h3>Report unavailable</h3>${errorBox('report', 'load-report')}</div>`;
+  const r = S.report;
+  const kpi = (label, v, note) => `<div class="kpi"><div class="ring sm" style="--v:${v ?? 0};--c:${v == null ? 'var(--sunk)' : ringColor(v)}"><b>${v ?? '–'}</b></div><div><span class="eyebrow">${label}</span><small>${note}</small></div></div>`;
+  return `
+  ${errorBox('report', 'load-report')}
+  <div class="kpis">
+    ${kpi('Trust score', r.trust, 'From repository evidence')}
+    ${kpi('Interview', r.interview, r.interview == null ? 'Not taken yet' : 'Average across answers')}
+    ${kpi('Readiness', r.readiness, r.readiness == null ? 'Needs the interview' : '60% interview + 40% trust')}
+  </div>
+  <div class="verdict ${verdictTone(r.verdict)}">${ic(r.verdict === 'verified' ? 'seal' : 'alert')}<div><b>${r.verdict === 'verified' ? 'Verified project' : r.verdict === 'partial' ? 'Partly verified' : 'Not verified'}</b><p>${r.verdict === 'verified' ? 'The repository history supports the project description.' : 'Some evidence is missing. Fix the flagged checks and run verification again.'}</p></div></div>
+  <div class="grid2">
+    <section class="panel"><div class="panel-h"><h2>Checks</h2><span class="mono faint">${esc(r.report_id)}</span></div>
+      <div class="checks">${r.checks.map(c => `<div class="check"><span class="ic ${tone(c.status)}">${ic(toneIcon(c.status))}</span><div><div class="t">${esc(c.label)}</div><div class="d">${esc(c.detail)}</div></div><span class="w">${c.weight}</span></div>`).join('')}</div>
+      <p class="help">Generated ${new Date(r.generated_at).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}</p></section>
+    <aside class="panel">
+      <h3>Interview breakdown</h3>
+      ${r.dims ? `<div class="dims">${Object.entries(r.dims).map(([k, v]) => `<div class="dim"><span>${dimLabel[k]}</span><span class="bar"><i style="width:${v / 5 * 100}%"></i></span><b class="num">${Number(v).toFixed(1)}</b></div>`).join('')}</div>` : `<p class="help">Take the AI interview to add your communication scores to this report.</p>${btn('Go to AI Interview', { kind: 'secondary', act: 'go', data: 'data-to="interview"', icon: 'mic' })}`}
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:6px">${btn('View Verified Skills', { act: 'view-skills', icon: 'seal' })}${btn('Refresh report', { kind: 'ghost', act: 'load-report', icon: 'refresh', size: 'btn-sm', busy: S.pending.report })}</div>
+    </aside>
+  </div>`;
+}
+
+const stamp = () => `<svg class="stamp" viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="24" r="21" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 3"/><circle cx="24" cy="24" r="15" stroke="currentColor" stroke-width="2"/><path d="M17.5 24.5l4.5 4.5 8.5-9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+function skillsView() {
+  if (S.pending.skills && !S.skills) return `<div class="skills">${[0, 1, 2, 3].map(() => '<div class="sk" style="height:180px"></div>').join('')}</div>`;
+  if (!S.skills) return `<div class="empty">${ic('seal')}<h3>Skills unavailable</h3>${errorBox('skills', 'load-skills')}</div>`;
+  const v = S.skills.filter(s => s.verified), u = S.skills.filter(s => !s.verified);
+  const card = s => `<article class="skill ${s.verified ? 'verified' : 'unverified'}">${stamp()}
+    <span class="eyebrow">${esc(s.category)}</span><h3>${esc(s.name)}</h3>
+    <div class="lv" aria-label="Level ${s.level} of 5">${[1, 2, 3, 4, 5].map(i => `<i class="${i <= s.level ? 'on' : ''}"></i>`).join('')}</div>
+    ${s.evidence?.length ? `<ul class="ev">${s.evidence.map(e => `<li>${esc(e)}</li>`).join('')}</ul>` : ''}
+    ${s.verified ? `<span class="tag seal">${ic('check')}Verified</span>` : `<p class="help">${esc(s.reason)}</p>`}</article>`;
+  return `
+  ${errorBox('skills', 'load-skills')}
+  <div class="panel-h"><div><h2>${v.length} verified skill${v.length === 1 ? '' : 's'}</h2><p class="help">Each skill links to the evidence behind it.</p></div>${btn('Find Collaborators', { act: 'find-collaborators', icon: 'users', size: 'btn-lg', disabled: !v.length })}</div>
+  ${v.length ? `<div class="skills">${v.map(card).join('')}</div>` : `<div class="empty">${ic('seal')}<h3>No verified skills yet</h3><p class="muted">Raise your trust score or complete the interview to verify skills.</p></div>`}
+  ${u.length ? `<h3 style="margin-top:8px">Not verified yet</h3><div class="skills">${u.map(card).join('')}</div>` : ''}`;
+}
+
+pages.match = () => {
+  const m = S.matching;
+  const busyM = S.pending.matching;
+  const list = S.collaborators;
+  const all = list ? [...new Set(list.flatMap(c => c.skills))].sort() : [];
+  const shown = list ? list.filter(c => S.filter === 'All' || c.skills.includes(S.filter)) : [];
+  const joined = !!m?.joined;
+  return `
+  <div class="head"><div><span class="eyebrow">Step 5 · Find collaborators</span><h1 style="font-size:clamp(26px,3.4vw,36px)">Students who complement your skills</h1>
+    <p class="muted">Ranked by what they bring that you are looking for (${(MOCK.user?.seeking || []).map(esc).join(', ')}) and what they need that you have verified.</p></div></div>
+  <section class="mstatus ${joined ? 'on' : ''}">
+    <span class="beacon"></span>
+    <div class="grow"><b>${!m ? 'Checking your matching status…' : joined ? 'You are in matching' : 'You are not in matching'}</b>
+      <span class="help">${!m ? '' : joined ? `Your verified skills are visible to ${m.visible_to} student${m.visible_to === 1 ? '' : 's'}. You can request introductions.` : 'Join to show your verified skills to other students and request introductions.'}</span></div>
+    ${m ? btn(busyM ? (joined ? 'Leaving…' : 'Joining…') : joined ? 'Leave Matching' : 'Join Matching', { kind: joined ? 'danger' : 'primary', act: 'toggle-matching', icon: joined ? 'logout' : 'login', busy: busyM }) : '<span class="spin"></span>'}
+  </section>
+  ${errorBox('matching', 'load-matching')}
+  ${errorBox('collaborators', 'load-matching')}
+  ${list ? `<div class="row">${['All', ...all].map(f => `<button type="button" class="chip ${S.filter === f ? 'on' : ''}" data-act="filter" data-f="${esc(f)}">${esc(f)}</button>`).join('')}</div>` : ''}
+  ${S.pending.collaborators && !list ? `<div class="people">${[0, 1, 2, 3].map(() => '<div class="sk" style="height:230px"></div>').join('')}</div>` : ''}
+  ${list && !shown.length ? `<div class="empty">${ic('users')}<h3>No one matches this filter</h3>${btn('Show everyone', { kind: 'secondary', act: 'filter', data: 'data-f="All"' })}</div>` : ''}
+  ${shown.length ? `<div class="people">${shown.map(c => {
+    const st = S.intros[c.handle];
+    const initials = c.name.split(/\s+/).map(w => w[0]).slice(0, 2).join('');
+    return `<article class="person">
+      <div class="person-h"><span class="avatar" style="background:hsl(${c.hue ?? hash(c.handle) % 360} 55% 45%)">${esc(initials)}</span>
+        <div><div class="n">${esc(c.name)}</div><div class="help">${esc(c.club)}</div></div>
+        <div class="match" style="color:${ringColor(c.match)}">${c.match}%<small>MATCH</small></div></div>
+      <div class="kv"><span>Brings</span><div class="minis">${c.skills.map(s => `<span class="tag ${c.brings.includes(s) ? 'hl' : ''}">${esc(s)}</span>`).join('')}</div></div>
+      <div class="kv"><span>Looking for</span><div class="minis">${c.seeking.map(s => `<span class="tag ${c.needs.includes(s) ? 'seal' : ''}">${c.needs.includes(s) ? ic('check') : ''}${esc(s)}</span>`).join('')}</div></div>
+      <div class="kv"><span>Working on</span><div>${esc(c.project)} <span class="faint">· ${esc(c.availability)}</span></div></div>
+      <div>${st === 'requested' ? `<button class="btn btn-secondary" disabled>${ic('check')}<span>Introduction requested</span></button>` :
+        btn(st === 'pending' ? 'Sending…' : 'Request intro', { kind: 'secondary', act: 'intro', data: `data-h="${esc(c.handle)}"`, icon: 'send', busy: st === 'pending', disabled: !joined })}
+        ${!joined ? '<span class="help" style="margin-left:8px">Join matching first</span>' : ''}</div>
+    </article>`;
+  }).join('')}</div>` : ''}`;
+};
+
+function render() {
+  renderTop();
+  const v = $('#view');
+  const focusId = document.activeElement?.id;
+  const sel = focusId && document.activeElement.selectionStart != null ? [document.activeElement.selectionStart, document.activeElement.selectionEnd] : null;
+  v.innerHTML = (pages[S.route] || pages.home)();
+  if (focusId) { const el = document.getElementById(focusId); if (el && !el.disabled) { el.focus(); if (sel && el.setSelectionRange) try { el.setSelectionRange(...sel); } catch (e) {} } }
+  if (S.dev) renderDevState();
+}
+function renderToasts() {
+  $('#toasts').innerHTML = S.toasts.map(t => `<div class="toast ${t.kind}" role="${t.kind === 'error' ? 'alert' : 'status'}">${ic(t.kind === 'success' ? 'check' : t.kind === 'error' ? 'alert' : 'info')}<span>${esc(t.text)}</span></div>`).join('');
+}
+
+async function submitProject() {
+  const url = S.urlDraft.trim();
+  if (!url) { setState({ urlError: 'Paste the URL of your GitHub repository.' }); $('#repoUrl')?.focus(); return; }
+  if (!parseRepoUrl(url)) { setState({ urlError: 'That doesn’t look like a repository URL. Use https://github.com/owner/repository.' }); $('#repoUrl')?.focus(); return; }
+  S.urlError = '';
+  await run('submit', async () => {
+    const p = await api.submitProject({ url });
+    Object.assign(S, { project: p, task: null, checks: [], session: null, question: null, answers: [], interviewDone: false, answerDraft: '', report: null, skills: null, collaborators: null, intros: {} });
+    toast('success', `Project ${p.owner}/${p.name} submitted.`);
+    S.route = 'status'; try { history.replaceState(null, '', '#status'); } catch (e) {}
+  });
+}
+async function startVerification() {
+  if (S.pending.verify || S.task?.status === 'running') return;
+  Object.assign(S, { task: null, checks: [], report: null, skills: null, collaborators: null });
+  await run('verify', async () => {
+    let t = await api.startVerification(S.project.id);
+    S.task = t; S.project.status = 'verifying'; render();
+    let misses = 0;
+    while (t.status !== 'done') {
+      await sleep(450);
+      try { t = await api.getTask(t.id); misses = 0; }
+      catch (e) { if (e.code === 'task_failed' || ++misses >= 3) { S.task = null; throw e; } continue; }
+      S.task = t; S.checks = t.checks || []; render();
+    }
+    S.task = t; S.checks = t.checks; S.project.status = t.result.verdict; S.project.trust = t.result.score;
+    toast('success', `Verification finished: trust score ${t.result.score}.`);
+  });
+}
+async function startInterview() {
+  await run('interview', async () => {
+    const s = await api.startInterview(S.project.id);
+    Object.assign(S, { session: s, question: s.question, answers: [], interviewDone: false, answerDraft: '' });
+  });
+}
+async function submitAnswer() {
+  const text = S.answerDraft.trim();
+  const min = MOCK.rules?.min_answer_chars ?? 20;
+  if (text.length < min) { S.errors = { ...S.errors, answer: `Write at least ${min} characters so the interviewer has something to assess.` }; render(); return; }
+  await run('answer', async () => {
+    const q = S.question;
+    const r = await api.submitAnswer(S.session.id, text);
+    S.answers = [...S.answers, { question: q, answer: text, feedback: r.feedback }];
+    S.answerDraft = '';
+    if (r.done) {
+      S.interviewDone = true;
+      S.project.interviewScore = Math.round(S.answers.reduce((a, x) => a + x.feedback.score, 0) / S.answers.length);
+      S.report = null; S.skills = null; S.collaborators = null;
+      toast('success', 'Interview complete. Your report is ready.');
+    } else {
+      S.question = r.next.question;
+      toast('success', `Answer scored ${r.feedback.score} / 100.`);
+    }
+  });
+}
+async function loadReport() { await run('report', async () => { S.report = await api.getReport(S.project.id, S.interviewDone ? S.session?.id : null); }); }
+async function loadSkills() { await run('skills', async () => { S.skills = await api.getSkills(S.project.id); }); }
+async function loadMatching() {
+  const tasks = [];
+  if (!S.matching || S.errors.matching) tasks.push(run('matching', async () => { S.matching = await api.getMatching(); }));
+  if (!S.collaborators || S.errors.collaborators) tasks.push(run('collaborators', async () => {
+    if (!S.skills) S.skills = await api.getSkills(S.project.id);
+    S.collaborators = await api.getCollaborators(S.skills.filter(s => s.verified).map(s => s.name));
+  }));
+  await Promise.all(tasks);
+}
+async function toggleMatching() {
+  const next = !S.matching?.joined;
+  await run('matching', async () => {
+    S.matching = await api.setMatching(next);
+    if (!next) S.intros = {};
+    toast('success', next ? 'You joined matching.' : 'You left matching. Your skills are hidden.');
+  });
+}
+async function requestIntro(handle) {
+  S.intros = { ...S.intros, [handle]: 'pending' }; render();
+  try { await api.requestIntro(handle); S.intros = { ...S.intros, [handle]: 'requested' }; toast('success', 'Introduction requested.'); }
+  catch (e) { const { [handle]: _, ...rest } = S.intros; S.intros = rest; toast('error', e.message); }
+  render();
+}
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]');
+  if (!el || el.disabled) return;
+  const a = el.dataset.act;
+  if (a === 'submit-project') { e.preventDefault(); submitProject(); }
+  else if (a === 'go') go(el.dataset.to);
+  else if (a === 'sample') { S.urlDraft = el.dataset.url; S.urlError = ''; render(); $('#repoUrl')?.focus(); }
+  else if (a === 'reset-project') { Object.assign(S, { project: null, task: null, checks: [], session: null, answers: [], interviewDone: false, report: null, skills: null, collaborators: null, urlDraft: '', errors: {} }); go('home'); }
+  else if (a === 'start-verification') startVerification();
+  else if (a === 'start-interview') startInterview();
+  else if (a === 'restart-interview') { S.session = null; S.interviewDone = false; S.answers = []; startInterview(); }
+  else if (a === 'submit-answer') submitAnswer();
+  else if (a === 'view-report') { S.tab = 'report'; if (S.route !== 'proof') go('proof'); else { render(); if (!S.report) loadReport(); } }
+  else if (a === 'view-skills') { S.tab = 'skills'; if (S.route !== 'proof') go('proof'); else { render(); if (!S.skills) loadSkills(); } }
+  else if (a === 'load-report') { S.report = null; loadReport(); }
+  else if (a === 'load-skills') loadSkills();
+  else if (a === 'find-collaborators') go('match');
+  else if (a === 'toggle-matching') toggleMatching();
+  else if (a === 'load-matching') { S.errors = { ...S.errors, matching: null, collaborators: null }; S.matching = S.matching || null; loadMatching(); }
+  else if (a === 'filter') { S.filter = el.dataset.f; render(); }
+  else if (a === 'intro') requestIntro(el.dataset.h);
+  else if (a === 'dev-open') openDev();
+  else if (a === 'dev-close') closeDev();
+  else if (a === 'dev-tab') { S.devTab = el.dataset.tab; renderDev(); }
+  else if (a === 'dev-apply') applyMock();
+  else if (a === 'dev-reset') resetMock();
+  else if (a === 'dev-copy') copyMock();
+  else if (a === 'dev-mode') { SETTINGS.mode = el.dataset.mode; saveSettings(); renderDev(); render(); toast('info', SETTINGS.mode === 'live' ? `Live API mode: requests go to ${SETTINGS.baseUrl}.` : 'Mock mode: requests use the local mock data.'); }
+  else if (a === 'dev-session') { resetSession(); toast('success', 'Session cleared.'); }
+});
+document.addEventListener('submit', e => { if (e.target.id === 'submitForm') { e.preventDefault(); submitProject(); } });
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (t.id === 'repoUrl') { S.urlDraft = t.value; if (S.urlError) { S.urlError = ''; t.closest('.input')?.classList.remove('err'); const h = $('#repoHelp'); if (h) { h.className = 'help'; h.textContent = 'Public repositories only. We read metadata and commits; we never change anything.'; } } }
+  if (t.id === 'answer') {
+    S.answerDraft = t.value;
+    const min = MOCK.rules?.min_answer_chars ?? 20, len = t.value.trim().length;
+    const c = $('#charCount'); if (c) c.textContent = `${len} characters${len < min ? ` · ${min - len} more needed` : ''}`;
+    const b = $('#submitAnswer'); if (b && !S.pending.answer) b.disabled = len < min;
+  }
+  if (t.id === 'devLatency') { SETTINGS.latency = +t.value; $('#devLatencyOut').textContent = t.value + ' ms'; saveSettings(); }
+  if (t.id === 'devFail') { SETTINGS.failRate = +t.value; $('#devFailOut').textContent = t.value + '%'; saveSettings(); }
+  if (t.id === 'devBase') { SETTINGS.baseUrl = t.value.trim(); saveSettings(); }
+});
+document.addEventListener('keydown', e => {
+  if (e.target.id === 'answer' && e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); submitAnswer(); }
+  if (e.key === 'Escape' && S.dev) closeDev();
+});
+
+function saveSettings() { ls.set('pos.settings', SETTINGS); }
+function resetSession() {
+  DB.projects = {}; DB.tasks = {}; DB.sessions = {}; DB.matching = { joined: false, since: null };
+  Object.assign(S, { route: 'home', urlDraft: '', urlError: '', project: null, task: null, checks: [], session: null, question: null, answerDraft: '', answers: [], interviewDone: false, report: null, skills: null, tab: 'report', matching: null, collaborators: null, filter: 'All', intros: {}, pending: {}, errors: {} });
+  try { history.replaceState(null, '', '#home'); } catch (e) {}
+  render();
+}
+function openDev() { S.dev = true; renderDev(); }
+function closeDev() { S.dev = false; $('#devtools').innerHTML = ''; $('[data-act="dev-open"]')?.focus(); }
+function renderDev() {
+  const t = S.devTab;
+  $('#devtools').innerHTML = `<div class="scrim" data-act="dev-close"></div>
+  <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="devTitle">
+    <div class="drawer-h">${ic('db', 'style="width:22px;height:22px"')}<h2 id="devTitle">Mock Data</h2><button class="btn btn-ghost btn-sm" data-act="dev-close" aria-label="Close">${ic('x')}</button></div>
+    <div class="drawer-b">
+      <div class="tabs" role="tablist">${[['data', 'Mock JSON'], ['settings', 'API settings'], ['state', 'App state']].map(([k, l]) => `<button type="button" class="btn btn-ghost btn-sm ${t === k ? 'on' : ''}" role="tab" aria-selected="${t === k}" data-act="dev-tab" data-tab="${k}">${l}</button>`).join('')}</div>
+      ${t === 'data' ? `
+        <p class="help">Edit repositories, checks, interview questions, skill rules and collaborators. Apply to use the new data; it is saved in this browser. Repository keys are <span class="mono">owner/name</span>; any URL containing a word from <span class="mono">rules.private_keywords</span> returns a not-found error.</p>
+        <textarea id="devJson" class="code" spellcheck="false" aria-label="Mock JSON">${esc(JSON.stringify(MOCK, null, 2))}</textarea>
+        <div id="devJsonErr"></div>` : ''}
+      ${t === 'settings' ? `
+        <div class="field"><label>Data source</label><div class="seg">
+          <button type="button" class="chip ${SETTINGS.mode === 'mock' ? 'on' : ''}" data-act="dev-mode" data-mode="mock">Mock</button>
+          <button type="button" class="chip ${SETTINGS.mode === 'live' ? 'on' : ''}" data-act="dev-mode" data-mode="live">Live API</button></div>
+          <span class="help">Live API calls the PitchProof backend endpoints at the base URL below.</span></div>
+        <div class="field"><label for="devBase">API base URL</label><div class="input" style="height:44px">${ic('link')}<input id="devBase" value="${esc(SETTINGS.baseUrl)}" spellcheck="false"></div></div>
+        <div class="field"><label for="devLatency">Mock latency</label><div class="rng"><input id="devLatency" type="range" min="0" max="3000" step="50" value="${SETTINGS.latency}"><output id="devLatencyOut">${SETTINGS.latency} ms</output></div></div>
+        <div class="field"><label for="devFail">Mock failure rate</label><div class="rng"><input id="devFail" type="range" min="0" max="100" step="5" value="${SETTINGS.failRate}"><output id="devFailOut">${SETTINGS.failRate}%</output></div><span class="help">Each mock request fails with HTTP 503 at this rate, so you can check error states.</span></div>
+        <div>${btn('Clear session and start over', { kind: 'danger', act: 'dev-session', icon: 'refresh', size: 'btn-sm' })}</div>` : ''}
+      ${t === 'state' ? `<p class="help">Read-only view of the current client state.</p><pre class="code" id="devState"></pre>` : ''}
+    </div>
+    ${t === 'data' ? `<div class="drawer-f">${btn('Apply', { act: 'dev-apply', icon: 'check' })}${btn('Copy JSON', { kind: 'secondary', act: 'dev-copy', icon: 'copy' })}<span style="flex:1"></span>${btn('Reset to default', { kind: 'ghost', act: 'dev-reset', icon: 'refresh' })}</div>` : ''}
+  </aside>`;
+  if (t === 'state') renderDevState();
+  $('.drawer [data-act="dev-close"]')?.focus();
+}
+function renderDevState() {
+  const el = $('#devState'); if (!el) return;
+  const { toasts, dev, devTab, ...rest } = S;
+  el.textContent = JSON.stringify({ settings: SETTINGS, state: rest }, null, 2);
+}
+function applyMock() {
+  const ta = $('#devJson'), box = $('#devJsonErr');
+  let data;
+  try { data = JSON.parse(ta.value); }
+  catch (e) { box.innerHTML = `<div class="alert error">${ic('alert')}<div class="grow"><p>Invalid JSON: ${esc(e.message)}</p></div></div>`; return; }
+  const missing = ['repos', 'checks', 'interview', 'skills', 'collaborators', 'rules'].filter(k => !(k in data));
+  if (missing.length) { box.innerHTML = `<div class="alert error">${ic('alert')}<div class="grow"><p>Missing top-level keys: ${missing.map(esc).join(', ')}.</p></div></div>`; return; }
+  MOCK = data; ls.set('pos.mock', MOCK); box.innerHTML = '';
+  Object.assign(S, { report: null, skills: null, collaborators: null });
+  render(); toast('success', 'Mock data applied.');
+  if (S.route === 'proof' || S.route === 'match') onEnter(S.route);
+}
+function resetMock() { MOCK = clone(DEFAULT_MOCK); ls.del('pos.mock'); renderDev(); render(); toast('success', 'Mock data reset to default.'); }
+function copyMock() {
+  const ta = $('#devJson');
+  navigator.clipboard?.writeText(ta.value).then(() => toast('success', 'JSON copied.'), () => { ta.select(); toast('info', 'Press Ctrl + C to copy the selected JSON.'); }) ?? (ta.select(), toast('info', 'Press Ctrl + C to copy the selected JSON.'));
+}
+
+const start = (location.hash || '').slice(1);
+render();
+if (ROUTES.some(r => r.id === start) && start !== 'home') go(start);
+})();
+</script>
+
+</body>
+</html>

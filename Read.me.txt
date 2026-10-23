@@ -1,0 +1,13 @@
+# Proof of Skill
+
+A frontend prototype and Mock admin dashboard for tracking, verifying, and showcasing student technical projects, featuring AI-assisted code checks and interactive skill badges.
+
+## Features
+- **5 Core Pages**: Homepage (GitHub submission), Project Status, AI Interview, Verification & Skills, and Find Collaborators.
+- **7 Key Operations**: Submit Project, Start Verification, Submit Answer, View Verification Report, View Verified Skills, Find Collaborators, and Leave/Join Matching.
+- **Robust State Management**: Built-in Loading, Success, and Error states for seamless user experience.
+- **Local Mock Dashboard**: Easily toggle mock data, simulate network delays, or test error rates on the fly.
+
+## Quick Start
+1. Clone the repository or download the code.
+2. Open `index.html` directly in your browser to explore the interactive prototype and mock admin dashboard.
