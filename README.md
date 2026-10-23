@@ -13,7 +13,7 @@ mosa: Find Your Talent. Piece by Piece.
 
 * **Target User**: **Alex** (Tech Lead & Open-Source Community Manager).
 * **The Problem**: In the era of LLM coding assistants, resumes and GitHub portfolios are saturated with AI-generated code. Traditional static analysis or basic RAG cannot tell if a developer **truly understands** the codebase they submitted.
-* **The MOSA Solution**: 
+* **The Mosa solution**: 
   1. **Sandbox Autonomy**: Executes unit tests and runtime checks inside an isolated Linux sandbox to obtain concrete pass/fail signals.
   2. **Anti-Copilot Q&A Engine**: Feeds 1M tokens of codebase + test logs into **Gemini 4 Argon** to identify non-trivial architecture choices and generate targeted deep Q&A.
   3. **Multimodal Oral Defense**: Conducts real-time voice verification via **Gemini 3.8 Live**.
@@ -23,7 +23,7 @@ mosa: Find Your Talent. Piece by Piece.
 
 ## 🛠️ DeepMind Toolkit & MongoDB Integration
 
-| Technology / Model | Role in MOSA System |
+| Technology / Model | Role in Mosa System |
 | :--- | :--- |
 | **`gemini-4-argon`** | **Lead Orchestrator**: Leverages 1M token context to process full repo histories, dependency graphs, and test logs to formulate anti-copilot technical questions. |
 | **`antigravity-preview-09-2026`** | **Linux Sandbox Agent**: Executes test suites and compiler checks to pass deterministic verification signals back to Argon. |
