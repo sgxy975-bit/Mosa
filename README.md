@@ -2,7 +2,7 @@
 mosa: Find Your Talent. Piece by Piece.
 # 🎖️ Mosa — Proof of Skill Agent Platform
 
-> **MOSA (Multi-modal Omnichannel Skills Agent)** is an autonomous developer verification platform. It validates true code ownership and technical proficiency for GitHub submissions using **Gemini 4 Argon**, isolated **Antigravity Linux sandboxes**, **MongoDB Atlas Vector Search**, and **WebGPU 3D skill badges**.
+> **Mosa (Multi-modal Omnichannel Skills Agent)** is an autonomous developer verification platform. It validates true code ownership and technical proficiency for GitHub submissions using **Gemini 4 Argon**, isolated **Antigravity Linux sandboxes**, **MongoDB Atlas Vector Search**, and **WebGPU 3D skill badges**.
 
 [![Build with Gemini 4 Argon](https://img.shields.io/badge/Google%20DeepMind-Gemini%204%20Argon-4285F4?style=for-the-badge&logo=google)](https://deepmind.google/)
 [![Powered by MongoDB Atlas](https://img.shields.io/badge/MongoDB-Atlas%20Vector%20Search-47A248?style=for-the-badge&logo=mongodb)](https://www.mongodb.com/atlas)
