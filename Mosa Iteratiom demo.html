@@ -1,0 +1,1430 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Mosa</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --p-white:#ffffff;
+  --p-slate-50:#f5f7f8;--p-slate-100:#eef1f3;--p-slate-200:#e4e8ec;--p-slate-300:#d7dde3;--p-slate-500:#808b98;--p-slate-700:#46515e;--p-slate-950:#121820;
+  --p-night-950:#0f1318;--p-night-900:#171c23;--p-night-850:#1c222a;--p-night-800:#232a33;--p-night-700:#2a323c;--p-night-500:#6e7987;--p-night-300:#a8b2be;--p-night-50:#e7ebef;
+  --p-cobalt-100:#e2e8fc;--p-cobalt-200:#97aaff;--p-cobalt-300:#7d95ff;--p-cobalt-600:#2445c9;--p-cobalt-700:#1b37a6;--p-cobalt-900:#1f2850;--p-cobalt-950:#0b1030;
+  --p-brass-100:#f6e9d1;--p-brass-300:#e2a64a;--p-brass-600:#a86a12;--p-brass-900:#3b2c14;
+  --p-green-100:#dcf0e6;--p-green-400:#47c391;--p-green-700:#147a52;--p-green-900:#15342a;
+  --p-amber-100:#f8ead2;--p-amber-400:#e9ad48;--p-amber-700:#a6680b;--p-amber-900:#3a2c13;
+  --p-red-100:#f8dedb;--p-red-400:#f07a6e;--p-red-600:#bf3328;--p-red-900:#41201d;
+  --p-mosa-navy:#1c2b57;--p-mosa-olive:#7d8a50;--p-mosa-steel:#86a0b8;
+  --p-shadow-light:0 1px 2px rgb(18 24 32 / .06),0 8px 24px -12px rgb(18 24 32 / .18);
+  --p-shadow-dark:0 1px 2px rgb(0 0 0 / .4),0 10px 28px -14px rgb(0 0 0 / .6);
+
+  --bg:var(--p-slate-100);--surface:var(--p-white);--surface-2:var(--p-slate-50);--sunk:var(--p-slate-200);
+  --ink:var(--p-slate-950);--ink-2:var(--p-slate-700);--ink-3:var(--p-slate-500);--line:var(--p-slate-300);
+  --accent:var(--p-cobalt-600);--accent-hover:var(--p-cobalt-700);--accent-ink:var(--p-white);--accent-soft:var(--p-cobalt-100);
+  --seal:var(--p-brass-600);--seal-soft:var(--p-brass-100);
+  --ok:var(--p-green-700);--ok-soft:var(--p-green-100);--warn:var(--p-amber-700);--warn-soft:var(--p-amber-100);--bad:var(--p-red-600);--bad-soft:var(--p-red-100);
+  --shadow:var(--p-shadow-light);
+  --brand-fg:var(--p-mosa-navy);
+  --f-display:"Schibsted Grotesk","Helvetica Neue",Arial,sans-serif;
+  --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r:12px;--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:24px;--space-6:32px;--tap:44px;
+
+  --btn-primary-bg:var(--accent);--btn-primary-bg-hover:var(--accent-hover);--btn-primary-fg:var(--accent-ink);
+  --card-bg:var(--surface);--card-border:var(--line);
+  --qcard-bg:var(--ink);--qcard-fg:var(--bg);--qcard-progress:var(--seal);
+  --option-bg:var(--surface);--option-border:var(--line);--option-hover-border:var(--ink-3);--option-selected-bg:var(--accent-soft);--option-selected-border:var(--accent);
+  --guide-bg:var(--seal-soft);--guide-icon:var(--seal);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:var(--p-night-950);--surface:var(--p-night-900);--surface-2:var(--p-night-850);--sunk:var(--p-night-800);
+  --ink:var(--p-night-50);--ink-2:var(--p-night-300);--ink-3:var(--p-night-500);--line:var(--p-night-700);
+  --accent:var(--p-cobalt-300);--accent-hover:var(--p-cobalt-200);--accent-ink:var(--p-cobalt-950);--accent-soft:var(--p-cobalt-900);
+  --seal:var(--p-brass-300);--seal-soft:var(--p-brass-900);
+  --ok:var(--p-green-400);--ok-soft:var(--p-green-900);--warn:var(--p-amber-400);--warn-soft:var(--p-amber-900);--bad:var(--p-red-400);--bad-soft:var(--p-red-900);
+  --shadow:var(--p-shadow-dark);--brand-fg:var(--p-night-50);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:var(--p-night-950);--surface:var(--p-night-900);--surface-2:var(--p-night-850);--sunk:var(--p-night-800);
+  --ink:var(--p-night-50);--ink-2:var(--p-night-300);--ink-3:var(--p-night-500);--line:var(--p-night-700);
+  --accent:var(--p-cobalt-300);--accent-hover:var(--p-cobalt-200);--accent-ink:var(--p-cobalt-950);--accent-soft:var(--p-cobalt-900);
+  --seal:var(--p-brass-300);--seal-soft:var(--p-brass-900);
+  --ok:var(--p-green-400);--ok-soft:var(--p-green-900);--warn:var(--p-amber-400);--warn-soft:var(--p-amber-900);--bad:var(--p-red-400);--bad-soft:var(--p-red-900);
+  --shadow:var(--p-shadow-dark);--brand-fg:var(--p-night-50);color-scheme:dark}
+
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--f-body);-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--surface)}
+button,input,textarea,select{font:inherit;color:inherit}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+.mono{font-family:var(--f-mono);font-size:.86em}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--ink-2)}
+.faint{color:var(--ink-3)}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+h1{font-size:clamp(30px,4.2vw,46px);line-height:1.05;font-weight:800}
+h2{font-size:22px;font-weight:700}
+h3{font-size:16px;font-weight:700}
+p{margin:0}
+.eyebrow{font:500 12px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.top-in{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:20px;height:64px}
+.brand{display:flex;align-items:center;gap:10px;min-height:var(--tap);text-decoration:none;color:var(--ink);white-space:nowrap;background:none;border:0;cursor:pointer;padding:0 4px 0 0;border-radius:10px}
+.brand-mark{width:40px;height:40px;flex:none;display:block;object-fit:contain;background:transparent}
+.brand-word{font:800 22px/1 var(--f-display);letter-spacing:-.025em;color:var(--brand-fg)}
+.steps{display:flex;gap:2px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+.steps::-webkit-scrollbar{display:none}
+.step{display:flex;align-items:center;gap:8px;border:0;background:none;padding:8px 12px;border-radius:9px;cursor:pointer;white-space:nowrap;color:var(--ink-2);font-size:14px}
+.step b{font:500 11px/1 var(--f-mono);width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1.5px solid var(--line);color:var(--ink-3)}
+.step:hover{background:var(--surface-2)}
+.step.on{color:var(--ink);font-weight:600}
+.step.on b{border-color:var(--accent);background:var(--accent);color:var(--accent-ink)}
+.step.done b{border-color:var(--ok);color:var(--ok)}
+.step.locked{color:var(--ink-3)}
+.step svg{width:13px;height:13px}
+.top-tools{display:flex;gap:8px;align-items:center}
+.mode{font:500 11px/1 var(--f-mono);padding:6px 8px;border-radius:6px;background:var(--sunk);color:var(--ink-2);letter-spacing:.04em}
+.mode.live{background:var(--ok-soft);color:var(--ok)}
+
+.page{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:36px 72px}
+.page-in{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+.head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px}
+.head > div:not(.tabs){display:flex;flex-direction:column;gap:8px;min-width:0}
+.grid2{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:900px){.grid2{grid-template-columns:minmax(0,1fr)}.step span{display:none}}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px;display:flex;flex-direction:column;gap:18px;min-width:0}
+.panel.raised{box-shadow:var(--shadow);border-color:transparent}
+.panel-h{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 18px;border-radius:10px;border:1px solid transparent;cursor:pointer;font-weight:600;font-size:14.5px;white-space:nowrap;transition:background .15s,border-color .15s,opacity .15s;text-decoration:none}
+.btn svg{width:18px;height:18px}
+.btn-primary{background:var(--btn-primary-bg);color:var(--btn-primary-fg)}
+.btn-primary:hover:not(:disabled){background:var(--btn-primary-bg-hover)}
+.btn-secondary{background:var(--surface);border-color:var(--line);color:var(--ink)}
+.btn-secondary:hover:not(:disabled){border-color:var(--ink-3)}
+.btn-ghost{background:transparent;color:var(--ink-2)}
+.btn-ghost:hover:not(:disabled){background:var(--surface-2);color:var(--ink)}
+.btn-danger{background:var(--surface);border-color:var(--bad);color:var(--bad)}
+.btn-sm{height:34px;padding:0 12px;font-size:13px;border-radius:8px}
+.btn-lg{height:52px;padding:0 24px;font-size:16px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn[aria-busy="true"]{opacity:.85;cursor:progress}
+.spin{width:16px;height:16px;border-radius:50%;border:2px solid currentColor;border-right-color:transparent;animation:spin .7s linear infinite;flex:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-weight:600;font-size:13.5px}
+.input{display:flex;align-items:center;gap:10px;height:52px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);padding:0 14px;transition:border-color .15s}
+.input:focus-within{border-color:var(--accent)}
+.input.err{border-color:var(--bad)}
+.input svg{width:20px;height:20px;color:var(--ink-3);flex:none}
+.input input{border:0;outline:0;background:transparent;flex:1;min-width:0;height:100%;font-size:15.5px}
+textarea.ta{width:100%;min-height:170px;resize:vertical;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);padding:14px;outline:0;line-height:1.6}
+textarea.ta:focus{border-color:var(--accent)}
+.help{font-size:13px;color:var(--ink-3)}
+.errtext{font-size:13px;color:var(--bad)}
+
+.alert{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:10px;font-size:14px}
+.alert svg{width:20px;height:20px;flex:none;margin-top:1px}
+.alert.error{background:var(--bad-soft);color:var(--bad)}
+.alert.info{background:var(--accent-soft);color:var(--ink)}
+.alert .grow{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.alert .grow p{color:var(--ink)}
+
+.chip{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:13px;cursor:pointer;white-space:nowrap}
+.chip:hover{border-color:var(--ink-3)}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tag{display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 10px;border-radius:7px;background:var(--surface-2);border:1px solid var(--line);font-size:12.5px;white-space:nowrap}
+.tag.hl{background:var(--accent-soft);border-color:transparent;color:var(--accent);font-weight:600}
+.tag.seal{background:var(--seal-soft);border-color:transparent;color:var(--seal);font-weight:600}
+.tag svg{width:13px;height:13px}
+.pill{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 11px;border-radius:999px;font-size:12.5px;font-weight:600;white-space:nowrap}
+.pill i{width:7px;height:7px;border-radius:50%;background:currentColor}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.bad{background:var(--bad-soft);color:var(--bad)}
+.pill.idle{background:var(--sunk);color:var(--ink-2)}
+.pill.run{background:var(--accent-soft);color:var(--accent)}
+
+.stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.stat{padding:14px 16px;display:flex;flex-direction:column;gap:2px;border-right:1px solid var(--line);min-width:0}
+.stat:last-child{border-right:0}
+.stat b{font:700 22px/1.2 var(--f-display);font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--ink-3)}
+@media (max-width:760px){.stats{grid-template-columns:repeat(3,minmax(0,1fr))}.stat:nth-child(3){border-right:0}.stat:nth-child(-n+3){border-bottom:1px solid var(--line)}}
+.langbar{display:flex;height:10px;border-radius:5px;overflow:hidden;background:var(--sunk)}
+.langbar i{display:block;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:9px;height:9px;border-radius:3px}
+
+.progress{height:8px;border-radius:4px;background:var(--sunk);overflow:hidden}
+.progress i{display:block;height:100%;background:var(--accent);transition:width .35s ease}
+.checks{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.check{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--surface)}
+.check:last-child{border-bottom:0}
+.check .ic{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center}
+.check .ic svg{width:15px;height:15px}
+.check .ic.ok{background:var(--ok-soft);color:var(--ok)}
+.check .ic.warn{background:var(--warn-soft);color:var(--warn)}
+.check .ic.bad{background:var(--bad-soft);color:var(--bad)}
+.check .ic.idle{background:var(--sunk);color:var(--ink-3)}
+.check .t{font-weight:600;font-size:14px}
+.check .d{font-size:13px;color:var(--ink-2)}
+.check .w{font:500 12px var(--f-mono);color:var(--ink-3)}
+.check.pending{opacity:.55}
+
+.score{display:flex;align-items:center;gap:20px}
+.ring{--v:0;--c:var(--accent);width:120px;height:120px;border-radius:50%;flex:none;background:conic-gradient(var(--c) calc(var(--v)*1%),var(--sunk) 0);display:grid;place-items:center}
+.ring::before{content:"";grid-area:1/1;width:94px;height:94px;border-radius:50%;background:var(--surface)}
+.ring b{grid-area:1/1;z-index:1;font:800 32px/1 var(--f-display);font-variant-numeric:tabular-nums}
+.ring.sm{width:84px;height:84px}
+.ring.sm::before{width:64px;height:64px}
+.ring.sm b{font-size:22px}
+
+.qcard{border-radius:var(--r);background:var(--qcard-bg);color:var(--qcard-fg);padding:26px 28px;display:flex;flex-direction:column;gap:14px}
+.qhead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.qhead-l{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.qnum{font:700 22px/1 var(--f-mono);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.qnum span{color:color-mix(in srgb,var(--qcard-fg) 50%,transparent);font-weight:500}
+.qtype{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;border-radius:6px;font:600 11px/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;background:color-mix(in srgb,var(--qcard-fg) 12%,transparent);color:var(--qcard-fg)}
+.qtype svg{width:13px;height:13px}
+.qtext{font:700 22px/1.4 var(--f-display);text-wrap:pretty;margin:0}
+.qcard .eyebrow{color:color-mix(in srgb,var(--qcard-fg) 60%,transparent)}
+.dots{display:flex;gap:6px}
+.dots i{flex:1;height:5px;border-radius:3px;background:color-mix(in srgb,var(--qcard-fg) 22%,transparent)}
+.dots i.on{background:var(--qcard-progress)}
+.dims{display:flex;flex-direction:column;gap:12px}
+.dim{display:grid;grid-template-columns:96px minmax(0,1fr) 30px;gap:10px;align-items:center;font-size:13.5px}
+.dim .bar{height:8px;border-radius:4px;background:var(--sunk);overflow:hidden}
+.dim .bar i{display:block;height:100%;background:var(--accent)}
+.dim b{font:500 13px var(--f-mono);text-align:right}
+.answer{border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--surface)}
+.answer .q{font-weight:600;font-size:14px}
+.answer .a{font-size:14px;color:var(--ink-2);white-space:pre-wrap;overflow-wrap:anywhere}
+.tip{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;padding:10px 12px;border-radius:8px;background:var(--guide-bg);color:var(--ink)}
+.options{display:flex;flex-direction:column;gap:10px;border:0;margin:0;padding:0;min-width:0}
+.options legend{font-weight:600;font-size:13.5px;padding:0;margin-bottom:6px}
+.opt{display:grid;grid-template-columns:32px minmax(0,1fr) 22px;align-items:center;gap:12px;min-height:var(--tap);padding:12px 14px;border:1.5px solid var(--option-border);border-radius:10px;background:var(--option-bg);cursor:pointer;transition:border-color .15s,background .15s}
+.opt:hover{border-color:var(--option-hover-border)}
+.opt input{position:absolute;opacity:0;width:1px;height:1px}
+.opt .key{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font:600 13px var(--f-mono);background:var(--sunk);color:var(--ink-2)}
+.opt .txt{font-size:15px;line-height:1.45}
+.opt .radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);justify-self:end;position:relative}
+.opt:has(input:checked){border-color:var(--option-selected-border);background:var(--option-selected-bg)}
+.opt:has(input:checked) .key{background:var(--accent);color:var(--accent-ink)}
+.opt:has(input:checked) .radio{border-color:var(--accent)}
+.opt:has(input:checked) .radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--accent)}
+.opt:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.opt:has(input:disabled){cursor:progress;opacity:.7}
+.guide{display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:10px;background:var(--guide-bg)}
+.guide-h{display:flex;align-items:center;gap:8px;font:700 14px var(--f-display)}
+.guide-h svg{width:18px;height:18px;color:var(--guide-icon)}
+.guide ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:13.5px;color:var(--ink)}
+.choice-res{display:flex;flex-direction:column;gap:6px}
+.choice-res .line{display:flex;gap:8px;align-items:flex-start;font-size:14px}
+.choice-res .line svg{width:16px;height:16px;flex:none;margin-top:3px}
+.tip svg{width:16px;height:16px;color:var(--guide-icon);flex:none;margin-top:2px}
+.minis{display:flex;flex-wrap:wrap;gap:6px}
+
+.tabs{display:inline-flex;padding:4px;border-radius:11px;background:var(--sunk);gap:4px}
+.tabs .btn{height:38px}
+.tabs .btn.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgb(0 0 0 / .1)}
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:760px){.kpis{grid-template-columns:minmax(0,1fr)}}
+.kpi{display:flex;align-items:center;gap:16px;padding:18px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.kpi > div:not(.ring){display:flex;flex-direction:column;gap:4px;min-width:0}
+.kpi small{font-size:12.5px;color:var(--ink-3)}
+.verdict{display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:var(--r)}
+.verdict svg{width:28px;height:28px;flex:none}
+.verdict.ok{background:var(--ok-soft);color:var(--ok)}
+.verdict.warn{background:var(--warn-soft);color:var(--warn)}
+.verdict.bad{background:var(--bad-soft);color:var(--bad)}
+.verdict p{color:var(--ink);font-size:14px}
+
+.skills{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.skill{position:relative;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:20px;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+.skill.verified{border-color:color-mix(in srgb,var(--seal) 45%,var(--line))}
+.skill .stamp{position:absolute;top:14px;right:14px;width:46px;height:46px;color:var(--seal)}
+.skill.unverified .stamp{color:var(--ink-3);opacity:.5}
+.skill h3{padding-right:52px}
+.lv{display:flex;gap:4px}
+.lv i{width:22px;height:6px;border-radius:3px;background:var(--sunk)}
+.lv i.on{background:var(--seal)}
+.skill.unverified .lv i.on{background:var(--ink-3)}
+.ev{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--ink-2);margin:0;padding:0;list-style:none}
+.ev li{display:flex;gap:8px}
+.ev li::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--ink-3);margin-top:8px;flex:none}
+
+.mstatus{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:20px 22px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface)}
+.mstatus.on{border-color:color-mix(in srgb,var(--ok) 50%,var(--line));background:color-mix(in srgb,var(--ok-soft) 50%,var(--surface))}
+.mstatus .grow{flex:1;min-width:220px;display:flex;flex-direction:column;gap:4px}
+.beacon{width:14px;height:14px;border-radius:50%;background:var(--ink-3);flex:none;position:relative}
+.mstatus.on .beacon{background:var(--ok)}
+.mstatus.on .beacon::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--ok);animation:ping 1.6s ease-out infinite}
+@keyframes ping{from{opacity:.8;transform:scale(.6)}to{opacity:0;transform:scale(1.4)}}
+.people{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+@media (max-width:420px){.people{grid-template-columns:minmax(0,1fr)}}
+.person{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.person-h{display:flex;gap:12px;align-items:center}
+.avatar{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font:700 16px var(--f-display);flex:none;color:var(--p-white)}
+.person-h > div{flex:1;min-width:0}
+.person-h .n{font-weight:600}
+.match{font:800 22px/1 var(--f-display);font-variant-numeric:tabular-nums;text-align:right}
+.match small{display:block;font:500 11px var(--f-mono);color:var(--ink-3);margin-top:4px}
+.kv{display:flex;flex-direction:column;gap:6px}
+.kv > span{font-size:12px;color:var(--ink-3)}
+
+.empty{border:1.5px dashed var(--line);border-radius:var(--r);padding:36px 24px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+.empty svg{width:36px;height:36px;color:var(--ink-3)}
+.sk{border-radius:8px;background:linear-gradient(90deg,var(--sunk),var(--surface-2),var(--sunk));background-size:200% 100%;animation:sh 1.2s linear infinite}
+@keyframes sh{to{background-position:-200% 0}}
+.wtable{width:100%;border-collapse:collapse;font-size:14px}
+.wtable td{padding:9px 0;border-bottom:1px solid var(--line)}
+.wtable tr:last-child td{border-bottom:0}
+.wtable td:last-child{text-align:right;font-family:var(--f-mono);color:var(--ink-3);font-size:12.5px}
+.samples{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+.hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:56px;align-items:center;padding-block:28px 8px}
+@media (max-width:960px){.hero{grid-template-columns:minmax(0,1fr);gap:32px}}
+.hero-l{display:flex;flex-direction:column;gap:22px;min-width:0}
+.hero-h{font-size:clamp(34px,4.1vw,54px);line-height:1.02;letter-spacing:-.025em}
+.lede{font-size:17px;line-height:1.6;color:var(--ink-2);max-width:54ch}
+.hero-form{display:flex;flex-direction:column;gap:8px;max-width:640px}
+.combo{display:flex;gap:8px;padding:6px;border:1.5px solid var(--line);border-radius:14px;background:var(--surface);box-shadow:var(--shadow);transition:border-color .15s}
+.combo:focus-within{border-color:var(--accent)}
+.combo.err{border-color:var(--bad)}
+.combo .input{flex:1;min-width:0;border:0;height:52px;padding:0 10px}
+@media (max-width:560px){.combo{flex-direction:column}.combo .btn{width:100%}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.resume{align-items:center}
+.preview{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:16px;box-shadow:var(--shadow);min-width:0}
+.preview .pill{align-self:flex-start}
+.preview-h{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.checks.compact .check{padding:9px 12px}
+.weights{display:flex;flex-direction:column;gap:16px;padding-top:28px;border-top:1px solid var(--line)}
+.weights-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px 24px;flex-wrap:wrap}
+.wgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.wgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.wcell{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;background:var(--surface);border:1px solid var(--line);min-width:0}
+.wcell b{font:800 26px/1 var(--f-display);color:var(--accent);min-width:34px}
+.wcell span{font-size:14px;font-weight:500}
+.qnav{display:flex;gap:6px}
+.qstep{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:6px;min-height:var(--tap);border-radius:9px;border:1.5px solid color-mix(in srgb,var(--qcard-fg) 18%,transparent);background:transparent;color:color-mix(in srgb,var(--qcard-fg) 70%,transparent);cursor:pointer;font:600 14px var(--f-mono);transition:background .15s,border-color .15s}
+.qstep:hover{border-color:color-mix(in srgb,var(--qcard-fg) 45%,transparent)}
+.qstep svg{width:14px;height:14px}
+.qstep .qdot{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.5}
+.qstep .qdot.choice{border-radius:1px}
+.qstep.draft .qdot{background:var(--qcard-progress);opacity:1}
+.qstep.answered{background:color-mix(in srgb,var(--qcard-progress) 22%,transparent);border-color:transparent;color:var(--qcard-fg)}
+.qstep.answered svg{color:var(--qcard-progress)}
+.qstep.on{border-color:var(--qcard-progress);color:var(--qcard-fg);box-shadow:inset 0 -3px 0 var(--qcard-progress)}
+.qstep:focus-visible{outline:2px solid var(--qcard-progress);outline-offset:2px}
+.qfoot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.qfoot .grow{flex:1;display:flex;justify-content:center}
+.linkbtn{border:0;background:none;padding:0 2px;color:var(--accent);font:inherit;font-weight:600;cursor:pointer;text-decoration:underline;min-height:24px}
+.options.review .opt{cursor:default;grid-template-columns:32px minmax(0,1fr) 22px}
+.options.review .opt.best{border-color:var(--ok);background:var(--ok-soft)}
+.options.review .opt.mine:not(.best){border-color:var(--warn);background:var(--warn-soft)}
+.optnote{display:block;font:600 11.5px var(--f-mono);letter-spacing:.04em;color:var(--ink-2);margin-top:3px;text-transform:uppercase}
+.qmap{display:flex;flex-direction:column;gap:4px}
+.qmap-i{display:grid;grid-template-columns:34px minmax(0,1fr) 34px;gap:10px;align-items:center;min-height:36px;padding:0 8px;border:0;border-radius:8px;background:transparent;cursor:pointer;color:var(--ink-2)}
+.qmap-i:hover{background:var(--surface-2)}
+.qmap-i.on{background:var(--accent-soft);color:var(--ink)}
+.qmap-i .bar{height:6px;border-radius:3px;background:var(--sunk);overflow:hidden}
+.qmap-i .bar i{display:block;height:100%;background:var(--seal)}
+.qmap-i b{font:500 12.5px var(--f-mono);text-align:right}
+.toasts{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:60;display:flex;flex-direction:column;gap:8px;max-width:min(380px,calc(100vw - 32px))}
+.toast{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:10px;background:var(--ink);color:var(--bg);font-size:14px;box-shadow:var(--shadow);animation:tin .2s ease-out}
+.toast svg{width:18px;height:18px;flex:none;margin-top:1px}
+.toast.success svg{color:var(--ok)}
+.toast.error svg{color:var(--bad)}
+@keyframes tin{from{transform:translateY(8px);opacity:0}}
+
+.scrim{position:fixed;inset:0;background:rgb(10 14 20 / .4);z-index:40}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(560px,100vw);background:var(--surface);z-index:50;display:flex;flex-direction:column;border-left:1px solid var(--line);box-shadow:var(--shadow);
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-right:env(safe-area-inset-right,0px)}
+.drawer-h{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line)}
+.drawer-h h2{font-size:18px;flex:1}
+.drawer-b{flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:16px}
+.drawer-f{padding:14px 20px;border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap}
+.code{width:100%;min-height:52vh;font:12.5px/1.55 var(--f-mono);border:1.5px solid var(--line);border-radius:10px;background:var(--surface-2);padding:12px;outline:0;resize:vertical;white-space:pre;overflow:auto;tab-size:2}
+.code:focus{border-color:var(--accent)}
+pre.code{min-height:0;max-height:60vh;margin:0}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.rng{display:flex;align-items:center;gap:12px}
+.rng input{flex:1}
+.rng output{font:500 13px var(--f-mono);min-width:64px;text-align:right}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}}
+</style>
+
+<header class="top"><div class="top-in" id="topbar"></div></header>
+<main class="page"><div class="page-in" id="view"></div></main>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<div id="devtools"></div>
+
+<script>
+(() => {
+const ICON = {
+  seal:'<path d="M12 2.5l2.2 1.6 2.7-.2.9 2.6 2.2 1.6-.8 2.6.8 2.6-2.2 1.6-.9 2.6-2.7-.2L12 19.5l-2.2-1.6-2.7.2-.9-2.6L4 13.9l.8-2.6L4 8.7l2.2-1.6.9-2.6 2.7.2z"/><path d="M8.8 11.4l2.2 2.2 4.2-4.4"/>',
+  github:'<path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 00-1.3-3.2 4.2 4.2 0 00-.1-3.2s-1.1-.3-3.5 1.3a12 12 0 00-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 00-.1 3.2A4.6 4.6 0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/>',
+  arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+  check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  x:'<path d="M6 6l12 12M18 6L6 18"/>',
+  alert:'<path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.5v.01"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.01"/>',
+  lock:'<rect x="5" y="11" width="14" height="9.5" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>',
+  refresh:'<path d="M20 11a8 8 0 00-14.5-4.5L4 8M4 4v4h4M4 13a8 8 0 0014.5 4.5L20 16M20 20v-4h-4"/>',
+  db:'<ellipse cx="12" cy="5.5" rx="7.5" ry="3"/><path d="M4.5 5.5v13c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-13M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3"/>',
+  bulb:'<path d="M9 17.5h6M10 21h4M12 3a6 6 0 00-3.5 10.9c.6.5 1 1.2 1 2V17h5v-1.1c0-.8.4-1.5 1-2A6 6 0 0012 3z"/>',
+  users:'<circle cx="9" cy="8.5" r="3.3"/><path d="M2.5 19.5a6.5 6.5 0 0113 0M16 5.4a3.3 3.3 0 010 6.3M18 13.5a6.5 6.5 0 013.5 6"/>',
+  send:'<path d="M4 12l16-8-6 16-3-7z"/><path d="M11 13l9-9"/>',
+  play:'<path d="M7 4.5l12 7.5-12 7.5z"/>',
+  report:'<path d="M6 3h8l4.5 4.5V21H6z"/><path d="M14 3v4.5h4.5M9 12.5h6M9 16.5h4"/>',
+  link:'<path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/>',
+  mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/>',
+  logout:'<path d="M14 4h4a2 2 0 012 2v12a2 2 0 01-2 2h-4"/><path d="M9 8l-4 4 4 4M5 12h10"/>',
+  login:'<path d="M10 4H6a2 2 0 00-2 2v12a2 2 0 002 2h4"/><path d="M15 8l4 4-4 4M19 12H9"/>',
+  copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5.5A1.5 1.5 0 0014.5 4h-9A1.5 1.5 0 004 5.5v9A1.5 1.5 0 005.5 16H8"/>',
+  list:'<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r=".9"/><circle cx="4.5" cy="12" r=".9"/><circle cx="4.5" cy="18" r=".9"/>',
+  pen:'<path d="M4 20h4L19 9a2.8 2.8 0 00-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
+  back:'<path d="M19 12H5M11 6l-6 6 6 6"/>',
+  ext:'<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/>',
+};
+const ic = (n, s='') => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${s}>${ICON[n]}</svg>`;
+const $ = (s, r=document) => r.querySelector(s);
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clone = o => JSON.parse(JSON.stringify(o));
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const ls = {
+  get(k){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch(e){ return null; } },
+  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} },
+  del(k){ try { localStorage.removeItem(k); } catch(e){} },
+};
+const hash = s => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
+const seeded = seed => () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+const fmtDate = d => { const t = new Date(d); return isNaN(t) ? '—' : t.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'}); };
+const LANG_COLORS = ['var(--accent)','var(--seal)','var(--ok)','var(--bad)','var(--ink-3)','var(--warn)'];
+
+const DEFAULT_MOCK = {
+  user: { name: "Alex Morgan", handle: "alexm", club: "Leeds Student Developers", seeking: ["UI Design", "User Research", "Backend"] },
+  rules: { private_keywords: ["private", "404"], verify_duration_ms: 4200, min_answer_chars: 20, questions_per_session: 5, verified_threshold: 70, partial_threshold: 40 },
+  repos: {
+    "octo-club/club-checkin": { title: "Club Check-in", description: "QR check-in and attendance analytics for student society events.", fork: false, stars: 14, forks: 3, commits: 86, active_days: 23, contributors: 3, readme_chars: 2400, claim_match: "pass", demo_url: "https://club-checkin.example.app", demo_up: true, created_at: "2026-06-02", last_push: "2026-10-19", languages: { TypeScript: 58, Python: 31, CSS: 11 } },
+    "octo-club/split-the-bill": { title: "Split the Bill", description: "Weekend hackathon prototype for splitting group expenses.", fork: false, stars: 2, forks: 0, commits: 9, active_days: 2, contributors: 1, readme_chars: 140, claim_match: "warn", demo_url: "", demo_up: false, created_at: "2026-03-12", last_push: "2026-03-14", languages: { JavaScript: 81, HTML: 19 } }
+  },
+  checks: [
+    { id: "repo_exists", label: "Repository exists", weight: 20, hint: "Can you walk us through the repository live and point to the code you wrote?" },
+    { id: "original_work", label: "Original work", weight: 10, hint: "This repository is a fork. What did you change compared with the original?" },
+    { id: "history_depth", label: "Commit history", weight: 15, hint: "There are few commits. How did development actually happen?" },
+    { id: "history_spread", label: "Work spread over time", weight: 15, hint: "Most work landed in a few days. How long did the project take, and is it still being developed?" },
+    { id: "team_match", label: "Team contributions", weight: 10, hint: "Who else worked on this, and what did each person own?" },
+    { id: "readme", label: "Documentation", weight: 10, hint: "A new user opens the repo. How do they find out what it does and how to run it?" },
+    { id: "claim_match", label: "Description matches code", weight: 10, hint: "Where in the code is the core feature from your description implemented?" },
+    { id: "demo_live", label: "Live demo", weight: 10, hint: "The demo link doesn't load. Can you show it working another way?" }
+  ],
+  interview: {
+    questions: [
+      "In two minutes, explain how {title} is built: where do the frontend, backend and data live?",
+      "Tell us about the hardest bug you hit in {title}. How did you find and fix it?",
+      "Who is {title} for, and how do you know they actually need it?",
+      "If usage grew tenfold tomorrow, which part of {title} would break first?",
+      "What would you build next, and why that before anything else?"
+    ],
+    choice: [
+      { question: "Two days before your club demo, check-in fails for 1 in 10 users. What do you do first?", options: [
+        { text: "Reproduce it with logs from the failing devices and fix the root cause", score: 5 },
+        { text: "Add a retry button and move on to the demo", score: 3 },
+        { text: "Ask affected users to try a different phone", score: 2 },
+        { text: "Rewrite the check-in module in a new framework", score: 1 } ],
+        why: "Find the cause before the demo. A retry hides the bug and a rewrite this late adds more risk than it removes." },
+      { question: "Which architecture fits {title} best at 500 users in one society?", options: [
+        { text: "One web app with a managed database", score: 5 },
+        { text: "Native iOS and Android apps first", score: 3 },
+        { text: "A shared spreadsheet with a form", score: 2 },
+        { text: "Microservices on Kubernetes", score: 1 } ],
+        why: "At this size one web app is cheapest to build and run. Split it only when a real bottleneck appears." },
+      { question: "Only 3 of 20 society leads say they would pay for {title}. What does that tell you?", options: [
+        { text: "Leads may not be the buyer; test whether the student union would pay", score: 5 },
+        { text: "Make it free forever and grow first", score: 3 },
+        { text: "Build more features until they change their minds", score: 2 },
+        { text: "Twenty answers is too few, so ignore it", score: 1 } ],
+        why: "A weak signal from one group is a reason to test a different buyer, not to ignore the data." },
+      { question: "Which single metric best shows {title} is working a month after launch?", options: [
+        { text: "Events per week that use it for check-in", score: 5 },
+        { text: "Total sign-ups", score: 3 },
+        { text: "GitHub stars", score: 1 },
+        { text: "Lines of code shipped", score: 1 } ],
+        why: "Repeated real use shows value. Sign-ups and stars can grow while nobody uses the product." },
+      { question: "A teammate pushes straight to main and breaks the build the night before a deadline. Best response?", options: [
+        { text: "Revert the commit now, then agree on pull-request reviews", score: 5 },
+        { text: "Fix it yourself quietly", score: 3 },
+        { text: "Leave it until after the deadline", score: 2 },
+        { text: "Remove their write access", score: 1 } ],
+        why: "Restore a working build first, then fix the process so it doesn't happen again." }
+    ]
+  },
+  skills: [
+    { name: "TypeScript", category: "Language", type: "language", language: "TypeScript", min_trust: 60 },
+    { name: "Python", category: "Language", type: "language", language: "Python", min_trust: 60 },
+    { name: "JavaScript", category: "Language", type: "language", language: "JavaScript", min_trust: 60 },
+    { name: "Git workflow", category: "Engineering practice", type: "check", check: "history_spread" },
+    { name: "Team collaboration", category: "Engineering practice", type: "check", check: "team_match" },
+    { name: "Shipping to users", category: "Engineering practice", type: "check", check: "demo_live" },
+    { name: "Technical communication", category: "Communication", type: "interview", dimension: "clarity", min_avg: 3 },
+    { name: "Evidence-based reasoning", category: "Communication", type: "interview", dimension: "evidence", min_avg: 3 }
+  ],
+  collaborators: [
+    { name: "Priya Shah", handle: "priyash", club: "Leeds Design Society", skills: ["UI Design", "Figma", "User Research"], seeking: ["TypeScript", "Backend"], project: "Accessible timetable app", availability: "Weekends", hue: 262 },
+    { name: "Tom Okafor", handle: "tomok", club: "Leeds Student Developers", skills: ["Backend", "Python", "PostgreSQL"], seeking: ["UI Design", "TypeScript"], project: "Society budget tracker", availability: "Weekday evenings", hue: 152 },
+    { name: "Mei Lin", handle: "meilin", club: "Product Management Society", skills: ["User Research", "Product Strategy"], seeking: ["TypeScript", "Shipping to users"], project: "Second-hand textbook exchange", availability: "Flexible", hue: 18 },
+    { name: "Jonas Weber", handle: "jweber", club: "Robotics Society", skills: ["C++", "Embedded", "Python"], seeking: ["Technical communication", "UI Design"], project: "Line-following robot kit", availability: "Weekends", hue: 205 },
+    { name: "Aisha Rahman", handle: "aishar", club: "Leeds Design Society", skills: ["UI Design", "Motion Design", "Branding"], seeking: ["JavaScript", "Git workflow"], project: "Campus events map", availability: "Weekday evenings", hue: 330 },
+    { name: "Sam Patel", handle: "sampat", club: "Data Science Society", skills: ["Python", "Data Analysis", "Backend"], seeking: ["Team collaboration", "TypeScript"], project: "Library seat availability", availability: "Flexible", hue: 95 }
+  ]
+};
+
+const DEFAULT_SETTINGS = { mode: 'mock', baseUrl: 'http://localhost:8000', latency: 650, failRate: 0 };
+const MOSA_MARK = 'data:image/png;base64,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';
+let MOCK = ls.get('mosa.mock.v2') || clone(DEFAULT_MOCK);
+let SETTINGS = { ...DEFAULT_SETTINGS, ...(ls.get('mosa.settings') || {}) };
+
+class ApiError extends Error {
+  constructor(message, status = 0, code = 'error') { super(message); this.status = status; this.code = code; }
+}
+
+const parseRepoUrl = raw => {
+  const s = String(raw || '').trim().replace(/\.git$/, '').replace(/\/+$/, '');
+  const m = s.match(/^(?:https?:\/\/)?(?:www\.)?github\.com\/([A-Za-z0-9-]{1,39})\/([A-Za-z0-9._-]{1,100})$/i);
+  return m ? { owner: m[1], name: m[2], key: `${m[1]}/${m[2]}`.toLowerCase(), url: `https://github.com/${m[1]}/${m[2]}` } : null;
+};
+const titleCase = s => s.replace(/[-_.]+/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+const DB = { projects: {}, tasks: {}, sessions: {}, matching: { joined: false, since: null } };
+
+const Mock = {
+  repoFor(parsed) {
+    const found = Object.entries(MOCK.repos || {}).find(([k]) => k.toLowerCase() === parsed.key);
+    if (found) return clone(found[1]);
+    const r = seeded(hash(parsed.key));
+    const langs = ['TypeScript','Python','JavaScript','Go','CSS','Swift'];
+    const a = langs[Math.floor(r()*langs.length)], b = langs.filter(l => l !== a)[Math.floor(r()*5)];
+    const share = 50 + Math.floor(r()*40);
+    const commits = 5 + Math.floor(r()*120);
+    return {
+      title: titleCase(parsed.name), description: `Student project ${parsed.name.replace(/[-_]/g,' ')}.`, fork: r() < .12,
+      stars: Math.floor(r()*40), forks: Math.floor(r()*8), commits, active_days: Math.max(1, Math.floor(commits / (2 + r()*4))),
+      contributors: 1 + Math.floor(r()*4), readme_chars: Math.floor(r()*3000), claim_match: r() < .7 ? 'pass' : 'warn',
+      demo_url: r() < .6 ? `https://${parsed.name.toLowerCase()}.example.app` : '', demo_up: r() < .8,
+      created_at: '2026-04-10', last_push: '2026-10-' + String(1 + Math.floor(r()*20)).padStart(2,'0'),
+      languages: { [a]: share, [b]: 100 - share }
+    };
+  },
+  evaluate(repo) {
+    const days = repo.active_days || 0;
+    const recent = (Date.now() - new Date(repo.last_push).getTime()) / 864e5 <= 90;
+    const status = {
+      repo_exists: ['pass', 'Public repository found'],
+      original_work: repo.fork ? ['warn', 'Forked from another repository'] : ['pass', 'Original repository, not a fork'],
+      history_depth: [repo.commits >= 30 ? 'pass' : repo.commits >= 10 ? 'warn' : 'fail', `${repo.commits} commits`],
+      history_spread: [days >= 7 && recent ? 'pass' : days >= 3 ? 'warn' : 'fail', `Commits on ${days} different days${recent ? '' : ', no activity in the last 90 days'}`],
+      team_match: [repo.contributors >= 2 ? 'pass' : 'warn', `${repo.contributors} contributor${repo.contributors === 1 ? '' : 's'}`],
+      readme: [repo.readme_chars >= 800 ? 'pass' : repo.readme_chars >= 200 ? 'warn' : 'fail', `README is ${repo.readme_chars.toLocaleString('en-GB')} characters`],
+      claim_match: [repo.claim_match || 'pass', repo.claim_match === 'pass' ? 'Description keywords appear in the code and README' : 'Only some description keywords appear in the repository'],
+      demo_live: !repo.demo_url ? ['warn', 'No demo link provided'] : repo.demo_up ? ['pass', 'Demo responds (HTTP 200)'] : ['fail', 'Demo link did not respond'],
+    };
+    return (MOCK.checks || []).map(c => {
+      const [s, d] = status[c.id] || ['skip', 'No rule for this check'];
+      return { id: c.id, label: c.label, weight: c.weight, status: s, detail: d, hint: s === 'pass' ? null : c.hint };
+    });
+  },
+  score(checks) {
+    const f = { pass: 1, warn: .5, fail: 0 };
+    const counted = checks.filter(c => c.status in f);
+    const total = counted.reduce((a, c) => a + c.weight, 0);
+    const s = total ? Math.round(100 * counted.reduce((a, c) => a + c.weight * f[c.status], 0) / total) : 0;
+    const R = MOCK.rules || {};
+    return { score: s, verdict: s >= (R.verified_threshold ?? 70) ? 'verified' : s >= (R.partial_threshold ?? 40) ? 'partial' : 'unverified' };
+  },
+  async submitProject({ url }) {
+    const p = parseRepoUrl(url);
+    if (!p) throw new ApiError('Enter a GitHub repository URL like https://github.com/owner/repository.', 422, 'invalid_url');
+    if ((MOCK.rules?.private_keywords || []).some(k => p.key.includes(k))) throw new ApiError(`We couldn't find ${p.owner}/${p.name}. Check the spelling, or make the repository public and try again.`, 404, 'not_found');
+    const repo = this.repoFor(p);
+    const id = 'prj_' + hash(p.key).toString(36);
+    DB.projects[id] = { id, url: p.url, owner: p.owner, name: p.name, ...repo, status: 'submitted', submitted_at: new Date().toISOString() };
+    return clone(DB.projects[id]);
+  },
+  async startVerification(pid) {
+    const proj = DB.projects[pid];
+    if (!proj) throw new ApiError('This project no longer exists. Submit it again.', 404);
+    const id = 'tsk_' + Date.now().toString(36);
+    proj.status = 'verifying';
+    DB.tasks[id] = { id, pid, started: Date.now(), duration: MOCK.rules?.verify_duration_ms ?? 4200, checks: this.evaluate(proj) };
+    return { id, status: 'running', progress: 0, step: 'Queued' };
+  },
+  async getTask(tid) {
+    const t = DB.tasks[tid];
+    if (!t) throw new ApiError('Verification task not found.', 404);
+    const progress = Math.min(100, Math.round((Date.now() - t.started) / t.duration * 100));
+    const shown = Math.floor(progress / 100 * t.checks.length);
+    const steps = ['Fetching repository', 'Reading commit history', 'Checking contributors', 'Reading README', 'Comparing description with code', 'Probing demo link', 'Scoring'];
+    if (progress < 100) return { id: tid, status: 'running', progress, step: steps[Math.min(steps.length - 1, Math.floor(progress / 100 * steps.length))], checks: t.checks.slice(0, shown) };
+    const res = this.score(t.checks);
+    const proj = DB.projects[t.pid];
+    Object.assign(proj, { status: res.verdict, trust: res.score, checks: t.checks, verified_at: new Date().toISOString() });
+    return { id: tid, status: 'done', progress: 100, step: 'Done', checks: t.checks, result: res };
+  },
+  async startInterview(pid) {
+    const proj = DB.projects[pid];
+    if (!proj?.checks) throw new ApiError('Verify the project before starting the interview.', 409);
+    const n = MOCK.rules?.questions_per_session ?? 5;
+    const fill = t => String(t).replaceAll('{title}', proj.title);
+    const bank = (MOCK.interview?.questions || []).map(fill);
+    const gaps = proj.checks.filter(c => c.hint).map(c => c.hint).slice(0, 2);
+    const texts = [...new Set([bank[0], ...gaps, ...bank.slice(1)].filter(Boolean))];
+    const choices = shuffle((MOCK.interview?.choice || DEFAULT_MOCK.interview.choice).filter(c => c?.options?.length >= 2));
+    let types = Array.from({ length: n }, () => Math.random() < .5 ? 'text' : 'choice');
+    if (n > 1 && !types.includes('text')) types[Math.floor(Math.random() * n)] = 'text';
+    if (n > 1 && !types.includes('choice')) types[Math.floor(Math.random() * n)] = 'choice';
+    let ti = 0, ci = 0;
+    const plan = types.map(t => {
+      if (t === 'choice' && ci < choices.length) {
+        const c = choices[ci++];
+        const opts = shuffle(c.options.map((o, k) => ({ id: 'o' + k, text: fill(o.text), score: o.score })));
+        return { type: 'choice', text: fill(c.question), options: opts.map(({ id, text }) => ({ id, text })), _opts: opts, why: c.why || '' };
+      }
+      return ti < texts.length ? { type: 'text', text: texts[ti++] } : null;
+    }).filter(Boolean);
+    if (!plan.length) throw new ApiError('The mock data has no interview questions. Add some under interview.questions or interview.choice.', 500);
+    const id = 'ses_' + Date.now().toString(36);
+    DB.sessions[id] = { id, pid, plan, answers: [] };
+    return { id, total: plan.length, questions: plan.map(publicQ), sequential: false };
+  },
+  grade(question, text, title) {
+    const units = (text.match(/[A-Za-z]+/g) || []).length + (text.match(/[一-鿿]/g) || []).length;
+    const depth = units < 15 ? 1 : units < 40 ? 2 : units < 90 ? 3 : units < 160 ? 4 : 5;
+    const ev = (text.match(/\d+%?|for example|e\.g\.|such as|we measured|tested|survey|interview|users? (said|told)|data/gi) || []).length;
+    const evidence = 1 + Math.min(4, ev);
+    const mk = (text.match(/\b(first|second|third|then|because|so that|however|finally|therefore)\b/gi) || []).length;
+    const clarity = units < 15 ? 1 : Math.min(5, 2 + mk);
+    const qt = new Set((question + ' ' + title).toLowerCase().match(/[a-z]{4,}/g) || []);
+    const at = new Set(text.toLowerCase().match(/[a-z]{4,}/g) || []);
+    const ov = [...qt].filter(w => at.has(w)).length / Math.max(1, qt.size);
+    const relevance = units < 5 ? 1 : Math.min(5, 2 + Math.round(ov * 8));
+    const scores = { clarity, evidence, depth, relevance };
+    const tips = {
+      clarity: 'Lead with your answer, then give two or three supporting points in order.',
+      evidence: 'Add one concrete number, test result or user quote to back up your claim.',
+      depth: 'Go one level deeper: why this approach, what you rejected, and what it cost.',
+      relevance: 'Answer the exact question first, then add context.'
+    };
+    const weakest = Object.keys(scores).reduce((a, b) => scores[a] <= scores[b] ? a : b);
+    const avg = Object.values(scores).reduce((a, b) => a + b, 0) / 4;
+    return { scores, score: Math.round(avg * 20), tip: tips[weakest], weakest };
+  },
+  gradeChoice(q, choiceId) {
+    const o = q._opts.find(x => x.id === choiceId);
+    if (!o) throw new ApiError('Pick one of the options before submitting.', 422, 'no_choice');
+    const best = q._opts.reduce((a, b) => b.score > a.score ? b : a);
+    const v = Math.max(1, Math.min(5, o.score));
+    const scores = { clarity: Math.min(5, v + 1), evidence: v, depth: v, relevance: v };
+    const avg = Object.values(scores).reduce((a, b) => a + b, 0) / 4;
+    return { scores, score: Math.round(avg * 20), tip: q.why || 'Compare the options against the risk, cost and evidence each one carries.', weakest: 'depth', choice: { picked: o.id, best: best.id, correct: o.id === best.id } };
+  },
+  async submitAnswer(sid, payload) {
+    const s = DB.sessions[sid];
+    if (!s) throw new ApiError('Interview session expired. Start a new interview.', 404);
+    const idx = Number.isInteger(payload.index) ? payload.index : s.answers.length;
+    if (idx < 0 || idx >= s.plan.length) throw new ApiError('That question does not exist.', 404);
+    if (s.answers.some(x => x.index === idx)) throw new ApiError(`Question ${idx + 1} is already answered.`, 409, 'already_answered');
+    const q = s.plan[idx];
+    let fb;
+    if (q.type === 'choice') fb = this.gradeChoice(q, payload.choice);
+    else {
+      const text = String(payload.text || '');
+      const min = MOCK.rules?.min_answer_chars ?? 20;
+      if (text.trim().length < min) throw new ApiError(`Write at least ${min} characters so the interviewer has something to assess.`, 422, 'too_short');
+      fb = this.grade(q.text, text, DB.projects[s.pid]?.title || '');
+    }
+    s.answers.push({ index: idx, question: q, answer: payload, feedback: fb });
+    const i = s.answers.length;
+    const done = i >= s.plan.length;
+    if (done) {
+      const proj = DB.projects[s.pid];
+      proj.interview = { score: Math.round(s.answers.reduce((a, x) => a + x.feedback.score, 0) / i), dims: avgDims(s.answers), at: new Date().toISOString() };
+    }
+    return { index: idx, feedback: fb, done, answered: i, total: s.plan.length };
+  },
+  async getReport(pid) {
+    const p = DB.projects[pid];
+    if (!p?.checks) throw new ApiError('No verification found for this project yet.', 404);
+    const iv = p.interview || null;
+    return {
+      project: { id: p.id, title: p.title, url: p.url },
+      trust: p.trust, verdict: p.status, checks: p.checks,
+      interview: iv ? iv.score : null, dims: iv ? iv.dims : null,
+      readiness: iv ? Math.round(.6 * iv.score + .4 * p.trust) : null,
+      generated_at: new Date().toISOString(), report_id: 'rep_' + hash(pid + (iv?.at || '')).toString(36)
+    };
+  },
+  async getSkills(pid) {
+    const p = DB.projects[pid];
+    if (!p?.checks) throw new ApiError('Verify the project to unlock skills.', 409);
+    const langs = p.languages || {};
+    const iv = p.interview;
+    return (MOCK.skills || []).map(sk => {
+      let verified = false, level = 0, evidence = [], reason = '';
+      if (sk.type === 'language') {
+        const share = langs[sk.language] || 0;
+        if (!share) return null;
+        verified = p.trust >= (sk.min_trust ?? 60);
+        level = Math.max(1, Math.min(5, Math.round(share / 20)));
+        evidence = [`${share}% of code in ${p.owner}/${p.name}`, `${p.commits} commits across ${p.active_days} days`];
+        reason = verified ? '' : `Needs a trust score of ${sk.min_trust ?? 60} (currently ${p.trust}).`;
+      } else if (sk.type === 'check') {
+        const c = p.checks.find(x => x.id === sk.check);
+        if (!c) return null;
+        verified = c.status === 'pass';
+        level = c.status === 'pass' ? 4 : c.status === 'warn' ? 2 : 1;
+        evidence = [c.detail];
+        reason = verified ? '' : `${c.label} check returned ${c.status}.`;
+      } else if (sk.type === 'interview') {
+        const v = iv?.dims?.[sk.dimension];
+        level = v ? Math.round(v) : 0;
+        verified = v != null && v >= (sk.min_avg ?? 3);
+        evidence = v != null ? [`Interview average ${v.toFixed(1)} / 5 on ${sk.dimension}`] : [];
+        reason = v == null ? 'Complete the AI interview to assess this skill.' : verified ? '' : `Needs an average of ${sk.min_avg ?? 3} / 5 (currently ${v.toFixed(1)}).`;
+      } else return null;
+      return { name: sk.name, category: sk.category, verified, level, evidence, reason };
+    }).filter(Boolean);
+  },
+  async getMatching() { return { joined: DB.matching.joined, visible_to: DB.matching.joined ? (MOCK.collaborators || []).length : 0 }; },
+  async setMatching(joined) {
+    DB.matching.joined = !!joined; DB.matching.since = joined ? new Date().toISOString() : null;
+    return this.getMatching();
+  },
+  async getCollaborators(verifiedSkills) {
+    const mine = new Set(verifiedSkills.map(s => s.toLowerCase()));
+    const want = new Set((MOCK.user?.seeking || []).map(s => s.toLowerCase()));
+    return (MOCK.collaborators || []).map(c => {
+      const brings = c.skills.filter(s => want.has(s.toLowerCase()));
+      const needs = c.seeking.filter(s => mine.has(s.toLowerCase()));
+      const m = Math.round(50 * brings.length / Math.max(1, want.size) + 50 * needs.length / Math.max(1, c.seeking.length));
+      return { ...c, match: m, brings, needs };
+    }).sort((a, b) => b.match - a.match);
+  },
+  async requestIntro(handle) {
+    if (!DB.matching.joined) throw new ApiError('Join matching before requesting an introduction.', 409);
+    const c = (MOCK.collaborators || []).find(x => x.handle === handle);
+    if (!c) throw new ApiError('This student is no longer in matching.', 404);
+    return { handle, status: 'requested' };
+  }
+};
+
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function publicQ(q) { return q.type === 'choice' ? { type: 'choice', text: q.text, options: q.options } : { type: 'text', text: q.text }; }
+function avgDims(answers) {
+  const k = ['clarity', 'evidence', 'depth', 'relevance'], o = {};
+  k.forEach(d => o[d] = Math.round(answers.reduce((a, x) => a + x.feedback.scores[d], 0) / answers.length * 10) / 10);
+  return o;
+}
+
+const Http = {
+  async req(method, path, body) {
+    let r;
+    const base = SETTINGS.baseUrl.replace(/\/+$/, '');
+    try {
+      r = await fetch(base + path, { method, headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: body ? JSON.stringify(body) : undefined });
+    } catch (e) {
+      throw new ApiError(`Can't reach the API at ${base}. Check the base URL or switch to Mock mode in Mock Data.`, 0, 'network');
+    }
+    let data = null;
+    try { data = await r.json(); } catch (e) {}
+    if (r.status === 404 && !data?.detail) throw new ApiError(`The server doesn't have ${method} ${path} yet (HTTP 404).`, 404, 'missing_endpoint');
+    if (!r.ok) {
+      const d = data?.detail;
+      throw new ApiError(Array.isArray(d) ? d.map(x => x.msg).join('; ') : (d || `Request failed with HTTP ${r.status}.`), r.status);
+    }
+    return data;
+  },
+  normProject(p) {
+    const rp = parseRepoUrl(p.repo_url) || { owner: '—', name: p.title, url: p.repo_url };
+    return { id: p.id, url: rp.url, owner: rp.owner, name: rp.name, title: p.title, description: p.summary || '', stars: p.stars ?? null, forks: p.forks ?? null, commits: p.commits ?? null, active_days: p.active_days ?? null, contributors: p.contributors ?? null, last_push: p.updated_at, languages: p.languages || {}, status: p.status === 'new' ? 'submitted' : p.status, trust: p.trust_score };
+  },
+  normChecks(list) {
+    const L = Object.fromEntries((MOCK.checks || []).map(c => [c.id, c.label]));
+    return (list || []).map(c => ({ id: c.id, label: L[c.id] || c.id, weight: c.weight, status: c.status === 'skip' ? 'skip' : c.status, detail: c.detail, hint: c.interview_hint }));
+  },
+  async submitProject({ url }) {
+    const p = parseRepoUrl(url);
+    if (!p) throw new ApiError('Enter a GitHub repository URL like https://github.com/owner/repository.', 422, 'invalid_url');
+    return this.normProject(await this.req('POST', '/api/projects', { title: titleCase(p.name), repo_url: p.url, stage: 'mvp' }));
+  },
+  async startVerification(pid) { const t = await this.req('POST', `/api/projects/${pid}/verify`); this._pid = pid; return { id: t.id, status: 'running', progress: t.progress || 0, step: 'Queued' }; },
+  async getTask(tid) {
+    const t = await this.req('GET', `/api/tasks/${tid}`);
+    if (t.status === 'failed') throw new ApiError((t.error || 'Verification failed.').split('\n')[0], 500, 'task_failed');
+    if (t.status !== 'done') return { id: tid, status: 'running', progress: t.progress, step: (t.step || 'Working').replace(/^collect:/, 'Collecting '), checks: [] };
+    const p = await this.req('GET', `/api/projects/${t.payload.project_id}`);
+    return { id: tid, status: 'done', progress: 100, step: 'Done', checks: this.normChecks(p.verifications?.[0]?.checks), result: { score: t.result.score, verdict: t.result.verdict } };
+  },
+  async startInterview(pid) {
+    const s = await this.req('POST', '/api/interviews', { project_id: pid, persona: 'tech' });
+    return { id: s.id, total: s.plan.length, questions: s.plan.map(t => ({ type: 'text', text: t })), sequential: true };
+  },
+  async submitAnswer(sid, payload) {
+    if (payload.expectedIndex != null && payload.index !== payload.expectedIndex) throw new ApiError(`The live API answers questions in order. Answer question ${payload.expectedIndex + 1} first.`, 409, 'sequential');
+    const r = await this.req('POST', `/api/interviews/${sid}/answer`, { content: payload.text ?? payload.choiceText ?? '' });
+    return { index: payload.index, feedback: r.feedback, done: r.done, answered: r.progress.answered, total: r.progress.total };
+  },
+  async getReport(pid, sid) {
+    const p = await this.req('GET', `/api/projects/${pid}`);
+    let iv = null;
+    if (sid) {
+      const t = await this.req('POST', `/api/interviews/${sid}/finish`);
+      for (let i = 0; i < 30; i++) {
+        const x = await this.req('GET', `/api/tasks/${t.id}`);
+        if (x.status === 'done') { iv = x.result; break; }
+        if (x.status === 'failed') throw new ApiError('Report generation failed.', 500);
+        await sleep(800);
+      }
+    }
+    return { project: { id: p.id, title: p.title, url: p.repo_url }, trust: p.trust_score, verdict: p.status, checks: this.normChecks(p.verifications?.[0]?.checks), interview: iv?.overall ?? null, dims: iv?.dimensions ?? null, readiness: iv?.readiness ?? null, generated_at: new Date().toISOString(), report_id: 'rep_' + p.id };
+  },
+  async getSkills(pid) { return this.req('GET', `/api/projects/${pid}/skills`); },
+  async getMatching() { return this.req('GET', '/api/matching'); },
+  async setMatching(joined) { return this.req('POST', '/api/matching', { joined }); },
+  async getCollaborators(skills) { return this.req('GET', '/api/collaborators?skills=' + encodeURIComponent(skills.join(','))); },
+  async requestIntro(handle) { return this.req('POST', '/api/collaborators/intro', { handle }); },
+};
+
+const api = new Proxy({}, {
+  get: (_, name) => async (...args) => {
+    if (SETTINGS.mode === 'live') return Http[name](...args);
+    const quick = name === 'getTask';
+    await sleep(quick ? Math.min(250, SETTINGS.latency) : SETTINGS.latency * (.7 + Math.random() * .6));
+    if (Math.random() * 100 < SETTINGS.failRate) throw new ApiError(`Simulated server error on ${name} (HTTP 503). Try again.`, 503, 'simulated');
+    return Mock[name](...args);
+  }
+});
+
+const S = {
+  route: 'home',
+  urlDraft: '', urlError: '',
+  project: null,
+  task: null, checks: [],
+  session: null, view: 0, drafts: {}, choices: {}, answers: [], interviewDone: false,
+  report: null, skills: null, tab: 'report',
+  matching: null, collaborators: null, filter: 'All', intros: {},
+  pending: {}, errors: {},
+  toasts: [], dev: false, devTab: 'data'
+};
+const ROUTES = [
+  { id: 'home', label: 'Submit' },
+  { id: 'status', label: 'Project Status' },
+  { id: 'interview', label: 'AI Interview' },
+  { id: 'proof', label: 'Verification & Skills' },
+  { id: 'match', label: 'Find Collaborators' },
+];
+const verified = () => S.task?.status === 'done';
+const guard = id => {
+  if (id === 'status' && !S.project) return 'Submit a project first.';
+  if (['interview', 'proof', 'match'].includes(id) && !verified()) return 'Finish verification first.';
+  return null;
+};
+
+function setState(patch, opts = {}) { Object.assign(S, patch); if (!opts.silent) render(); }
+async function run(key, fn) {
+  if (S.pending[key]) return;
+  S.pending = { ...S.pending, [key]: true }; S.errors = { ...S.errors, [key]: null }; render();
+  try { return await fn(); }
+  catch (e) { S.errors = { ...S.errors, [key]: e.message || 'Something went wrong.' }; toast('error', e.message || 'Something went wrong.'); }
+  finally { S.pending = { ...S.pending, [key]: false }; render(); }
+}
+let toastId = 0;
+function toast(kind, text) {
+  const id = ++toastId;
+  S.toasts = [...S.toasts.slice(-3), { id, kind, text }];
+  renderToasts();
+  setTimeout(() => { S.toasts = S.toasts.filter(t => t.id !== id); renderToasts(); }, kind === 'error' ? 6000 : 3500);
+}
+
+function go(id) {
+  const why = guard(id);
+  if (why) { toast('info', why); return; }
+  S.route = id;
+  try { history.replaceState(null, '', '#' + id); } catch (e) {}
+  render();
+  scrollTo({ top: 0, behavior: 'smooth' });
+  onEnter(id);
+}
+function onEnter(id) {
+  if (id === 'interview' && !S.session && !S.pending.interview) startInterview();
+  if (id === 'proof') { if (!S.report && !S.pending.report) loadReport(); if (S.tab === 'skills' && !S.skills && !S.pending.skills) loadSkills(); }
+  if (id === 'match') loadMatching();
+}
+
+const btn = (label, { kind = 'primary', act = '', icon = '', busy = false, disabled = false, size = '', id = '', data = '' } = {}) =>
+  `<button type="button" class="btn btn-${kind} ${size}" ${id ? `id="${id}"` : ''} data-act="${act}" ${data} ${busy ? 'aria-busy="true" disabled' : ''} ${disabled ? 'disabled' : ''}>${busy ? '<span class="spin"></span>' : icon ? ic(icon) : ''}<span>${esc(label)}</span></button>`;
+const errorBox = (key, retryAct) => S.errors[key] ? `<div class="alert error" role="alert">${ic('alert')}<div class="grow"><p>${esc(S.errors[key])}</p>${retryAct ? `<div>${btn('Try again', { kind: 'secondary', size: 'btn-sm', act: retryAct, icon: 'refresh' })}</div>` : ''}</div></div>` : '';
+const statusPill = s => ({
+  submitted: '<span class="pill idle"><i></i>Ready to verify</span>',
+  verifying: '<span class="pill run"><i></i>Verifying</span>',
+  verified: '<span class="pill ok"><i></i>Verified</span>',
+  partial: '<span class="pill warn"><i></i>Partly verified</span>',
+  unverified: '<span class="pill bad"><i></i>Not verified</span>',
+}[s] || '<span class="pill idle"><i></i>Unknown</span>');
+const tone = s => s === 'pass' ? 'ok' : s === 'warn' ? 'warn' : s === 'fail' ? 'bad' : 'idle';
+const toneIcon = s => s === 'pass' ? 'check' : s === 'warn' ? 'alert' : s === 'fail' ? 'x' : 'info';
+const verdictTone = v => v === 'verified' ? 'ok' : v === 'partial' ? 'warn' : 'bad';
+const ringColor = v => v >= 70 ? 'var(--ok)' : v >= 40 ? 'var(--warn)' : 'var(--bad)';
+const dimLabel = { clarity: 'Clarity', evidence: 'Evidence', depth: 'Depth', relevance: 'Relevance' };
+
+function renderTop() {
+  const done = { home: !!S.project, status: verified(), interview: S.interviewDone, proof: !!S.skills, match: !!S.matching?.joined };
+  $('#topbar').innerHTML = `
+    <button class="brand" data-act="go" data-to="home" aria-label="Mosa home"><img class="brand-mark" src="${MOSA_MARK}" alt="" width="40" height="40"><span class="brand-word">Mosa</span></button>
+    <nav class="steps" aria-label="Pages">${ROUTES.map((r, i) => {
+      const lock = guard(r.id);
+      return `<button class="step ${S.route === r.id ? 'on' : ''} ${done[r.id] && S.route !== r.id ? 'done' : ''} ${lock ? 'locked' : ''}" data-act="go" data-to="${r.id}" ${S.route === r.id ? 'aria-current="page"' : ''} ${lock ? `title="${esc(lock)}"` : ''}>
+        <b>${done[r.id] && S.route !== r.id ? ic('check', 'style="width:12px;height:12px"') : i + 1}</b><span>${r.label}</span>${lock ? ic('lock') : ''}</button>`;
+    }).join('')}</nav>
+    <div class="top-tools">
+      <span class="mode ${SETTINGS.mode === 'live' ? 'live' : ''}">${SETTINGS.mode === 'live' ? 'LIVE API' : 'MOCK'}</span>
+      <button class="btn btn-ghost btn-sm" data-act="dev-open">${ic('db')}<span>Mock Data</span></button>
+    </div>`;
+}
+
+const pages = {};
+
+pages.home = () => {
+  const samples = Object.keys(MOCK.repos || {});
+  const busy = S.pending.submit;
+  const exKey = samples[0];
+  const ex = exKey ? MOCK.repos[exKey] : null;
+  const exChecks = ex ? Mock.evaluate(ex) : [];
+  const exScore = ex ? Mock.score(exChecks) : null;
+  const exSkills = ex ? Object.entries(ex.languages || {}).slice(0, 2).map(([l]) => l).concat(exChecks.find(c => c.id === 'team_match')?.status === 'pass' ? ['Team collaboration'] : []) : [];
+  return `
+  ${S.project ? `<div class="alert info resume">${ic('info')}<div class="grow" style="flex-direction:row;align-items:center;justify-content:space-between;flex-wrap:wrap"><p>You already submitted <b>${esc(S.project.owner)}/${esc(S.project.name)}</b>.</p>${btn('Open project status', { kind: 'secondary', size: 'btn-sm', act: 'go', data: 'data-to="status"' })}</div></div>` : ''}
+  <section class="hero">
+    <div class="hero-l">
+      <span class="eyebrow">Step 1 · Submit</span>
+      <h1 class="hero-h">Show what you built.<br>Prove what you can do.</h1>
+      <p class="lede">Paste a public GitHub repository. We check the code history, run a short AI interview about it, and turn the results into skills other students can trust.</p>
+      <form id="submitForm" novalidate class="hero-form">
+        <label for="repoUrl" class="sr">GitHub repository URL</label>
+        <div class="combo ${S.urlError ? 'err' : ''}">
+          <div class="input">${ic('github')}<input id="repoUrl" name="repoUrl" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://github.com/owner/repository" value="${esc(S.urlDraft)}" ${busy ? 'disabled' : ''} aria-invalid="${!!S.urlError}" aria-describedby="repoHelp"></div>
+          <button type="submit" class="btn btn-primary btn-lg" data-act="submit-project" ${busy ? 'aria-busy="true" disabled' : ''}>${busy ? '<span class="spin"></span>' : ic('arrow')}<span>${busy ? 'Submitting…' : 'Submit Project'}</span></button>
+        </div>
+        ${S.urlError ? `<span class="errtext" id="repoHelp">${esc(S.urlError)}</span>` : `<span class="help" id="repoHelp">Public repositories only. We read metadata and commits; we never change anything.</span>`}
+        ${errorBox('submit')}
+      </form>
+      ${samples.length ? `<div class="samples"><span class="help">Try an example</span>${samples.map(k => `<button type="button" class="chip" data-act="sample" data-url="https://github.com/${esc(k)}">${esc(k)}</button>`).join('')}<button type="button" class="chip" data-act="sample" data-url="https://github.com/octo-club/private-notes">octo-club/private-notes</button></div>` : ''}
+    </div>
+    ${ex ? `<aside class="preview" aria-label="Example result">
+      <div class="preview-h"><span class="eyebrow">Example result</span><span class="mono faint">${esc(exKey)}</span></div>
+      <div class="score"><div class="ring" style="--v:${exScore.score};--c:${ringColor(exScore.score)}"><b>${exScore.score}</b></div>
+        <div style="display:flex;flex-direction:column;gap:6px"><h3>${esc(ex.title)}</h3>${statusPill(exScore.verdict)}<span class="help">${exChecks.filter(c => c.status === 'pass').length} of ${exChecks.length} checks passed</span></div></div>
+      <div class="checks compact">${exChecks.slice(0, 4).map(c => `<div class="check"><span class="ic ${tone(c.status)}">${ic(toneIcon(c.status))}</span><div><div class="t">${esc(c.label)}</div><div class="d">${esc(c.detail)}</div></div><span class="w">${c.weight}</span></div>`).join('')}</div>
+      <div class="minis">${exSkills.map(s => `<span class="tag seal">${ic('check')}${esc(s)}</span>`).join('')}</div>
+    </aside>` : ''}
+  </section>
+  <section class="weights">
+    <div class="weights-h"><h2>What verification checks</h2><p class="help">Pass counts in full, a warning counts half. ${MOCK.rules?.verified_threshold ?? 70}+ is verified, ${MOCK.rules?.partial_threshold ?? 40}–${(MOCK.rules?.verified_threshold ?? 70) - 1} is partly verified.</p></div>
+    <div class="wgrid">${(MOCK.checks || []).map(c => `<div class="wcell"><b class="num">${c.weight}</b><span>${esc(c.label)}</span></div>`).join('')}</div>
+  </section>`;
+};
+
+pages.status = () => {
+  const p = S.project;
+  const langs = Object.entries(p.languages || {});
+  const t = S.task;
+  const running = t && t.status === 'running';
+  const isDone = verified();
+  const nVal = v => v == null ? '—' : Number(v).toLocaleString('en-GB');
+  const checks = isDone || running ? S.checks : [];
+  const all = (MOCK.checks || []);
+  const checkRows = all.map(c => {
+    const got = checks.find(x => x.id === c.id);
+    if (!got) return `<div class="check pending"><span class="ic idle">${running ? '<span class="spin" style="width:12px;height:12px;border-width:1.5px"></span>' : ic('info')}</span><div><div class="t">${esc(c.label)}</div><div class="d">${running ? 'Waiting…' : 'Not checked yet'}</div></div><span class="w">${c.weight}</span></div>`;
+    return `<div class="check"><span class="ic ${tone(got.status)}">${ic(toneIcon(got.status))}</span><div><div class="t">${esc(got.label)}</div><div class="d">${esc(got.detail)}</div></div><span class="w">${got.weight}</span></div>`;
+  }).join('');
+  const res = t?.result;
+  return `
+  <div class="head">
+    <div><span class="eyebrow">Step 2 · Project status</span><h1 style="font-size:clamp(26px,3.4vw,36px)">${esc(p.title)}</h1>
+      <div class="row"><a class="mono" href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.owner)}/${esc(p.name)} ${ic('ext', 'style="width:13px;height:13px;vertical-align:-1px"')}</a>${statusPill(isDone ? res.verdict : running ? 'verifying' : 'submitted')}</div></div>
+    <div class="row">${btn('Submit another', { kind: 'ghost', act: 'reset-project', size: 'btn-sm' })}</div>
+  </div>
+  <section class="panel">
+    ${p.description ? `<p class="muted">${esc(p.description)}</p>` : ''}
+    <div class="stats">
+      <div class="stat"><b>${nVal(p.stars)}</b><span>Stars</span></div>
+      <div class="stat"><b>${nVal(p.forks)}</b><span>Forks</span></div>
+      <div class="stat"><b>${nVal(p.commits)}</b><span>Commits</span></div>
+      <div class="stat"><b>${nVal(p.active_days)}</b><span>Active days</span></div>
+      <div class="stat"><b>${nVal(p.contributors)}</b><span>Contributors</span></div>
+      <div class="stat"><b style="font-size:15px;line-height:1.9">${fmtDate(p.last_push)}</b><span>Last push</span></div>
+    </div>
+    ${langs.length ? `<div style="display:flex;flex-direction:column;gap:8px"><div class="langbar">${langs.map(([l, v], i) => `<i style="width:${v}%;background:${LANG_COLORS[i % LANG_COLORS.length]}" title="${esc(l)} ${v}%"></i>`).join('')}</div><div class="legend">${langs.map(([l, v], i) => `<span><i style="background:${LANG_COLORS[i % LANG_COLORS.length]}"></i>${esc(l)} <span class="faint num">${v}%</span></span>`).join('')}</div></div>` : ''}
+  </section>
+  <div class="grid2">
+    <section class="panel">
+      <div class="panel-h"><h2>Verification</h2>${running ? `<span class="mono faint num">${t.progress}%</span>` : ''}</div>
+      ${!t && !S.pending.verify ? `<p class="muted">Verification reads the repository, scores eight checks and stores the evidence. It takes a few seconds.</p>` : ''}
+      ${running || S.pending.verify ? `<div style="display:flex;flex-direction:column;gap:8px"><div class="progress"><i style="width:${t?.progress || 2}%"></i></div><span class="help">${esc(t?.step || 'Queuing verification…')}</span></div>` : ''}
+      ${errorBox('verify', 'start-verification')}
+      <div class="checks">${checkRows}</div>
+    </section>
+    <aside class="panel raised">
+      ${isDone ? `
+        <div class="score"><div class="ring" style="--v:${res.score};--c:${ringColor(res.score)}"><b>${res.score}</b></div>
+          <div style="display:flex;flex-direction:column;gap:6px"><span class="eyebrow">Trust score</span>${statusPill(res.verdict)}<p class="help">${checks.filter(c => c.status === 'pass').length} of ${checks.length} checks passed</p></div></div>
+        <p class="muted">${res.verdict === 'verified' ? 'The evidence supports your project. The interview will test how well you can explain it.' : 'Some checks need attention. The interview will ask about them first, so prepare answers.'}</p>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          ${btn(S.interviewDone ? 'Review AI Interview' : 'Continue to AI Interview', { act: 'go', data: 'data-to="interview"', icon: 'mic', size: 'btn-lg' })}
+          ${btn('View Verification Report', { kind: 'secondary', act: 'view-report', icon: 'report' })}
+          ${btn('Run again', { kind: 'ghost', act: 'start-verification', icon: 'refresh', size: 'btn-sm' })}
+        </div>` : `
+        <div style="display:flex;flex-direction:column;gap:8px"><span class="eyebrow">Next step</span><h3>Verify ${esc(p.owner)}/${esc(p.name)}</h3><p class="muted">After verification you can take the AI interview and unlock your skills.</p></div>
+        ${btn(running || S.pending.verify ? 'Verifying…' : 'Start Verification', { act: 'start-verification', icon: 'play', size: 'btn-lg', busy: running || S.pending.verify })}`}
+    </aside>
+  </div>`;
+};
+
+pages.interview = () => {
+  if (S.pending.interview && !S.session) return `<div class="panel" style="gap:14px"><div class="sk" style="height:22px;width:40%"></div><div class="sk" style="height:120px"></div><div class="sk" style="height:180px"></div></div>`;
+  if (!S.session) return `<div class="empty">${ic('mic')}<h3>Interview not started</h3>${errorBox('interview')}${btn('Start interview', { act: 'start-interview', icon: 'play' })}</div>`;
+  const total = S.session.total, n = S.answers.length, i = S.view;
+  const dims = n ? avgDims(S.answers) : null;
+  const busy = S.pending.answer;
+  const min = MOCK.rules?.min_answer_chars ?? 20;
+  const q = cq() || { type: 'text', text: '' };
+  const done = answerAt(i);
+  const isChoice = q.type === 'choice';
+  const draft = S.drafts[i] || '';
+  const len = draft.trim().length;
+  const pick = S.choices[i];
+  const canSubmit = isChoice ? !!pick : len >= min;
+  const left = S.session.questions.map((_, k) => k).filter(k => !answerAt(k));
+  const guide = isChoice
+    ? { h: 'Best practice · scenario questions', items: ['Read every option before choosing.', 'Pick the one you could defend to your team with evidence.', 'Weigh risk, cost and time, not only speed.'] }
+    : { h: 'Best practice · short answers', items: ['Lead with a one-sentence answer.', 'Back it with one number, test result or user quote.', 'Name a trade-off: what you rejected and why.'] };
+  const review = a => {
+    const ch = a.feedback.choice;
+    const body = a.question.type === 'choice' && ch
+      ? `<div class="options review">${a.question.options.map((o, k) => {
+          const mine = o.id === ch.picked, best = o.id === ch.best;
+          return `<div class="opt ${mine ? 'mine' : ''} ${best ? 'best' : ''}"><span class="key">${String.fromCharCode(65 + k)}</span><span class="txt">${esc(o.text)}${mine || best ? `<span class="optnote">${mine && best ? 'Your choice · strongest answer' : mine ? 'Your choice' : 'Strongest answer'}</span>` : ''}</span><span aria-hidden="true">${best ? ic('check', 'style="width:18px;height:18px;color:var(--ok)"') : mine ? ic('alert', 'style="width:18px;height:18px;color:var(--warn)"') : ''}</span></div>`;
+        }).join('')}</div>`
+      : `<div class="field"><span class="eyebrow">Your answer</span><div class="a">${esc(a.answer)}</div></div>`;
+    return `<div class="row" style="justify-content:space-between"><span class="pill ok"><i></i>Answered</span><span class="pill ${a.feedback.score >= 70 ? 'ok' : a.feedback.score >= 50 ? 'warn' : 'bad'}">${a.feedback.score} / 100</span></div>
+      ${body}
+      <div class="minis">${Object.entries(a.feedback.scores).map(([k, v]) => `<span class="tag">${dimLabel[k]} <b class="num">${v}</b>/5</span>`).join('')}</div>
+      <div class="tip">${ic('bulb')}<span>${esc(a.feedback.tip)}</span></div>`;
+  };
+  return `
+  <div class="head"><div><span class="eyebrow">Step 3 · AI interview</span><h1 style="font-size:clamp(26px,3.4vw,36px)">Defend ${esc(S.project.title)}</h1><p class="muted">${total} questions, mixing short answers and scenario choices. Browse them in any order; the first ones focus on what verification flagged.</p></div>
+    <span class="mono faint num">${n} of ${total} answered</span></div>
+  <div class="grid2">
+    <div style="display:flex;flex-direction:column;gap:18px;min-width:0">
+      ${S.interviewDone ? `
+        <section class="panel raised">
+          <div class="score"><div class="ring" style="--v:${S.project.interviewScore};--c:${ringColor(S.project.interviewScore)}"><b>${S.project.interviewScore}</b></div>
+          <div style="display:flex;flex-direction:column;gap:6px"><span class="eyebrow">Interview complete</span><h2>You answered all ${total} questions</h2><p class="muted">Your report and skills are ready. Use the question bar below to review any answer.</p></div></div>
+          <div class="row">${btn('View Verification Report', { act: 'view-report', icon: 'report' })}${btn('View Verified Skills', { kind: 'secondary', act: 'view-skills', icon: 'seal' })}${btn('Practise again', { kind: 'ghost', act: 'restart-interview', icon: 'refresh', size: 'btn-sm' })}</div>
+        </section>` : ''}
+      <section class="qcard" aria-labelledby="qText">
+        <nav class="qnav" aria-label="Questions">${S.session.questions.map((qq, k) => {
+          const st = answerAt(k) ? 'answered' : (S.drafts[k]?.trim() || S.choices[k]) ? 'draft' : '';
+          return `<button type="button" id="qstep-${k}" class="qstep ${k === i ? 'on' : ''} ${st}" data-act="q-go" data-i="${k}" ${k === i ? 'aria-current="step"' : ''} aria-label="Question ${k + 1}, ${qq.type === 'choice' ? 'multiple choice' : 'short answer'}${answerAt(k) ? ', answered' : ''}"><b>${k + 1}</b>${answerAt(k) ? ic('check') : `<i class="qdot ${qq.type}"></i>`}</button>`;
+        }).join('')}</nav>
+        <div class="qhead">
+          <div class="qhead-l"><span class="eyebrow">Question ${i + 1} of ${total}</span><span class="qtype">${ic(isChoice ? 'list' : 'pen')}${isChoice ? 'Multiple choice' : 'Short answer'}</span></div>
+          <span class="qnum" aria-hidden="true">${i + 1}<span> / ${total}</span></span>
+        </div>
+        <p class="qtext" id="qText">${esc(q.text)}</p>
+      </section>
+      <section class="panel">
+        ${done ? review(done) : isChoice ? `
+        <fieldset class="options" ${busy ? 'disabled' : ''}>
+          <legend>Choose one answer</legend>
+          ${q.options.map((o, k) => `<label class="opt"><input type="radio" name="choice" id="opt-${o.id}" value="${esc(o.id)}" ${pick === o.id ? 'checked' : ''}><span class="key">${String.fromCharCode(65 + k)}</span><span class="txt">${esc(o.text)}</span><span class="radio" aria-hidden="true"></span></label>`).join('')}
+        </fieldset>
+        <span class="help">Press A–${String.fromCharCode(64 + q.options.length)} to choose, Enter to submit.</span>` : `
+        <div class="field">
+          <label for="answer">Your answer</label>
+          <textarea id="answer" class="ta" placeholder="Answer as you would out loud. Specific numbers and examples score higher." ${busy ? 'disabled' : ''}>${esc(draft)}</textarea>
+          <div class="row" style="justify-content:space-between"><span class="help num" id="charCount">${len} characters${len < min ? ` · ${min - len} more needed` : ''}</span><span class="help">Ctrl + Enter to submit</span></div>
+        </div>`}
+        ${done ? '' : errorBox('answer')}
+        <div class="qfoot">
+          ${btn('Previous', { kind: 'secondary', act: 'q-prev', icon: 'back', disabled: i === 0 || busy, id: 'qPrev' })}
+          <span class="grow">${done ? '' : btn(busy ? 'Scoring…' : 'Submit Answer', { act: 'submit-answer', icon: 'send', busy, disabled: !canSubmit, id: 'submitAnswer' })}</span>
+          ${i < total - 1 ? `<button type="button" id="qNext" class="btn btn-secondary" data-act="q-next" ${busy ? 'disabled' : ''}><span>${done || S.interviewDone ? 'Next' : 'Skip for now'}</span>${ic('arrow')}</button>`
+            : left.length && !(left.length === 1 && left[0] === i) ? `<button type="button" class="btn btn-secondary" data-act="q-open" ${busy ? 'disabled' : ''}><span>Go to unanswered</span>${ic('arrow')}</button>` : '<span></span>'}
+        </div>
+        ${!S.interviewDone && left.length ? `<p class="help">${left.length === 1 ? 'One question left' : `${left.length} questions left`}: ${left.map(k => `<button type="button" class="linkbtn" data-act="q-go" data-i="${k}">Q${k + 1}</button>`).join(', ')}. Your drafts are kept while you browse.</p>` : ''}
+      </section>
+    </div>
+    <aside class="panel">
+      <div class="panel-h"><h3>Running scores</h3><span class="eyebrow">Avg / 5</span></div>
+      ${dims ? `<div class="dims">${Object.entries(dims).map(([k, v]) => `<div class="dim"><span>${dimLabel[k]}</span><span class="bar"><i style="width:${v / 5 * 100}%"></i></span><b class="num">${v.toFixed(1)}</b></div>`).join('')}</div>` : `<p class="help">Scores appear after your first answer. Each answer is rated 1–5 on clarity, evidence, depth and relevance.</p>`}
+      <div class="qmap">${S.session.questions.map((_, k) => { const a = answerAt(k); return `<button type="button" class="qmap-i ${k === i ? 'on' : ''}" data-act="q-go" data-i="${k}"><span class="mono">Q${k + 1}</span><span class="bar"><i style="width:${a ? a.feedback.score : 0}%"></i></span><b class="num">${a ? a.feedback.score : '—'}</b></button>`; }).join('')}</div>
+      <div class="guide"><div class="guide-h">${ic('bulb')}${guide.h}</div><ol>${guide.items.map(x => `<li>${x}</li>`).join('')}</ol></div>
+      <p class="help">Use ← and → to move between questions.</p>
+    </aside>
+  </div>`;
+};
+
+pages.proof = () => {
+  const tabs = `<div class="tabs" role="tablist">
+    <button type="button" class="btn btn-ghost ${S.tab === 'report' ? 'on' : ''}" role="tab" aria-selected="${S.tab === 'report'}" data-act="view-report">${ic('report')}<span>View Verification Report</span></button>
+    <button type="button" class="btn btn-ghost ${S.tab === 'skills' ? 'on' : ''}" role="tab" aria-selected="${S.tab === 'skills'}" data-act="view-skills">${ic('seal')}<span>View Verified Skills</span></button></div>`;
+  return `
+  <div class="head"><div><span class="eyebrow">Step 4 · Verification & skills</span><h1 style="font-size:clamp(26px,3.4vw,36px)">${esc(S.project.title)}</h1></div>${tabs}</div>
+  ${S.tab === 'report' ? reportView() : skillsView()}`;
+};
+
+function reportView() {
+  if (S.pending.report && !S.report) return `<div class="kpis">${[0, 1, 2].map(() => '<div class="sk" style="height:120px"></div>').join('')}</div><div class="sk" style="height:300px"></div>`;
+  if (!S.report) return `<div class="empty">${ic('report')}<h3>Report unavailable</h3>${errorBox('report', 'load-report')}</div>`;
+  const r = S.report;
+  const kpi = (label, v, note) => `<div class="kpi"><div class="ring sm" style="--v:${v ?? 0};--c:${v == null ? 'var(--sunk)' : ringColor(v)}"><b>${v ?? '–'}</b></div><div><span class="eyebrow">${label}</span><small>${note}</small></div></div>`;
+  return `
+  ${errorBox('report', 'load-report')}
+  <div class="kpis">
+    ${kpi('Trust score', r.trust, 'From repository evidence')}
+    ${kpi('Interview', r.interview, r.interview == null ? 'Not taken yet' : 'Average across answers')}
+    ${kpi('Readiness', r.readiness, r.readiness == null ? 'Needs the interview' : '60% interview + 40% trust')}
+  </div>
+  <div class="verdict ${verdictTone(r.verdict)}">${ic(r.verdict === 'verified' ? 'seal' : 'alert')}<div><b>${r.verdict === 'verified' ? 'Verified project' : r.verdict === 'partial' ? 'Partly verified' : 'Not verified'}</b><p>${r.verdict === 'verified' ? 'The repository history supports the project description.' : 'Some evidence is missing. Fix the flagged checks and run verification again.'}</p></div></div>
+  <div class="grid2">
+    <section class="panel"><div class="panel-h"><h2>Checks</h2><span class="mono faint">${esc(r.report_id)}</span></div>
+      <div class="checks">${r.checks.map(c => `<div class="check"><span class="ic ${tone(c.status)}">${ic(toneIcon(c.status))}</span><div><div class="t">${esc(c.label)}</div><div class="d">${esc(c.detail)}</div></div><span class="w">${c.weight}</span></div>`).join('')}</div>
+      <p class="help">Generated ${new Date(r.generated_at).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}</p></section>
+    <aside class="panel">
+      <h3>Interview breakdown</h3>
+      ${r.dims ? `<div class="dims">${Object.entries(r.dims).map(([k, v]) => `<div class="dim"><span>${dimLabel[k]}</span><span class="bar"><i style="width:${v / 5 * 100}%"></i></span><b class="num">${Number(v).toFixed(1)}</b></div>`).join('')}</div>` : `<p class="help">Take the AI interview to add your communication scores to this report.</p>${btn('Go to AI Interview', { kind: 'secondary', act: 'go', data: 'data-to="interview"', icon: 'mic' })}`}
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:6px">${btn('View Verified Skills', { act: 'view-skills', icon: 'seal' })}${btn('Refresh report', { kind: 'ghost', act: 'load-report', icon: 'refresh', size: 'btn-sm', busy: S.pending.report })}</div>
+    </aside>
+  </div>`;
+}
+
+const stamp = () => `<svg class="stamp" viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="24" r="21" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 3"/><circle cx="24" cy="24" r="15" stroke="currentColor" stroke-width="2"/><path d="M17.5 24.5l4.5 4.5 8.5-9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+function skillsView() {
+  if (S.pending.skills && !S.skills) return `<div class="skills">${[0, 1, 2, 3].map(() => '<div class="sk" style="height:180px"></div>').join('')}</div>`;
+  if (!S.skills) return `<div class="empty">${ic('seal')}<h3>Skills unavailable</h3>${errorBox('skills', 'load-skills')}</div>`;
+  const v = S.skills.filter(s => s.verified), u = S.skills.filter(s => !s.verified);
+  const card = s => `<article class="skill ${s.verified ? 'verified' : 'unverified'}">${stamp()}
+    <span class="eyebrow">${esc(s.category)}</span><h3>${esc(s.name)}</h3>
+    <div class="lv" aria-label="Level ${s.level} of 5">${[1, 2, 3, 4, 5].map(i => `<i class="${i <= s.level ? 'on' : ''}"></i>`).join('')}</div>
+    ${s.evidence?.length ? `<ul class="ev">${s.evidence.map(e => `<li>${esc(e)}</li>`).join('')}</ul>` : ''}
+    ${s.verified ? `<span class="tag seal">${ic('check')}Verified</span>` : `<p class="help">${esc(s.reason)}</p>`}</article>`;
+  return `
+  ${errorBox('skills', 'load-skills')}
+  <div class="panel-h"><div><h2>${v.length} verified skill${v.length === 1 ? '' : 's'}</h2><p class="help">Each skill links to the evidence behind it.</p></div>${btn('Find Collaborators', { act: 'find-collaborators', icon: 'users', size: 'btn-lg', disabled: !v.length })}</div>
+  ${v.length ? `<div class="skills">${v.map(card).join('')}</div>` : `<div class="empty">${ic('seal')}<h3>No verified skills yet</h3><p class="muted">Raise your trust score or complete the interview to verify skills.</p></div>`}
+  ${u.length ? `<h3 style="margin-top:8px">Not verified yet</h3><div class="skills">${u.map(card).join('')}</div>` : ''}`;
+}
+
+pages.match = () => {
+  const m = S.matching;
+  const busyM = S.pending.matching;
+  const list = S.collaborators;
+  const all = list ? [...new Set(list.flatMap(c => c.skills))].sort() : [];
+  const shown = list ? list.filter(c => S.filter === 'All' || c.skills.includes(S.filter)) : [];
+  const joined = !!m?.joined;
+  return `
+  <div class="head"><div><span class="eyebrow">Step 5 · Find collaborators</span><h1 style="font-size:clamp(26px,3.4vw,36px)">Students who complement your skills</h1>
+    <p class="muted">Ranked by what they bring that you are looking for (${(MOCK.user?.seeking || []).map(esc).join(', ')}) and what they need that you have verified.</p></div></div>
+  <section class="mstatus ${joined ? 'on' : ''}">
+    <span class="beacon"></span>
+    <div class="grow"><b>${!m ? 'Checking your matching status…' : joined ? 'You are in matching' : 'You are not in matching'}</b>
+      <span class="help">${!m ? '' : joined ? `Your verified skills are visible to ${m.visible_to} student${m.visible_to === 1 ? '' : 's'}. You can request introductions.` : 'Join to show your verified skills to other students and request introductions.'}</span></div>
+    ${m ? btn(busyM ? (joined ? 'Leaving…' : 'Joining…') : joined ? 'Leave Matching' : 'Join Matching', { kind: joined ? 'danger' : 'primary', act: 'toggle-matching', icon: joined ? 'logout' : 'login', busy: busyM }) : '<span class="spin"></span>'}
+  </section>
+  ${errorBox('matching', 'load-matching')}
+  ${errorBox('collaborators', 'load-matching')}
+  ${list ? `<div class="row">${['All', ...all].map(f => `<button type="button" class="chip ${S.filter === f ? 'on' : ''}" data-act="filter" data-f="${esc(f)}">${esc(f)}</button>`).join('')}</div>` : ''}
+  ${S.pending.collaborators && !list ? `<div class="people">${[0, 1, 2, 3].map(() => '<div class="sk" style="height:230px"></div>').join('')}</div>` : ''}
+  ${list && !shown.length ? `<div class="empty">${ic('users')}<h3>No one matches this filter</h3>${btn('Show everyone', { kind: 'secondary', act: 'filter', data: 'data-f="All"' })}</div>` : ''}
+  ${shown.length ? `<div class="people">${shown.map(c => {
+    const st = S.intros[c.handle];
+    const initials = c.name.split(/\s+/).map(w => w[0]).slice(0, 2).join('');
+    return `<article class="person">
+      <div class="person-h"><span class="avatar" style="background:hsl(${c.hue ?? hash(c.handle) % 360} 55% 45%)">${esc(initials)}</span>
+        <div><div class="n">${esc(c.name)}</div><div class="help">${esc(c.club)}</div></div>
+        <div class="match" style="color:${ringColor(c.match)}">${c.match}%<small>MATCH</small></div></div>
+      <div class="kv"><span>Brings</span><div class="minis">${c.skills.map(s => `<span class="tag ${c.brings.includes(s) ? 'hl' : ''}">${esc(s)}</span>`).join('')}</div></div>
+      <div class="kv"><span>Looking for</span><div class="minis">${c.seeking.map(s => `<span class="tag ${c.needs.includes(s) ? 'seal' : ''}">${c.needs.includes(s) ? ic('check') : ''}${esc(s)}</span>`).join('')}</div></div>
+      <div class="kv"><span>Working on</span><div>${esc(c.project)} <span class="faint">· ${esc(c.availability)}</span></div></div>
+      <div>${st === 'requested' ? `<button class="btn btn-secondary" disabled>${ic('check')}<span>Introduction requested</span></button>` :
+        btn(st === 'pending' ? 'Sending…' : 'Request intro', { kind: 'secondary', act: 'intro', data: `data-h="${esc(c.handle)}"`, icon: 'send', busy: st === 'pending', disabled: !joined })}
+        ${!joined ? '<span class="help" style="margin-left:8px">Join matching first</span>' : ''}</div>
+    </article>`;
+  }).join('')}</div>` : ''}`;
+};
+
+function render() {
+  renderTop();
+  const v = $('#view');
+  const focusId = document.activeElement?.id;
+  const sel = focusId && document.activeElement.selectionStart != null ? [document.activeElement.selectionStart, document.activeElement.selectionEnd] : null;
+  v.innerHTML = (pages[S.route] || pages.home)();
+  if (focusId) { const el = document.getElementById(focusId); if (el && !el.disabled) { el.focus(); if (sel && el.setSelectionRange) try { el.setSelectionRange(...sel); } catch (e) {} } }
+  if (S.dev) renderDevState();
+}
+function renderToasts() {
+  $('#toasts').innerHTML = S.toasts.map(t => `<div class="toast ${t.kind}" role="${t.kind === 'error' ? 'alert' : 'status'}">${ic(t.kind === 'success' ? 'check' : t.kind === 'error' ? 'alert' : 'info')}<span>${esc(t.text)}</span></div>`).join('');
+}
+
+async function submitProject() {
+  const url = S.urlDraft.trim();
+  if (!url) { setState({ urlError: 'Paste the URL of your GitHub repository.' }); $('#repoUrl')?.focus(); return; }
+  if (!parseRepoUrl(url)) { setState({ urlError: 'That doesn’t look like a repository URL. Use https://github.com/owner/repository.' }); $('#repoUrl')?.focus(); return; }
+  S.urlError = '';
+  await run('submit', async () => {
+    const p = await api.submitProject({ url });
+    Object.assign(S, { project: p, task: null, checks: [], session: null, view: 0, drafts: {}, choices: {}, answers: [], interviewDone: false, report: null, skills: null, collaborators: null, intros: {} });
+    toast('success', `Project ${p.owner}/${p.name} submitted.`);
+    S.route = 'status'; try { history.replaceState(null, '', '#status'); } catch (e) {}
+  });
+}
+async function startVerification() {
+  if (S.pending.verify || S.task?.status === 'running') return;
+  Object.assign(S, { task: null, checks: [], report: null, skills: null, collaborators: null });
+  await run('verify', async () => {
+    let t = await api.startVerification(S.project.id);
+    S.task = t; S.project.status = 'verifying'; render();
+    let misses = 0;
+    while (t.status !== 'done') {
+      await sleep(450);
+      try { t = await api.getTask(t.id); misses = 0; }
+      catch (e) { if (e.code === 'task_failed' || ++misses >= 3) { S.task = null; throw e; } continue; }
+      S.task = t; S.checks = t.checks || []; render();
+    }
+    S.task = t; S.checks = t.checks; S.project.status = t.result.verdict; S.project.trust = t.result.score;
+    toast('success', `Verification finished: trust score ${t.result.score}.`);
+  });
+}
+const cq = () => S.session?.questions?.[S.view] || null;
+const answerAt = i => S.answers.find(a => a.index === i) || null;
+const nextOpen = from => { const t = S.session?.total || 0; for (let k = 1; k <= t; k++) { const i = (from + k) % t; if (!answerAt(i)) return i; } return null; };
+function viewQ(i) {
+  const t = S.session?.total || 0;
+  if (i < 0 || i >= t || i === S.view) return;
+  S.view = i; S.errors = { ...S.errors, answer: null }; render();
+}
+async function startInterview() {
+  await run('interview', async () => {
+    const s = await api.startInterview(S.project.id);
+    Object.assign(S, { session: s, view: 0, drafts: {}, choices: {}, answers: [], interviewDone: false });
+  });
+}
+async function submitAnswer() {
+  const i = S.view, q = cq();
+  if (!q || answerAt(i)) return;
+  const isChoice = q.type === 'choice';
+  const text = (S.drafts[i] || '').trim();
+  const pick = S.choices[i];
+  const min = MOCK.rules?.min_answer_chars ?? 20;
+  if (isChoice && !pick) { S.errors = { ...S.errors, answer: 'Pick one of the options before submitting.' }; render(); return; }
+  if (!isChoice && text.length < min) { S.errors = { ...S.errors, answer: `Write at least ${min} characters so the interviewer has something to assess.` }; render(); return; }
+  await run('answer', async () => {
+    const payload = isChoice ? { index: i, choice: pick, choiceText: q.options.find(o => o.id === pick)?.text } : { index: i, text };
+    if (S.session.sequential) payload.expectedIndex = S.answers.length;
+    const r = await api.submitAnswer(S.session.id, payload);
+    S.answers = [...S.answers, { index: i, question: q, answer: isChoice ? payload.choiceText : text, feedback: r.feedback }].sort((a, b) => a.index - b.index);
+    delete S.drafts[i]; delete S.choices[i];
+    if (r.done || S.answers.length >= S.session.total) {
+      S.interviewDone = true;
+      S.project.interviewScore = Math.round(S.answers.reduce((a, x) => a + x.feedback.score, 0) / S.answers.length);
+      S.report = null; S.skills = null; S.collaborators = null;
+      toast('success', 'Interview complete. Your report is ready.');
+    } else {
+      toast('success', `Question ${i + 1} scored ${r.feedback.score} / 100.`);
+      const n = nextOpen(i); if (n != null) S.view = n;
+    }
+  });
+}
+async function loadReport() { await run('report', async () => { S.report = await api.getReport(S.project.id, S.interviewDone ? S.session?.id : null); }); }
+async function loadSkills() { await run('skills', async () => { S.skills = await api.getSkills(S.project.id); }); }
+async function loadMatching() {
+  const tasks = [];
+  if (!S.matching || S.errors.matching) tasks.push(run('matching', async () => { S.matching = await api.getMatching(); }));
+  if (!S.collaborators || S.errors.collaborators) tasks.push(run('collaborators', async () => {
+    if (!S.skills) S.skills = await api.getSkills(S.project.id);
+    S.collaborators = await api.getCollaborators(S.skills.filter(s => s.verified).map(s => s.name));
+  }));
+  await Promise.all(tasks);
+}
+async function toggleMatching() {
+  const next = !S.matching?.joined;
+  await run('matching', async () => {
+    S.matching = await api.setMatching(next);
+    if (!next) S.intros = {};
+    toast('success', next ? 'You joined matching.' : 'You left matching. Your skills are hidden.');
+  });
+}
+async function requestIntro(handle) {
+  S.intros = { ...S.intros, [handle]: 'pending' }; render();
+  try { await api.requestIntro(handle); S.intros = { ...S.intros, [handle]: 'requested' }; toast('success', 'Introduction requested.'); }
+  catch (e) { const { [handle]: _, ...rest } = S.intros; S.intros = rest; toast('error', e.message); }
+  render();
+}
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]');
+  if (!el || el.disabled) return;
+  const a = el.dataset.act;
+  if (a === 'submit-project') { e.preventDefault(); submitProject(); }
+  else if (a === 'go') go(el.dataset.to);
+  else if (a === 'sample') { S.urlDraft = el.dataset.url; S.urlError = ''; render(); $('#repoUrl')?.focus(); }
+  else if (a === 'reset-project') { Object.assign(S, { project: null, task: null, checks: [], session: null, answers: [], interviewDone: false, report: null, skills: null, collaborators: null, urlDraft: '', errors: {} }); go('home'); }
+  else if (a === 'start-verification') startVerification();
+  else if (a === 'start-interview') startInterview();
+  else if (a === 'restart-interview') { S.session = null; S.interviewDone = false; S.answers = []; S.drafts = {}; S.choices = {}; S.view = 0; startInterview(); }
+  else if (a === 'q-go') viewQ(+el.dataset.i);
+  else if (a === 'q-prev') viewQ(S.view - 1);
+  else if (a === 'q-next') viewQ(S.view + 1);
+  else if (a === 'q-open') { const n = nextOpen(S.view); if (n != null) viewQ(n); }
+  else if (a === 'submit-answer') submitAnswer();
+  else if (a === 'view-report') { S.tab = 'report'; if (S.route !== 'proof') go('proof'); else { render(); if (!S.report) loadReport(); } }
+  else if (a === 'view-skills') { S.tab = 'skills'; if (S.route !== 'proof') go('proof'); else { render(); if (!S.skills) loadSkills(); } }
+  else if (a === 'load-report') { S.report = null; loadReport(); }
+  else if (a === 'load-skills') loadSkills();
+  else if (a === 'find-collaborators') go('match');
+  else if (a === 'toggle-matching') toggleMatching();
+  else if (a === 'load-matching') { S.errors = { ...S.errors, matching: null, collaborators: null }; S.matching = S.matching || null; loadMatching(); }
+  else if (a === 'filter') { S.filter = el.dataset.f; render(); }
+  else if (a === 'intro') requestIntro(el.dataset.h);
+  else if (a === 'dev-open') openDev();
+  else if (a === 'dev-close') closeDev();
+  else if (a === 'dev-tab') { S.devTab = el.dataset.tab; renderDev(); }
+  else if (a === 'dev-apply') applyMock();
+  else if (a === 'dev-reset') resetMock();
+  else if (a === 'dev-copy') copyMock();
+  else if (a === 'dev-mode') { SETTINGS.mode = el.dataset.mode; saveSettings(); renderDev(); render(); toast('info', SETTINGS.mode === 'live' ? `Live API mode: requests go to ${SETTINGS.baseUrl}.` : 'Mock mode: requests use the local mock data.'); }
+  else if (a === 'dev-session') { resetSession(); toast('success', 'Session cleared.'); }
+});
+document.addEventListener('submit', e => { if (e.target.id === 'submitForm') { e.preventDefault(); submitProject(); } });
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (t.id === 'repoUrl') { S.urlDraft = t.value; if (S.urlError) { S.urlError = ''; t.closest('.input')?.classList.remove('err'); const h = $('#repoHelp'); if (h) { h.className = 'help'; h.textContent = 'Public repositories only. We read metadata and commits; we never change anything.'; } } }
+  if (t.id === 'answer') {
+    S.drafts[S.view] = t.value;
+    const nb = document.querySelector(`.qstep[data-i="${S.view}"]`); if (nb) nb.classList.toggle('draft', !!t.value.trim());
+    const min = MOCK.rules?.min_answer_chars ?? 20, len = t.value.trim().length;
+    const c = $('#charCount'); if (c) c.textContent = `${len} characters${len < min ? ` · ${min - len} more needed` : ''}`;
+    const b = $('#submitAnswer'); if (b && !S.pending.answer) b.disabled = len < min;
+  }
+  if (t.name === 'choice') {
+    S.choices[S.view] = t.value;
+    const nb = document.querySelector(`.qstep[data-i="${S.view}"]`); if (nb) nb.classList.add('draft');
+    if (S.errors.answer) { S.errors = { ...S.errors, answer: null }; render(); return; }
+    const b = $('#submitAnswer'); if (b && !S.pending.answer) b.disabled = false;
+  }
+  if (t.id === 'devLatency') { SETTINGS.latency = +t.value; $('#devLatencyOut').textContent = t.value + ' ms'; saveSettings(); }
+  if (t.id === 'devFail') { SETTINGS.failRate = +t.value; $('#devFailOut').textContent = t.value + '%'; saveSettings(); }
+  if (t.id === 'devBase') { SETTINGS.baseUrl = t.value.trim(); saveSettings(); }
+});
+document.addEventListener('keydown', e => {
+  if (e.target.id === 'answer' && e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); submitAnswer(); }
+  const typing = /^(TEXTAREA|INPUT|SELECT)$/.test(e.target.tagName) && e.target.name !== 'choice';
+  if (S.route === 'interview' && S.session && !S.dev && !typing && !e.ctrlKey && !e.metaKey && !e.altKey) {
+    if (e.key === 'ArrowRight' && e.target.name !== 'choice') { e.preventDefault(); viewQ(S.view + 1); return; }
+    if (e.key === 'ArrowLeft' && e.target.name !== 'choice') { e.preventDefault(); viewQ(S.view - 1); return; }
+    const q = cq();
+    if (q?.type === 'choice' && !answerAt(S.view) && !S.pending.answer) {
+      const k = e.key.toUpperCase();
+      const idx = k.length === 1 ? k.charCodeAt(0) - 65 : -1;
+      if (idx >= 0 && idx < q.options.length) { const el = document.getElementById('opt-' + q.options[idx].id); if (el) { el.checked = true; el.dispatchEvent(new Event('input', { bubbles: true })); el.focus(); } }
+      else if (e.key === 'Enter' && S.choices[S.view]) { e.preventDefault(); submitAnswer(); }
+    }
+  }
+  if (e.key === 'Escape' && S.dev) closeDev();
+});
+
+function saveSettings() { ls.set('mosa.settings', SETTINGS); }
+function resetSession() {
+  DB.projects = {}; DB.tasks = {}; DB.sessions = {}; DB.matching = { joined: false, since: null };
+  Object.assign(S, { route: 'home', urlDraft: '', urlError: '', project: null, task: null, checks: [], session: null, view: 0, drafts: {}, choices: {}, answers: [], interviewDone: false, report: null, skills: null, tab: 'report', matching: null, collaborators: null, filter: 'All', intros: {}, pending: {}, errors: {} });
+  try { history.replaceState(null, '', '#home'); } catch (e) {}
+  render();
+}
+function openDev() { S.dev = true; renderDev(); }
+function closeDev() { S.dev = false; $('#devtools').innerHTML = ''; $('[data-act="dev-open"]')?.focus(); }
+function renderDev() {
+  const t = S.devTab;
+  $('#devtools').innerHTML = `<div class="scrim" data-act="dev-close"></div>
+  <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="devTitle">
+    <div class="drawer-h">${ic('db', 'style="width:22px;height:22px"')}<h2 id="devTitle">Mock Data</h2><button class="btn btn-ghost btn-sm" data-act="dev-close" aria-label="Close">${ic('x')}</button></div>
+    <div class="drawer-b">
+      <div class="tabs" role="tablist">${[['data', 'Mock JSON'], ['settings', 'API settings'], ['state', 'App state']].map(([k, l]) => `<button type="button" class="btn btn-ghost btn-sm ${t === k ? 'on' : ''}" role="tab" aria-selected="${t === k}" data-act="dev-tab" data-tab="${k}">${l}</button>`).join('')}</div>
+      ${t === 'data' ? `
+        <p class="help">Edit repositories, checks, interview questions, skill rules and collaborators. Apply to use the new data; it is saved in this browser. Repository keys are <span class="mono">owner/name</span>; any URL containing a word from <span class="mono">rules.private_keywords</span> returns a not-found error.</p>
+        <textarea id="devJson" class="code" spellcheck="false" aria-label="Mock JSON">${esc(JSON.stringify(MOCK, null, 2))}</textarea>
+        <div id="devJsonErr"></div>` : ''}
+      ${t === 'settings' ? `
+        <div class="field"><label>Data source</label><div class="seg">
+          <button type="button" class="chip ${SETTINGS.mode === 'mock' ? 'on' : ''}" data-act="dev-mode" data-mode="mock">Mock</button>
+          <button type="button" class="chip ${SETTINGS.mode === 'live' ? 'on' : ''}" data-act="dev-mode" data-mode="live">Live API</button></div>
+          <span class="help">Live API calls the PitchProof backend endpoints at the base URL below.</span></div>
+        <div class="field"><label for="devBase">API base URL</label><div class="input" style="height:44px">${ic('link')}<input id="devBase" value="${esc(SETTINGS.baseUrl)}" spellcheck="false"></div></div>
+        <div class="field"><label for="devLatency">Mock latency</label><div class="rng"><input id="devLatency" type="range" min="0" max="3000" step="50" value="${SETTINGS.latency}"><output id="devLatencyOut">${SETTINGS.latency} ms</output></div></div>
+        <div class="field"><label for="devFail">Mock failure rate</label><div class="rng"><input id="devFail" type="range" min="0" max="100" step="5" value="${SETTINGS.failRate}"><output id="devFailOut">${SETTINGS.failRate}%</output></div><span class="help">Each mock request fails with HTTP 503 at this rate, so you can check error states.</span></div>
+        <div>${btn('Clear session and start over', { kind: 'danger', act: 'dev-session', icon: 'refresh', size: 'btn-sm' })}</div>` : ''}
+      ${t === 'state' ? `<p class="help">Read-only view of the current client state.</p><pre class="code" id="devState"></pre>` : ''}
+    </div>
+    ${t === 'data' ? `<div class="drawer-f">${btn('Apply', { act: 'dev-apply', icon: 'check' })}${btn('Copy JSON', { kind: 'secondary', act: 'dev-copy', icon: 'copy' })}<span style="flex:1"></span>${btn('Reset to default', { kind: 'ghost', act: 'dev-reset', icon: 'refresh' })}</div>` : ''}
+  </aside>`;
+  if (t === 'state') renderDevState();
+  $('.drawer [data-act="dev-close"]')?.focus();
+}
+function renderDevState() {
+  const el = $('#devState'); if (!el) return;
+  const { toasts, dev, devTab, ...rest } = S;
+  el.textContent = JSON.stringify({ settings: SETTINGS, state: rest }, null, 2);
+}
+function applyMock() {
+  const ta = $('#devJson'), box = $('#devJsonErr');
+  let data;
+  try { data = JSON.parse(ta.value); }
+  catch (e) { box.innerHTML = `<div class="alert error">${ic('alert')}<div class="grow"><p>Invalid JSON: ${esc(e.message)}</p></div></div>`; return; }
+  const missing = ['repos', 'checks', 'interview', 'skills', 'collaborators', 'rules'].filter(k => !(k in data));
+  if (missing.length) { box.innerHTML = `<div class="alert error">${ic('alert')}<div class="grow"><p>Missing top-level keys: ${missing.map(esc).join(', ')}.</p></div></div>`; return; }
+  MOCK = data; ls.set('mosa.mock.v2', MOCK); box.innerHTML = '';
+  Object.assign(S, { report: null, skills: null, collaborators: null });
+  render(); toast('success', 'Mock data applied.');
+  if (S.route === 'proof' || S.route === 'match') onEnter(S.route);
+}
+function resetMock() { MOCK = clone(DEFAULT_MOCK); ls.del('mosa.mock.v2'); renderDev(); render(); toast('success', 'Mock data reset to default.'); }
+function copyMock() {
+  const ta = $('#devJson');
+  navigator.clipboard?.writeText(ta.value).then(() => toast('success', 'JSON copied.'), () => { ta.select(); toast('info', 'Press Ctrl + C to copy the selected JSON.'); }) ?? (ta.select(), toast('info', 'Press Ctrl + C to copy the selected JSON.'));
+}
+
+const start = (location.hash || '').slice(1);
+render();
+if (ROUTES.some(r => r.id === start) && start !== 'home') go(start);
+})();
+</script>
+
+</body>
+</html>
