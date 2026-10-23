@@ -1,6 +1,6 @@
 # Mosa
 mosa: Find Your Talent. Piece by Piece.
-# 🎖️ MOSA — Proof of Skill Agent Platform
+# 🎖️ Mosa — Proof of Skill Agent Platform
 
 > **MOSA (Multi-modal Omnichannel Skills Agent)** is an autonomous developer verification platform. It validates true code ownership and technical proficiency for GitHub submissions using **Gemini 4 Argon**, isolated **Antigravity Linux sandboxes**, **MongoDB Atlas Vector Search**, and **WebGPU 3D skill badges**.
 
