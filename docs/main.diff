@@ -1,0 +1,1459 @@
+--- main.original.py	2026-10-24 18:13:46.588238306 +0100
++++ main.py	2026-10-24 19:36:37.520344125 +0100
+@@ -1,567 +1,888 @@
+-import os
+-import time
+-import json
+-from datetime import datetime, timezone
+-from pathlib import Path
+-from typing import List, Optional, Dict, Any
+-from fastapi import FastAPI, HTTPException
+-from fastapi.middleware.cors import CORSMiddleware
+-from pydantic import BaseModel
+-from dotenv import load_dotenv
+-from pymongo import MongoClient
+-import certifi  
+-from google import genai
+-from google.genai import types
+-
+-# ---------------------------------------------------------
+-# 1. 加载环境变量与初始化
+-# ---------------------------------------------------------
+-current_dir = Path(__file__).parent
+-env_path = current_dir / ".env"
+-if not env_path.exists():
+-    env_path = current_dir.parent / ".env"
+-
+-load_dotenv(dotenv_path=env_path)
+-
+-app = FastAPI(title="MOSA AI Verification Backend")
+-
+-# 配置 CORS 跨域请求
+-app.add_middleware(
+-    CORSMiddleware,
+-    allow_origins=["*"],
+-    allow_credentials=True,
+-    allow_methods=["*"],
+-    allow_headers=["*"],
+-)
+-
+-gemini_key = os.getenv("GEMINI_API_KEY")
+-genai_client = genai.Client(api_key=gemini_key) if gemini_key else None
+-
+-# 初始化 MongoDB Atlas 连接
+-mongo_uri = os.getenv("MONGODB_ATLAS_URI")
+-db = None
+-
+-if mongo_uri:
+-    try:
+-        mongo_client = MongoClient(
+-            mongo_uri, 
+-            serverSelectionTimeoutMS=5000,
+-            tlsCAFile=certifi.where()
+-        )
+-        db = mongo_client["mosa_db"]
+-        mongo_client.admin.command('ping')
+-        print("✅ 成功连接到 MongoDB Atlas 数据库!")
+-    except Exception as e:
+-        print(f"⚠️ MongoDB 连接失败: {e}")
+-        db = None
+-else:
+-    print("ℹ️ 未设置 MONGODB_ATLAS_URI，将切换至本地/内存模式。")
+-
+-# 工具函数：获取 ISO 格式时间字符串（避免前端 Invalid time value 报错）
+-def get_iso_time():
+-    return datetime.now(timezone.utc).isoformat()
+-
+-# ---------------------------------------------------------
+-# 2. 数据请求结构定义
+-# ---------------------------------------------------------
+-class FileItem(BaseModel):
+-    path: str
+-    content: str
+-
+-class GenerateQuestionRequest(BaseModel):
+-    repoUrl: Optional[str] = ""
+-    files: List[FileItem] = []
+-    sandboxLogs: Optional[str] = "Build & Tests Passed."
+-    questionIndex: Optional[int] = 1
+-
+-class EvaluateRequest(BaseModel):
+-    question: str
+-    userAnswer: str
+-    codeContext: Optional[str] = ""
+-    files: Optional[List[FileItem]] = []
+-
+-class CreateProjectRequest(BaseModel):
+-    title: Optional[str] = ""
+-    repo_url: Optional[str] = ""
+-    stage: Optional[str] = "mvp"
+-
+-class MatchRequest(BaseModel):
+-    user_id: Optional[str] = "demo_user"
+-    project_id: Optional[str] = None
+-
+-# ---------------------------------------------------------
+-# 3. 基础健康检查 API
+-# ---------------------------------------------------------
+-
+-@app.get("/")
+-def health_check():
+-    return {
+-        "status": "ok", 
+-        "message": "MOSA Verification Backend Running",
+-        "db_connected": db is not None
+-    }
+-
+-# ---------------------------------------------------------
+-# 4. 项目管理 API
+-# ---------------------------------------------------------
+-
+-@app.post("/api/projects")
+-def create_project_endpoint(req: CreateProjectRequest):
+-    """【API】前端提交 GitHub 项目链接"""
+-    print(f"📥 收到前端提交的项目: Repo={req.repo_url}, Title={req.title}")
+-    
+-    project_id_str = f"proj_{int(time.time())}"
+-    now_str = get_iso_time()
+-    
+-    project_data = {
+-        "id": project_id_str,
+-        "project_id": project_id_str,
+-        "pid": project_id_str,
+-        "title": req.title or "Untitled Project",
+-        "repo_url": req.repo_url or "https://github.com/sgxy975-bit/Mosa.git",
+-        "stage": req.stage or "mvp",
+-        "created_at": now_str,
+-        "updated_at": now_str,
+-        "status": "submitted",
+-        "trust_score": 0,
+-        "stars": 12,
+-        "forks": 2,
+-        "commits": 45,
+-        "active_days": 14,
+-        "contributors": 3,
+-        "languages": {"TypeScript": 60, "Python": 30, "CSS": 10}
+-    }
+-
+-    if db is not None:
+-        try:
+-            doc_to_insert = project_data.copy()
+-            res = db["projects"].insert_one(doc_to_insert)
+-            project_id_str = str(res.inserted_id)
+-            project_data["id"] = project_id_str
+-            project_data["project_id"] = project_id_str
+-            project_data["pid"] = project_id_str
+-            print(f"💾 项目成功写入数据库！ID: {project_id_str}")
+-        except Exception as e:
+-            print(f"⚠️ 保存项目到数据库失败: {e}")
+-
+-    return {
+-        "success": True,
+-        "id": project_id_str,
+-        "project_id": project_id_str,
+-        "pid": project_id_str,
+-        "project": project_data,
+-        "data": project_data,
+-        "result": {
+-            "project_id": project_id_str,
+-            "project": project_data
+-        },
+-        **project_data
+-    }
+-
+-@app.get("/api/projects")
+-def get_projects_endpoint():
+-    """获取所有项目列表"""
+-    projects = []
+-    if db is not None:
+-        try:
+-            for doc in db["projects"].find():
+-                doc["_id"] = str(doc["_id"])
+-                projects.append(doc)
+-            return {"success": True, "data": projects}
+-        except Exception as e:
+-            print(f"⚠️ 读取项目失败: {e}")
+-            
+-    return {"success": True, "data": []}
+-
+-@app.get("/api/projects/{project_id}")
+-@app.get("/api/project/{project_id}")
+-@app.get("/api/projects/detail/{project_id}")
+-def get_single_project_endpoint(project_id: str):
+-    """【API】获取单个项目详情"""
+-    print(f"📥 收到前端读取项目请求: project_id = {project_id}")
+-    
+-    title = "MOSA Project"
+-    repo_url = "https://github.com/sgxy975-bit/Mosa.git"
+-    trust_score = 88
+-    now_str = get_iso_time()
+-
+-    if db is not None:
+-        try:
+-            from bson import ObjectId
+-            doc = db["projects"].find_one({"_id": ObjectId(project_id)}) if ObjectId.is_valid(project_id) else db["projects"].find_one({"project_id": project_id})
+-            if doc:
+-                title = doc.get("title", title)
+-                repo_url = doc.get("repo_url", repo_url)
+-                trust_score = doc.get("trust_score", trust_score)
+-        except Exception as e:
+-            print(f"⚠️ 数据库读取项目失败: {e}")
+-
+-    base_project_info = {
+-        "id": project_id,
+-        "project_id": project_id,
+-        "pid": project_id,
+-        "title": title,
+-        "repo_url": repo_url,
+-        "stars": 15,
+-        "forks": 4,
+-        "commits": 42,
+-        "status": "ready",
+-        "trust_score": trust_score,
+-        "created_at": now_str,
+-        "updated_at": now_str,
+-        "languages": {"TypeScript": 60, "Python": 30, "CSS": 10},
+-        "checks": {
+-            "repository_exists": True,
+-            "original_commits": True,
+-            "commit_frequency": True
+-        }
+-    }
+-
+-    return {
+-        "success": True,
+-        "id": project_id,
+-        "project_id": project_id,
+-        "pid": project_id,
+-        "project": base_project_info,
+-        "data": base_project_info,
+-        "result": {
+-            "project_id": project_id,
+-            "project": base_project_info
+-        },
+-        **base_project_info
+-    }
+-
+-# ---------------------------------------------------------
+-# 5. Gemini 核心功能：【1】动态 AI 评估打分
+-# ---------------------------------------------------------
+-
+-@app.post("/api/projects/{project_id}/verify")
+-def start_verification_endpoint(project_id: str):
+-    """【API】调用 Gemini 动态打分并存入 MongoDB"""
+-    print(f"⚙️ 开始调用 Gemini 评估项目 ID: {project_id}")
+-    
+-    repo_url = "https://github.com/sgxy975-bit/Mosa.git"
+-    if db is not None:
+-        try:
+-            from bson import ObjectId
+-            doc = db["projects"].find_one({"_id": ObjectId(project_id)}) if ObjectId.is_valid(project_id) else db["projects"].find_one({"project_id": project_id})
+-            if doc and "repo_url" in doc:
+-                repo_url = doc["repo_url"]
+-        except Exception as e:
+-            print(f"⚠️ 获取项目地址失败: {e}")
+-
+-    calculated_score = 85
+-    ai_summary = "AI verification completed."
+-
+-    if genai_client:
+-        prompt = f"""
+-        You are a Senior Technical Auditor evaluating a software project for a peer-matching platform.
+-        Analyze the project repository at URL: {repo_url}.
+-        
+-        Evaluate code quality and architecture.
+-        Generate a dynamic integer Trust Score between 65 and 98.
+-        
+-        Return pure JSON ONLY:
+-        {{
+-            "score": <integer score between 65 and 98>,
+-            "verdict": "verified",
+-            "summary": "<1-2 sentence AI summary of this repo>"
+-        }}
+-        """
+-        try:
+-            response = genai_client.models.generate_content(
+-                model="gemini-2.5-flash",
+-                contents=prompt,
+-                config=types.GenerateContentConfig(response_mime_type="application/json")
+-            )
+-            res_data = json.loads(response.text)
+-            calculated_score = res_data.get("score", 85)
+-            ai_summary = res_data.get("summary", ai_summary)
+-            print(f"🤖 Gemini 成功给出真实打分！Score={calculated_score}")
+-        except Exception as e:
+-            print(f"⚠️ Gemini 打分失败，使用备用算式: {e}")
+-            calculated_score = 72 + (hash(repo_url) % 20)
+-    else:
+-        calculated_score = 72 + (hash(repo_url) % 20)
+-
+-    now_str = get_iso_time()
+-    if db is not None:
+-        try:
+-            from bson import ObjectId
+-            query = {"_id": ObjectId(project_id)} if ObjectId.is_valid(project_id) else {"project_id": project_id}
+-            db["projects"].update_one(query, {"$set": {"trust_score": calculated_score, "ai_summary": ai_summary, "status": "verified", "updated_at": now_str}})
+-            print(f"💾 动态 Trust Score ({calculated_score}) 已保存至 MongoDB!")
+-        except Exception as e:
+-            print(f"⚠️ 保存至数据库失败: {e}")
+-
+-    task_id = f"tsk_{int(time.time())}"
+-    
+-    project_obj = {
+-        "id": project_id,
+-        "project_id": project_id,
+-        "pid": project_id,
+-        "repo_url": repo_url,
+-        "trust_score": calculated_score,
+-        "status": "verified",
+-        "ai_summary": ai_summary,
+-        "created_at": now_str,
+-        "updated_at": now_str
+-    }
+-
+-    return {
+-        "success": True,
+-        "id": task_id,
+-        "task_id": task_id,
+-        "project_id": project_id,
+-        "pid": project_id,
+-        "project": project_obj,
+-        "data": project_obj,
+-        "result": {
+-            "project_id": project_id,
+-            "project": project_obj,
+-            "score": calculated_score,
+-            "verdict": "verified"
+-        },
+-        "status": "done",
+-        "progress": 100,
+-        "score": calculated_score,
+-        "summary": ai_summary,
+-        "step": "Verification Complete"
+-    }
+-
+-@app.get("/api/tasks/{task_id}")
+-@app.get("/api/tracks/{task_id}")
+-@app.get("/api/task/{task_id}")
+-def get_task_status_endpoint(task_id: str):
+-    """【API】前端 Task 轮询接口"""
+-    print(f"🔄 收到前端 Task 轮询: task_id={task_id}")
+-    now_str = get_iso_time()
+-    
+-    project_id = "proj_demo"
+-    project_obj = {
+-        "id": project_id,
+-        "project_id": project_id,
+-        "pid": project_id,
+-        "trust_score": 88,
+-        "status": "verified",
+-        "created_at": now_str,
+-        "updated_at": now_str,
+-        "checks": {
+-            "repository_exists": True,
+-            "original_commits": True,
+-            "commit_frequency": True
+-        }
+-    }
+-
+-    task_result = {
+-        "score": 88,
+-        "trust_score": 88,
+-        "verdict": "verified",
+-        "project_id": project_id,
+-        "id": project_id,
+-        "project": project_obj,
+-        "created_at": now_str,
+-        "updated_at": now_str,
+-        "checks": project_obj["checks"]
+-    }
+-
+-    return {
+-        "success": True,
+-        "id": task_id,
+-        "task_id": task_id,
+-        "project_id": project_id,
+-        "pid": project_id,
+-        "status": "done",
+-        "progress": 100,
+-        "step": "Verification Complete",
+-        "result": task_result,
+-        "project": project_obj,
+-        "data": project_obj
+-    }
+-
+-# ---------------------------------------------------------
+-# 6. Gemini 核心功能：【2】动态生成专属面试题与回答评估
+-# ---------------------------------------------------------
+-
+-@app.post("/api/generate-question")
+-def generate_question_endpoint(req: GenerateQuestionRequest):
+-    """【API】由 Gemini 根据项目代码动态生成提问"""
+-    if not genai_client:
+-        return {
+-            "success": True,
+-            "data": {
+-                "questionId": f"q_{req.questionIndex}_fallback",
+-                "question": "Could you explain the state management and memory model used in your primary entry file?",
+-                "codeContextSnippet": "Main Entry File",
+-                "targetConcept": "Core Architecture"
+-            }
+-        }
+-
+-    combined_code = "\n\n".join([f"FILE: {f.path}\n{f.content}" for f in req.files]) if req.files else f"Repo URL: {req.repoUrl}"
+-    
+-    prompt = f"""
+-    You are an expert technical interviewer. Analyze the project below:
+-    [Context]: {combined_code[:20000]}
+-    
+-    Generate Question #{req.questionIndex} specifically for this codebase that tests actual ownership.
+-    Return pure JSON ONLY:
+-    {{
+-      "questionId": "q_{req.questionIndex}_{int(time.time())}",
+-      "question": "<custom technical question>",
+-      "codeContextSnippet": "<file or architecture module>",
+-      "targetConcept": "<evaluated concept>"
+-    }}
+-    """
+-
+-    try:
+-        response = genai_client.models.generate_content(
+-            model="gemini-2.5-flash",
+-            contents=prompt,
+-            config=types.GenerateContentConfig(response_mime_type="application/json")
+-        )
+-        parsed_data = json.loads(response.text)
+-        print(f"🤖 Gemini 成功生成问题: {parsed_data.get('question')}")
+-        return {"success": True, "data": parsed_data}
+-    except Exception as e:
+-        print(f"⚠️ 生成问题回退: {e}")
+-        return {
+-            "success": True,
+-            "data": {
+-                "questionId": f"q_{req.questionIndex}_fallback",
+-                "question": "How did you handle error handling and concurrency in this project's architecture?",
+-                "codeContextSnippet": "Project Architecture",
+-                "targetConcept": "Concurrency"
+-            }
+-        }
+-
+-@app.post("/api/evaluate-and-save")
+-def evaluate_and_save_endpoint(req: EvaluateRequest):
+-    """【API】调用 Gemini 评估面试回答并入库"""
+-    eval_result = {
+-        "score": 85,
+-        "isPassed": True,
+-        "feedback": "Your explanation demonstrates solid understanding.",
+-        "uncertaintyLevel": "low"
+-    }
+-
+-    if genai_client:
+-        try:
+-            eval_prompt = f"""
+-            Evaluate candidate's answer for code verification.
+-            [Question]: {req.question}
+-            [Candidate Answer]: {req.userAnswer}
+-
+-            Return pure JSON:
+-            {{
+-              "score": <0-100 integer score>,
+-              "isPassed": <true/false>,
+-              "feedback": "<technical feedback>",
+-              "uncertaintyLevel": "low"
+-            }}
+-            """
+-            eval_resp = genai_client.models.generate_content(
+-                model="gemini-2.5-flash",
+-                contents=eval_prompt,
+-                config=types.GenerateContentConfig(response_mime_type="application/json")
+-            )
+-            eval_result = json.loads(eval_resp.text)
+-            print(f"🤖 Answer Evaluated by Gemini! Score: {eval_result.get('score')}")
+-        except Exception as e:
+-            print(f"⚠️ Gemini Evaluation failed: {e}")
+-
+-    now_str = get_iso_time()
+-    db_record = {
+-        "question": req.question,
+-        "userAnswer": req.userAnswer,
+-        "evaluation": eval_result,
+-        "created_at": now_str
+-    }
+-
+-    inserted_id = f"mosa_rec_{int(time.time())}"
+-    if db is not None:
+-        try:
+-            res = db["verifications"].insert_one(db_record)
+-            inserted_id = str(res.inserted_id)
+-            print(f"💾 答题评估保存至 MongoDB! ID: {inserted_id}")
+-        except Exception as e:
+-            print(f"❌ 写入数据库错误: {e}")
+-
+-    return {
+-        "success": True,
+-        "record_id": inserted_id,
+-        "evaluation": eval_result
+-    }
+-
+-# ---------------------------------------------------------
+-# 7. 协作人员与状态 API
+-# ---------------------------------------------------------
+-
+-@app.get("/api/collaborators")
+-def get_collaborators_endpoint(skills: Optional[str] = None):
+-    return [
+-        {
+-            "name": "Priya Shah",
+-            "handle": "priyash",
+-            "club": "Leeds Design Society",
+-            "skills": ["UI Design", "Figma", "User Research"],
+-            "seeking": ["TypeScript", "Backend"],
+-            "project": "Accessible timetable app",
+-            "availability": "Weekends",
+-            "hue": 262,
+-            "match": 92,
+-            "brings": ["UI Design"],
+-            "needs": ["TypeScript"]
+-        },
+-        {
+-            "name": "Tom Okafor",
+-            "handle": "tomok",
+-            "club": "Leeds Student Developers",
+-            "skills": ["Backend", "Python", "PostgreSQL"],
+-            "seeking": ["UI Design", "TypeScript"],
+-            "project": "Society budget tracker",
+-            "availability": "Weekday evenings",
+-            "hue": 152,
+-            "match": 85,
+-            "brings": ["Backend"],
+-            "needs": ["UI Design"]
+-        }
+-    ]
+-
+-@app.post("/api/collaborators/intro")
+-def request_collaborator_intro(data: dict):
+-    return {"success": True, "status": "requested", "message": "Intro request sent successfully"}
+-
+-@app.get("/api/matching")
+-@app.get("/api/matches")
+-def get_matching_endpoint():
+-    return {"success": True, "joined": False, "visible_to": 0, "matches": []}
+-
+-@app.post("/api/matching")
+-def post_matching_endpoint(req: MatchRequest):
+-    return {"success": True, "message": "Matching initialized", "matches": []}
+-
+-@app.get("/api/verification/status")
+-@app.get("/api/status")
+-def get_status_placeholder():
+-    now_str = get_iso_time()
+-    return {
+-        "success": True,
+-        "status": "idle",
+-        "verified": False,
+-        "project": {
+-            "project_id": "proj_default",
+-            "id": "proj_default",
+-            "pid": "proj_default",
+-            "trust_score": 85,
+-            "created_at": now_str,
+-            "updated_at": now_str
+-        },
+-        "matches": []
+-    }
+-
+-# ---------------------------------------------------------
+-# 8. 启动入口
+-# ---------------------------------------------------------
+-if __name__ == "__main__":
+-    import uvicorn
+-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+\ No newline at end of file
++import os
++import re
++import time
++import json
++import random
++from collections import Counter
++from datetime import datetime, timezone
++from pathlib import Path
++from typing import List, Optional, Dict, Any
++import httpx
++from fastapi import FastAPI, HTTPException
++from fastapi.middleware.cors import CORSMiddleware
++from pydantic import BaseModel
++from dotenv import load_dotenv
++from pymongo import MongoClient
++import certifi
++from google import genai
++from google.genai import types
++
++# ---------------------------------------------------------
++# 1. 加载环境变量与初始化
++# ---------------------------------------------------------
++current_dir = Path(__file__).parent
++env_path = current_dir / ".env"
++if not env_path.exists():
++    env_path = current_dir.parent / ".env"
++
++load_dotenv(dotenv_path=env_path)
++
++app = FastAPI(title="MOSA AI Verification Backend")
++
++# 配置 CORS 跨域请求
++app.add_middleware(
++    CORSMiddleware,
++    allow_origins=["*"],
++    allow_credentials=True,
++    allow_methods=["*"],
++    allow_headers=["*"],
++)
++
++gemini_key = os.getenv("GEMINI_API_KEY")
++genai_client = genai.Client(api_key=gemini_key) if gemini_key else None
++GEMINI_MODEL = (os.getenv("GEMINI_MODEL") or "gemini-3.8-flash").strip()
++# 【新增】模型被停用（404 NOT_FOUND）时按顺序尝试的备用模型
++GEMINI_FALLBACKS = [m.strip() for m in os.getenv("GEMINI_FALLBACK_MODELS", "gemini-3.8-flash,gemini-2.5-flash").split(",") if m.strip()]
++
++# 初始化 MongoDB Atlas 连接
++mongo_uri = os.getenv("MONGODB_ATLAS_URI")
++db = None
++
++if mongo_uri:
++    try:
++        mongo_client = MongoClient(
++            mongo_uri,
++            serverSelectionTimeoutMS=5000,
++            tlsCAFile=certifi.where()
++        )
++        db = mongo_client["mosa_db"]
++        mongo_client.admin.command('ping')
++        print("✅ 成功连接到 MongoDB Atlas 数据库!")
++    except Exception as e:
++        print(f"⚠️ MongoDB 连接失败: {e}")
++        db = None
++else:
++    print("ℹ️ 未设置 MONGODB_ATLAS_URI，将切换至本地/内存模式。")
++
++# 【新增】内存存储：没有 MongoDB 时也能完整跑通（重启后清空）
++MEM: Dict[str, Dict[str, Any]] = {"projects": {}, "tasks": {}, "sessions": {}}
++MATCHING = {"joined": False}
++
++# 【新增】GitHub 读取配置（扫描、检查、出题都用真实仓库数据）
++GITHUB_API = os.getenv("GITHUB_API", "https://api.github.com")
++GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
++
++
++# 工具函数：获取 ISO 格式时间字符串（避免前端 Invalid time value 报错）
++def get_iso_time():
++    return datetime.now(timezone.utc).isoformat()
++
++
++def gemini_json(prompt: str) -> Optional[Any]:
++    """【新增】调用 Gemini 并解析 JSON；失败返回 None，由调用方走备用逻辑"""
++    if not genai_client:
++        return None
++    global GEMINI_MODEL
++    tried: List[str] = []
++    model = GEMINI_MODEL
++    while model and model not in tried:
++        tried.append(model)
++        try:
++            response = genai_client.models.generate_content(
++                model=model,
++                contents=prompt,
++                config=types.GenerateContentConfig(response_mime_type="application/json")
++            )
++            if model != GEMINI_MODEL:
++                print(f"ℹ️ Gemini 模型 {GEMINI_MODEL} 不可用，已改用 {model}（可在 .env 设置 GEMINI_MODEL={model}）")
++                GEMINI_MODEL = model
++            return json.loads(response.text)
++        except Exception as e:
++            msg = str(e)
++            if "NOT_FOUND" in msg or "404" in msg:
++                # 模型对当前账号不可用：优先用报错里推荐的模型，其次用备用列表
++                hint = re.search(r"models/([\w.\-]+) for", msg)
++                nxt = [hint.group(1)] if hint else []
++                nxt += [m for m in GEMINI_FALLBACKS if m not in tried]
++                model = next((m for m in nxt if m not in tried), None)
++                if model:
++                    continue
++            print(f"⚠️ Gemini 调用失败，使用备用逻辑: {e}")
++            return None
++    return None
++
++
++# ---------------------------------------------------------
++# 【新增】项目存取：MongoDB 优先，失败或未配置时用内存
++# ---------------------------------------------------------
++def find_project(project_id: str) -> Optional[Dict[str, Any]]:
++    if project_id in MEM["projects"]:
++        return MEM["projects"][project_id]
++    if db is not None:
++        try:
++            from bson import ObjectId
++            doc = db["projects"].find_one({"_id": ObjectId(project_id)}) if ObjectId.is_valid(project_id) else db["projects"].find_one({"project_id": project_id})
++            if doc:
++                doc["_id"] = str(doc["_id"])
++                MEM["projects"][project_id] = doc
++                return doc
++        except Exception as e:
++            print(f"⚠️ 数据库读取项目失败: {e}")
++    return None
++
++
++def save_project(project: Dict[str, Any]) -> None:
++    MEM["projects"][project["id"]] = project
++    if db is not None:
++        try:
++            from bson import ObjectId
++            pid = project["id"]
++            query = {"_id": ObjectId(pid)} if ObjectId.is_valid(pid) else {"project_id": pid}
++            body = {k: v for k, v in project.items() if k != "_id"}
++            db["projects"].update_one(query, {"$set": body}, upsert=True)
++        except Exception as e:
++            print(f"⚠️ 保存项目到数据库失败: {e}")
++
++
++def require_project(project_id: str) -> Dict[str, Any]:
++    p = find_project(project_id)
++    if not p:
++        raise HTTPException(404, f"Project {project_id} not found. Submit the repository again.")
++    return p
++
++
++# ---------------------------------------------------------
++# 【新增】GitHub 仓库读取（带 5 分钟缓存）
++# ---------------------------------------------------------
++REPO_RE = re.compile(r"github\.com[/:]([\w.-]+)/([\w.-]+?)(?:\.git)?/?$", re.I)
++_gh_cache: Dict[str, Any] = {}
++
++
++class GitHubError(Exception):
++    def __init__(self, status: int, detail: str):
++        super().__init__(detail)
++        self.status, self.detail = status, detail
++
++
++def parse_repo(url: Optional[str]):
++    m = REPO_RE.search((url or "").strip())
++    return (m.group(1), m.group(2)) if m else None
++
++
++def gh_get(path: str, params: Optional[dict] = None, raw: bool = False) -> Any:
++    key = path + json.dumps(params or {}, sort_keys=True) + str(raw)
++    hit = _gh_cache.get(key)
++    if hit and time.time() - hit[0] < 300:
++        return hit[1]
++    headers = {"Accept": "application/vnd.github.raw" if raw else "application/vnd.github+json", "User-Agent": "mosa-backend"}
++    if GITHUB_TOKEN:
++        headers["Authorization"] = f"Bearer {GITHUB_TOKEN}"
++    try:
++        r = httpx.get(f"{GITHUB_API}{path}", params=params, headers=headers, timeout=20, follow_redirects=True)
++    except httpx.HTTPError as e:
++        raise GitHubError(502, f"The server can't reach GitHub ({type(e).__name__}). Check its network or proxy settings.")
++    if r.status_code == 404:
++        data = None
++    elif r.status_code in (403, 429):
++        raise GitHubError(429, "GitHub rate limit reached. Set GITHUB_TOKEN in the backend .env and try again.")
++    elif r.status_code >= 400:
++        raise GitHubError(502, f"GitHub returned HTTP {r.status_code}.")
++    else:
++        data = r.text if raw else r.json()
++    _gh_cache[key] = (time.time(), data)
++    return data
++
++
++def repo_bundle(repo_url: str) -> Dict[str, Any]:
++    """读取仓库元数据、目录树、语言、提交、分支、贡献者、README"""
++    parsed = parse_repo(repo_url)
++    if not parsed:
++        raise GitHubError(422, "This project has no valid GitHub repository URL.")
++    owner, name = parsed
++    base = f"/repos/{owner}/{name}"
++    meta = gh_get(base)
++    if meta is None:
++        raise GitHubError(404, f"We couldn't find {owner}/{name}. Make sure the repository is public.")
++    if meta.get("private"):
++        raise GitHubError(403, "This repository is private. Mosa only reads public repositories.")
++    branch = meta.get("default_branch") or "main"
++
++    def soft(path, params=None, raw=False, default=None):
++        try:
++            v = gh_get(path, params, raw)
++            return default if v is None else v
++        except GitHubError as e:
++            if e.status == 429:
++                raise
++            return default
++
++    tree = soft(f"{base}/git/trees/{branch}", {"recursive": "1"}, default={}) or {}
++    return {
++        "owner": owner, "name": name, "branch": branch, "meta": meta,
++        "blobs": [t for t in tree.get("tree", []) if t.get("type") == "blob"], "truncated": bool(tree.get("truncated")),
++        "languages": soft(f"{base}/languages", default={}),
++        "commits": soft(f"{base}/commits", {"per_page": 100}, default=[]),
++        "branches": soft(f"{base}/branches", {"per_page": 10}, default=[]),
++        "contributors": soft(f"{base}/contributors", {"per_page": 100, "anon": 1}, default=[]),
++        "readme": soft(f"{base}/readme", raw=True, default=""),
++    }
++
++
++KIND_RULES = [(r"test|spec", "Tests"), (r"doc", "Docs"), (r"^\.github$|^ci$", "CI"), (r"scene", "Scenes"), (r"shader", "Shaders"),
++              (r"art|asset|image|model|texture|audio|public|static", "Assets"), (r"config|setting|package|infra|root", "Config")]
++
++
++def kind_of(path: str) -> str:
++    for pat, kind in KIND_RULES:
++        if re.search(pat, path, re.I):
++            return kind
++    return "Code"
++
++
++def lang_shares(langs: Dict[str, int]) -> List[Dict[str, Any]]:
++    total = sum(langs.values()) or 1
++    return [{"name": k, "share": max(1, round(v / total * 100))} for k, v in sorted(langs.items(), key=lambda kv: -kv[1])[:6]]
++
++
++def scan_phase(b: Dict[str, Any], phase: str) -> Dict[str, Any]:
++    """四个阶段：validate / architecture / stack / activity，只返回可视化数据，不打分"""
++    meta, branch, blobs = b["meta"], b["branch"], b["blobs"]
++    unity = any(x["path"].startswith("ProjectSettings/") for x in blobs) and any(x["path"].startswith("Assets/") for x in blobs)
++    if phase == "validate":
++        return {"log": f"200 OK · public · default branch {branch}", "data": {"validated": {
++            "visibility": "public", "default_branch": branch, "license": (meta.get("license") or {}).get("spdx_id"),
++            "size_kb": meta.get("size"), "created_at": meta.get("created_at"), "last_push": meta.get("pushed_at"),
++            "stars": meta.get("stargazers_count"), "forks": meta.get("forks_count")}}}
++    if phase == "architecture":
++        groups: Dict[str, Dict[str, Any]] = {}
++        for x in blobs:
++            parts = x["path"].split("/")
++            key = "(root files)" if len(parts) == 1 else parts[0]
++            if unity and parts[0] == "Assets" and len(parts) > 2:
++                key = f"Assets/{parts[1]}"
++            g = groups.setdefault(key, {"size": 0, "files": 0, "sub": Counter(), "loose": []})
++            g["size"] += x.get("size") or 0
++            g["files"] += 1
++            rest = x["path"] if key == "(root files)" else x["path"][len(key) + 1:]
++            if "/" in rest:
++                g["sub"][rest.split("/")[0]] += 1
++            elif len(g["loose"]) < 6:
++                g["loose"].append(rest)
++        total = sum(g["size"] for g in groups.values()) or 1
++        top = sorted(groups.items(), key=lambda kv: -kv[1]["size"])[:8]
++        arch = [{"path": k, "kind": kind_of(k), "share": max(1, round(g["size"] / total * 100)), "files": g["files"]} for k, g in top]
++        tree = [{"name": k, "kind": kind_of(k), "files": g["files"], "share": a["share"],
++                 "children": [{"name": d, "files": n, "children": []} for d, n in g["sub"].most_common(8)] + [{"name": f} for f in g["loose"]]}
++                for (k, g), a in zip(top, arch)]
++        return {"log": f"{len(blobs)} files in {len(arch)} top-level modules{' (tree truncated)' if b['truncated'] else ''}",
++                "data": {"architecture": arch, "tree": tree}}
++    if phase == "stack":
++        languages = lang_shares(b["languages"])
++        paths = [x["path"] for x in blobs]
++        has = lambda pat: any(re.search(pat, p) for p in paths)  # noqa: E731
++        fw = [("Unity", unity), ("URP", has(r"UniversalRP|URP|UniversalRenderPipeline")), ("Meta XR SDK", has(r"(?i)oculus|meta.?xr|OVR")),
++              ("Node.js", has(r"(^|/)package\.json$")), ("React", has(r"\.(jsx|tsx)$")), ("Vite", has(r"vite\.config")),
++              ("Next.js", has(r"next\.config")), ("Python packaging", has(r"(requirements\.txt|pyproject\.toml)$")),
++              ("Docker", has(r"Dockerfile$")), ("GitHub Actions", has(r"^\.github/workflows/")),
++              ("Tailwind CSS", has(r"tailwind\.config")), ("Flutter", has(r"pubspec\.yaml$")), ("TouchDesigner", has(r"\.toe$"))]
++        frameworks = [n for n, ok in fw if ok]
++        return {"log": "Detected " + (", ".join([x["name"] for x in languages] + frameworks)[:120] or "no languages"),
++                "data": {"stack": {"languages": languages, "frameworks": frameworks}}}
++    now = datetime.now(timezone.utc)
++    weekly, items, days = [0] * 12, [], set()
++    for c in b["commits"]:
++        date = ((c.get("commit") or {}).get("author") or {}).get("date")
++        if not date:
++            continue
++        days.add(date[:10])
++        w = (now - datetime.fromisoformat(date.replace("Z", "+00:00"))).days // 7
++        if 0 <= w < 12:
++            weekly[11 - w] += 1
++        items.append({"sha": c["sha"][:7], "msg": (c["commit"].get("message") or "").split("\n")[0][:140],
++                      "author": (c.get("author") or {}).get("login") or c["commit"]["author"].get("name") or "unknown",
++                      "date": date, "branch": branch})
++    return {"log": f"{len(b['commits'])} recent commits · {len(b['contributors'])} contributors · {len(b['branches'])} branches",
++            "data": {"activity": {"weekly": weekly, "recent": items[:5], "list": items,
++                                  "branches": [{"name": x["name"], "active": x["name"] == branch} for x in b["branches"]],
++                                  "commits": len(b["commits"]), "contributors": len(b["contributors"]), "active_days": len(days)}}}
++
++
++CHECKS = [("repo_exists", "Repository exists", 20, "Can you walk us through the repository live and point to the code you wrote?"),
++          ("original_work", "Original work", 10, "This repository is a fork. What did you change compared with the original?"),
++          ("history_depth", "Commit history", 15, "There are few commits. How did development actually happen?"),
++          ("history_spread", "Work spread over time", 15, "Most work landed in a few days. How long did the project take?"),
++          ("team_match", "Team contributions", 10, "Who else worked on this, and what did each person own?"),
++          ("readme", "Documentation", 10, "How does a new user find out what the project does and how to run it?"),
++          ("demo_live", "Live demo", 10, "Where can people use the project today?")]
++
++
++def compute_checks(b: Dict[str, Any]) -> List[Dict[str, Any]]:
++    """【新增】用真实仓库数据生成检查项（前端报告页和面试追问会用到）"""
++    meta, n = b["meta"], len(b["commits"])
++    days = len({((c.get("commit") or {}).get("author") or {}).get("date", "")[:10] for c in b["commits"]} - {""})
++    k, L = len(b["contributors"]), len(b["readme"] or "")
++    res = {
++        "repo_exists": ("pass", f"Found {meta.get('full_name')}"),
++        "original_work": ("warn", "Forked from another repository") if meta.get("fork") else ("pass", "Original repository, not a fork"),
++        "history_depth": ("pass" if n >= 30 else "warn" if n >= 10 else "fail", f"{n}{'+' if n >= 100 else ''} commits"),
++        "history_spread": ("pass" if days >= 7 else "warn" if days >= 3 else "fail", f"Commits on {days} different days"),
++        "team_match": ("pass" if k >= 2 else "warn", f"{k} contributor{'s' if k != 1 else ''}"),
++        "readme": ("pass" if L >= 800 else "warn" if L >= 200 else "fail", f"README is {L:,} characters"),
++        "demo_live": ("warn", "Homepage link found; not checked from the server") if meta.get("homepage") else ("warn", "No demo link provided"),
++    }
++    return [{"id": cid, "label": label, "weight": w, "status": res[cid][0], "detail": res[cid][1],
++             "interview_hint": None if res[cid][0] == "pass" else hint} for cid, label, w, hint in CHECKS]
++
++
++def checks_score(checks: List[Dict[str, Any]]) -> int:
++    f = {"pass": 1, "warn": 0.5, "fail": 0}
++    total = sum(c["weight"] for c in checks) or 1
++    return round(100 * sum(c["weight"] * f.get(c["status"], 0) for c in checks) / total)
++
++
++# ---------------------------------------------------------
++# 2. 数据请求结构定义
++# ---------------------------------------------------------
++class FileItem(BaseModel):
++    path: str
++    content: str
++
++class GenerateQuestionRequest(BaseModel):
++    repoUrl: Optional[str] = ""
++    files: List[FileItem] = []
++    sandboxLogs: Optional[str] = "Build & Tests Passed."
++    questionIndex: Optional[int] = 1
++
++class EvaluateRequest(BaseModel):
++    question: str
++    userAnswer: str
++    codeContext: Optional[str] = ""
++    files: Optional[List[FileItem]] = []
++
++class CreateProjectRequest(BaseModel):
++    title: Optional[str] = ""
++    repo_url: Optional[str] = ""
++    stage: Optional[str] = "mvp"
++
++class MatchRequest(BaseModel):
++    user_id: Optional[str] = "demo_user"
++    project_id: Optional[str] = None
++    joined: Optional[bool] = None
++
++# 【新增】面试相关请求
++class InterviewStartRequest(BaseModel):
++    project_id: str
++    persona: Optional[str] = "tech"
++
++class InterviewAnswerRequest(BaseModel):
++    content: Optional[str] = ""
++    index: Optional[int] = None
++    choice: Optional[str] = None
++
++# ---------------------------------------------------------
++# 3. 基础健康检查 API
++# ---------------------------------------------------------
++
++@app.get("/")
++@app.get("/api/health")
++def health_check():
++    return {
++        "status": "ok",
++        "ok": True,
++        "message": "MOSA Verification Backend Running",
++        "db_connected": db is not None,
++        "gemini": genai_client is not None,
++        "gemini_model": GEMINI_MODEL,
++        "github_token": bool(GITHUB_TOKEN),
++    }
++
++# ---------------------------------------------------------
++# 4. 项目管理 API
++# ---------------------------------------------------------
++
++@app.post("/api/projects")
++def create_project_endpoint(req: CreateProjectRequest):
++    """【API】前端提交 GitHub 项目链接"""
++    print(f"📥 收到前端提交的项目: Repo={req.repo_url}, Title={req.title}")
++    if not parse_repo(req.repo_url):
++        raise HTTPException(422, "Enter a GitHub repository URL like https://github.com/owner/repository.")
++
++    project_id_str = f"proj_{int(time.time() * 1000)}"
++    now_str = get_iso_time()
++
++    project_data = {
++        "id": project_id_str,
++        "project_id": project_id_str,
++        "pid": project_id_str,
++        "title": req.title or "Untitled Project",
++        "repo_url": req.repo_url,
++        "stage": req.stage or "mvp",
++        "created_at": now_str,
++        "updated_at": now_str,
++        "status": "submitted",
++        "trust_score": None,
++        "stars": None, "forks": None, "commits": None, "active_days": None, "contributors": None,
++        "languages": {}, "summary": "",
++    }
++
++    # 【修改】用真实 GitHub 数据填写统计（读不到时保持为空，不再写死假数字）
++    try:
++        b = repo_bundle(req.repo_url)
++        project_data.update({
++            "summary": b["meta"].get("description") or "",
++            "stars": b["meta"].get("stargazers_count"), "forks": b["meta"].get("forks_count"),
++            "commits": len(b["commits"]), "contributors": len(b["contributors"]),
++            "active_days": len({((c.get("commit") or {}).get("author") or {}).get("date", "")[:10] for c in b["commits"]} - {""}),
++            "languages": {x["name"]: x["share"] for x in lang_shares(b["languages"])},
++        })
++    except GitHubError as e:
++        if e.status in (403, 404, 422):
++            raise HTTPException(404 if e.status == 404 else e.status, e.detail)
++        print(f"⚠️ 读取 GitHub 失败（项目仍会创建）: {e.detail}")
++
++    if db is not None:
++        try:
++            res = db["projects"].insert_one(project_data.copy())
++            project_id_str = str(res.inserted_id)
++            project_data.update({"id": project_id_str, "project_id": project_id_str, "pid": project_id_str})
++            print(f"💾 项目成功写入数据库！ID: {project_id_str}")
++        except Exception as e:
++            print(f"⚠️ 保存项目到数据库失败: {e}")
++    MEM["projects"][project_id_str] = project_data
++
++    return {
++        "success": True,
++        "id": project_id_str,
++        "project_id": project_id_str,
++        "pid": project_id_str,
++        "project": project_data,
++        "data": project_data,
++        "result": {"project_id": project_id_str, "project": project_data},
++        **project_data
++    }
++
++@app.get("/api/projects")
++def get_projects_endpoint():
++    """获取所有项目列表"""
++    projects = []
++    if db is not None:
++        try:
++            for doc in db["projects"].find():
++                doc["_id"] = str(doc["_id"])
++                projects.append(doc)
++            return {"success": True, "data": projects}
++        except Exception as e:
++            print(f"⚠️ 读取项目失败: {e}")
++    return {"success": True, "data": list(MEM["projects"].values())}
++
++@app.get("/api/projects/{project_id}")
++@app.get("/api/project/{project_id}")
++@app.get("/api/projects/detail/{project_id}")
++def get_single_project_endpoint(project_id: str):
++    """【API】获取单个项目详情（含最近一次检查结果 verifications[0].checks）"""
++    print(f"📥 收到前端读取项目请求: project_id = {project_id}")
++    p = require_project(project_id)
++    info = {**{k: v for k, v in p.items() if k != "_id"},
++            "verifications": [{"checks": p.get("checks", []), "score": p.get("trust_score")}] if p.get("checks") else []}
++    return {"success": True, "project": info, "data": info, "result": {"project_id": project_id, "project": info}, **info}
++
++# ---------------------------------------------------------
++# 【新增】仓库扫描 API：GET /api/projects/{id}/scan/{phase}
++# ---------------------------------------------------------
++@app.get("/api/projects/{project_id}/scan/{phase}")
++def scan_endpoint(project_id: str, phase: str):
++    if phase not in ("validate", "architecture", "stack", "activity"):
++        raise HTTPException(404, f"Unknown scan phase: {phase}")
++    p = require_project(project_id)
++    try:
++        out = scan_phase(repo_bundle(p["repo_url"]), phase)
++    except GitHubError as e:
++        raise HTTPException(e.status, e.detail)
++    p.setdefault("scan", {})[phase] = out["data"]
++    if phase == "activity":
++        save_project(p)
++    return {"phase": phase, **out}
++
++# ---------------------------------------------------------
++# 5. Gemini 核心功能：【1】动态 AI 评估打分
++# ---------------------------------------------------------
++
++@app.post("/api/projects/{project_id}/verify")
++def start_verification_endpoint(project_id: str):
++    """【API】调用 Gemini 动态打分并存入 MongoDB（同时用真实仓库数据生成检查项）"""
++    print(f"⚙️ 开始调用 Gemini 评估项目 ID: {project_id}")
++    p = require_project(project_id)
++    repo_url = p["repo_url"]
++
++    try:
++        checks = compute_checks(repo_bundle(repo_url))
++    except GitHubError as e:
++        raise HTTPException(e.status, e.detail)
++    evidence_score = checks_score(checks)
++    calculated_score, ai_summary = evidence_score, "Score calculated from repository evidence."
++
++    res_data = gemini_json(f"""
++        You are a Senior Technical Auditor evaluating a software project for a peer-matching platform.
++        Repository: {repo_url}
++        Evidence checks: {json.dumps([{k: c[k] for k in ('label', 'status', 'detail')} for c in checks])}
++        Evaluate code quality and architecture from this evidence.
++        Return pure JSON ONLY: {{"score": <integer 0-100>, "summary": "<1-2 sentence summary>"}}
++    """)
++    if isinstance(res_data, dict) and isinstance(res_data.get("score"), (int, float)):
++        calculated_score = round((int(res_data["score"]) + evidence_score) / 2)
++        ai_summary = res_data.get("summary") or ai_summary
++        print(f"🤖 Gemini 成功给出打分！Score={calculated_score}")
++
++    verdict = "verified" if calculated_score >= 70 else "partial" if calculated_score >= 40 else "unverified"
++    now_str = get_iso_time()
++    p.update({"trust_score": calculated_score, "ai_summary": ai_summary, "status": verdict, "checks": checks, "updated_at": now_str})
++    save_project(p)
++
++    task_id = f"tsk_{int(time.time() * 1000)}"
++    task = {"id": task_id, "task_id": task_id, "kind": "verify_project", "payload": {"project_id": project_id},
++            "project_id": project_id, "status": "done", "progress": 100, "step": "Verification Complete",
++            "result": {"score": calculated_score, "verdict": verdict, "summary": ai_summary}, "created_at": now_str}
++    MEM["tasks"][task_id] = task
++    return {"success": True, **task}
++
++@app.get("/api/tasks/{task_id}")
++@app.get("/api/tracks/{task_id}")
++@app.get("/api/task/{task_id}")
++def get_task_status_endpoint(task_id: str):
++    """【API】前端 Task 轮询接口（返回真实保存的任务）"""
++    task = MEM["tasks"].get(task_id)
++    if not task:
++        raise HTTPException(404, f"Task {task_id} not found.")
++    return {"success": True, **task}
++
++# ---------------------------------------------------------
++# 6. Gemini 核心功能：【2】动态生成专属面试题与回答评估
++# ---------------------------------------------------------
++
++@app.post("/api/generate-question")
++def generate_question_endpoint(req: GenerateQuestionRequest):
++    """【API】由 Gemini 根据项目代码动态生成提问（原接口保留）"""
++    if not genai_client:
++        return {
++            "success": True,
++            "data": {
++                "questionId": f"q_{req.questionIndex}_fallback",
++                "question": "Could you explain the state management and memory model used in your primary entry file?",
++                "codeContextSnippet": "Main Entry File",
++                "targetConcept": "Core Architecture"
++            }
++        }
++
++    combined_code = "\n\n".join([f"FILE: {f.path}\n{f.content}" for f in req.files]) if req.files else f"Repo URL: {req.repoUrl}"
++    parsed_data = gemini_json(f"""
++    You are an expert technical interviewer. Analyze the project below:
++    [Context]: {combined_code[:20000]}
++
++    Generate Question #{req.questionIndex} specifically for this codebase that tests actual ownership.
++    Return pure JSON ONLY:
++    {{
++      "questionId": "q_{req.questionIndex}_{int(time.time())}",
++      "question": "<custom technical question>",
++      "codeContextSnippet": "<file or architecture module>",
++      "targetConcept": "<evaluated concept>"
++    }}
++    """)
++    if isinstance(parsed_data, dict) and parsed_data.get("question"):
++        return {"success": True, "data": parsed_data}
++    return {
++        "success": True,
++        "data": {
++            "questionId": f"q_{req.questionIndex}_fallback",
++            "question": "How did you handle error handling and concurrency in this project's architecture?",
++            "codeContextSnippet": "Project Architecture",
++            "targetConcept": "Concurrency"
++        }
++    }
++
++@app.post("/api/evaluate-and-save")
++def evaluate_and_save_endpoint(req: EvaluateRequest):
++    """【API】调用 Gemini 评估面试回答并入库（原接口保留）"""
++    eval_result = {"score": 85, "isPassed": True, "feedback": "Your explanation demonstrates solid understanding.", "uncertaintyLevel": "low"}
++    out = gemini_json(f"""
++        Evaluate candidate's answer for code verification.
++        [Question]: {req.question}
++        [Candidate Answer]: {req.userAnswer}
++        Return pure JSON: {{"score": <0-100>, "isPassed": <true/false>, "feedback": "<technical feedback>", "uncertaintyLevel": "low"}}
++    """)
++    if isinstance(out, dict) and "score" in out:
++        eval_result = out
++    db_record = {"question": req.question, "userAnswer": req.userAnswer, "evaluation": eval_result, "created_at": get_iso_time()}
++    inserted_id = f"mosa_rec_{int(time.time())}"
++    if db is not None:
++        try:
++            inserted_id = str(db["verifications"].insert_one(db_record).inserted_id)
++        except Exception as e:
++            print(f"❌ 写入数据库错误: {e}")
++    return {"success": True, "record_id": inserted_id, "evaluation": eval_result}
++
++# ---------------------------------------------------------
++# 【新增】Mosa 前端面试流程：/api/interviews
++# 5 道题，简答与选择题混合；简答由 Gemini 评分（无 key 时用规则评分）
++# ---------------------------------------------------------
++TIPS = {
++    "clarity": "Lead with your answer, then give two or three supporting points in order.",
++    "evidence": "Add one concrete number, test result or user quote to back up your claim.",
++    "depth": "Go one level deeper: why this approach, what you rejected, and what it cost.",
++    "relevance": "Answer the exact question first, then add context.",
++}
++FALLBACK_TEXT = [
++    "In two minutes, explain how {title} is built: where do the frontend, backend and data live?",
++    "Tell us about the hardest bug you hit in {title}. How did you find and fix it?",
++    "Who is {title} for, and how do you know they actually need it?",
++    "If usage grew tenfold tomorrow, which part of {title} would break first?",
++]
++FALLBACK_CHOICE = [
++    {"question": "Two days before a demo of {title}, a core feature fails for 1 in 10 users. What do you do first?",
++     "options": ["Reproduce it with logs from failing devices and fix the root cause", "Add a retry button and move on",
++                 "Ask affected users to try another device", "Rewrite the feature in a new framework"], "best": 0,
++     "why": "Find the cause before the demo. A retry hides the bug and a late rewrite adds risk."},
++    {"question": "Which single metric best shows {title} is working a month after launch?",
++     "options": ["Weekly active use of the core feature", "Total sign-ups", "GitHub stars", "Lines of code shipped"], "best": 0,
++     "why": "Repeated real use shows value; sign-ups and stars can grow while nobody uses the product."},
++    {"question": "A teammate pushes straight to main and breaks the build the night before a deadline. Best response?",
++     "options": ["Revert the commit now, then agree on pull-request reviews", "Fix it yourself quietly",
++                 "Leave it until after the deadline", "Remove their write access"], "best": 0,
++     "why": "Restore a working build first, then fix the process."},
++]
++
++
++def build_questions(p: Dict[str, Any]) -> List[Dict[str, Any]]:
++    title = p.get("title") or "this project"
++    hints = [c["interview_hint"] for c in p.get("checks", []) if c.get("interview_hint")][:2]
++    context = {"title": title, "repo": p.get("repo_url"), "summary": p.get("summary"), "languages": p.get("languages"),
++               "scan": {k: v for k, v in (p.get("scan") or {}).items() if k in ("architecture", "stack")}, "weak_points": hints}
++    out = gemini_json(f"""
++        You are a technical interviewer for university student projects. Project context: {json.dumps(context)[:6000]}
++        Write exactly 5 interview questions about THIS project: 3 short-answer and 2 multiple-choice scenario questions, in mixed order.
++        Use the weak points first if any. Return JSON ONLY:
++        {{"questions": [{{"type": "text", "question": "..."}},
++                        {{"type": "choice", "question": "...", "options": ["...", "...", "...", "..."], "best": <index 0-3>, "why": "<one sentence>"}}]}}
++    """)
++    qs = []
++    if isinstance(out, dict) and isinstance(out.get("questions"), list):
++        for q in out["questions"][:5]:
++            if q.get("type") == "choice" and isinstance(q.get("options"), list) and len(q["options"]) >= 2:
++                qs.append({"type": "choice", "text": str(q.get("question", "")), "options": [str(o) for o in q["options"][:4]],
++                           "best": int(q.get("best", 0)) % len(q["options"][:4]), "why": str(q.get("why", ""))})
++            elif q.get("question"):
++                qs.append({"type": "text", "text": str(q["question"])})
++    if len(qs) < 5:
++        texts = [t.format(title=title) for t in FALLBACK_TEXT]
++        texts = list(dict.fromkeys([texts[0], *hints, *texts[1:]]))
++        choices = [dict(c, question=c["question"].format(title=title)) for c in random.sample(FALLBACK_CHOICE, len(FALLBACK_CHOICE))]
++        kinds = ["text", "choice", "text", "choice", "text"]
++        random.shuffle(kinds)
++        qs = []
++        for k in kinds:
++            if k == "choice" and choices:
++                c = choices.pop()
++                qs.append({"type": "choice", "text": c["question"], "options": c["options"], "best": c["best"], "why": c["why"]})
++            else:
++                qs.append({"type": "text", "text": texts.pop(0)})
++    for q in qs:
++        if q["type"] == "choice":
++            order = list(range(len(q["options"])))
++            random.shuffle(order)
++            q["options"] = [{"id": f"o{i}", "text": q["options"][i]} for i in order]
++            q["best"] = f"o{q['best']}"
++    return qs
++
++
++def public_q(q):
++    return {"type": "choice", "text": q["text"], "options": q["options"]} if q["type"] == "choice" else {"type": "text", "text": q["text"]}
++
++
++def heuristic_grade(question: str, text: str) -> Dict[str, Any]:
++    units = len(re.findall(r"[A-Za-z]+", text)) + len(re.findall(r"[一-鿿]", text))
++    depth = 1 if units < 15 else 2 if units < 40 else 3 if units < 90 else 4 if units < 160 else 5
++    evidence = 1 + min(4, len(re.findall(r"\d+%?|for example|e\.g\.|such as|tested|survey|interview|data", text, re.I)))
++    clarity = 1 if units < 15 else min(5, 2 + len(re.findall(r"\b(first|second|then|because|so that|however|finally|therefore)\b", text, re.I)))
++    qt = set(re.findall(r"[a-z]{4,}", question.lower()))
++    ov = len(qt & set(re.findall(r"[a-z]{4,}", text.lower()))) / max(1, len(qt))
++    relevance = 1 if units < 5 else min(5, 2 + round(ov * 8))
++    scores = {"clarity": clarity, "evidence": evidence, "depth": depth, "relevance": relevance}
++    weakest = min(scores, key=scores.get)
++    return {"scores": scores, "score": round(sum(scores.values()) / 4 * 20), "tip": TIPS[weakest], "weakest": weakest}
++
++
++def grade_text(p: Dict[str, Any], question: str, answer: str) -> Dict[str, Any]:
++    out = gemini_json(f"""
++        You interview a university student about their project "{p.get('title')}" ({p.get('repo_url')}).
++        Question: {question}
++        Answer: {answer}
++        Score 1-5 on clarity, evidence, depth, relevance and give one actionable tip.
++        Return JSON ONLY: {{"scores": {{"clarity": n, "evidence": n, "depth": n, "relevance": n}}, "tip": "..."}}
++    """)
++    if isinstance(out, dict) and isinstance(out.get("scores"), dict) and all(isinstance(out["scores"].get(d), (int, float)) for d in TIPS):
++        s = {d: max(1, min(5, int(out["scores"][d]))) for d in TIPS}
++        weakest = min(s, key=s.get)
++        return {"scores": s, "score": round(sum(s.values()) / 4 * 20), "tip": out.get("tip") or TIPS[weakest], "weakest": weakest, "engine": "gemini"}
++    return {**heuristic_grade(question, answer), "engine": "heuristic"}
++
++
++@app.post("/api/interviews")
++def start_interview_endpoint(req: InterviewStartRequest):
++    p = require_project(req.project_id)
++    qs = build_questions(p)
++    sid = f"ses_{int(time.time() * 1000)}"
++    MEM["sessions"][sid] = {"id": sid, "project_id": req.project_id, "persona": req.persona, "questions": qs, "answers": {}, "created_at": get_iso_time()}
++    return {"success": True, "id": sid, "project_id": req.project_id, "persona": req.persona,
++            "questions": [public_q(q) for q in qs], "plan": [q["text"] for q in qs],
++            "turns": [{"role": "interviewer", "content": qs[0]["text"]}]}
++
++
++@app.post("/api/interviews/{sid}/answer")
++def answer_interview_endpoint(sid: str, req: InterviewAnswerRequest):
++    s = MEM["sessions"].get(sid)
++    if not s:
++        raise HTTPException(404, "Interview session expired. Start a new interview.")
++    qs, answers = s["questions"], s["answers"]
++    idx = req.index if req.index is not None else next((i for i in range(len(qs)) if str(i) not in answers), None)
++    if idx is None or not 0 <= idx < len(qs):
++        raise HTTPException(409, "All questions are already answered.")
++    if str(idx) in answers:
++        raise HTTPException(409, f"Question {idx + 1} is already answered.")
++    q = qs[idx]
++    p = find_project(s["project_id"]) or {}
++    if q["type"] == "choice":
++        pick = req.choice or next((o["id"] for o in q["options"] if o["text"] == req.content), None)
++        if not pick or not any(o["id"] == pick for o in q["options"]):
++            raise HTTPException(422, "Pick one of the options before submitting.")
++        ok = pick == q["best"]
++        v = 5 if ok else 2
++        scores = {"clarity": min(5, v + 1), "evidence": v, "depth": v, "relevance": v}
++        fb = {"scores": scores, "score": round(sum(scores.values()) / 4 * 20), "tip": q.get("why") or "Compare risk, cost and evidence.",
++              "weakest": "depth", "choice": {"picked": pick, "best": q["best"], "correct": ok}}
++        answer_text = next(o["text"] for o in q["options"] if o["id"] == pick)
++    else:
++        answer_text = (req.content or "").strip()
++        if len(answer_text) < 20:
++            raise HTTPException(422, "Write at least 20 characters so the interviewer has something to assess.")
++        fb = grade_text(p, q["text"], answer_text)
++    answers[str(idx)] = {"question": q["text"], "answer": answer_text, "feedback": fb}
++    if db is not None:
++        try:
++            db["verifications"].insert_one({"session_id": sid, "project_id": s["project_id"], "question": q["text"],
++                                            "userAnswer": answer_text, "evaluation": fb, "created_at": get_iso_time()})
++        except Exception as e:
++            print(f"❌ 写入数据库错误: {e}")
++    nxt = next((i for i in range(len(qs)) if str(i) not in answers), None)
++    return {"success": True, "index": idx, "feedback": fb, "done": nxt is None,
++            "next_question": qs[nxt]["text"] if nxt is not None else None, "next_index": nxt,
++            "progress": {"answered": len(answers), "total": len(qs)}}
++
++
++@app.post("/api/interviews/{sid}/finish")
++def finish_interview_endpoint(sid: str):
++    s = MEM["sessions"].get(sid)
++    if not s:
++        raise HTTPException(404, "Interview session expired. Start a new interview.")
++    graded = [a["feedback"] for a in s["answers"].values()]
++    dims = {d: round(sum(f["scores"][d] for f in graded) / len(graded), 1) if graded else 0 for d in TIPS}
++    overall = round(sum(f["score"] for f in graded) / len(graded)) if graded else 0
++    p = find_project(s["project_id"]) or {}
++    trust = p.get("trust_score")
++    readiness = round(0.6 * overall + 0.4 * trust) if trust is not None else overall
++    if p:
++        p["interview"] = {"score": overall, "dims": dims}
++        save_project(p)
++    task_id = f"tsk_{int(time.time() * 1000)}"
++    MEM["tasks"][task_id] = {"id": task_id, "task_id": task_id, "kind": "interview_report", "payload": {"session_id": sid, "project_id": s["project_id"]},
++                             "status": "done", "progress": 100, "step": "done",
++                             "result": {"overall": overall, "dimensions": dims, "readiness": readiness, "trust_score": trust, "answered": len(graded)}}
++    return {"success": True, **MEM["tasks"][task_id]}
++
++# ---------------------------------------------------------
++# 【新增】技能：GET /api/projects/{id}/skills
++# ---------------------------------------------------------
++@app.get("/api/projects/{project_id}/skills")
++def skills_endpoint(project_id: str):
++    p = require_project(project_id)
++    if not p.get("checks"):
++        raise HTTPException(409, "Verify the project to unlock skills.")
++    trust = p.get("trust_score") or 0
++    checks = {c["id"]: c for c in p["checks"]}
++    out = []
++    for name, share in (p.get("languages") or {}).items():
++        if share < 10:
++            continue
++        out.append({"name": name, "category": "Language", "verified": trust >= 60, "level": max(1, min(5, round(share / 20))),
++                    "evidence": [f"{share}% of the code in {p['repo_url'].split('github.com/')[-1]}"],
++                    "reason": "" if trust >= 60 else f"Needs a trust score of 60 (currently {trust})."})
++    for name, cid in (("Git workflow", "history_spread"), ("Team collaboration", "team_match"), ("Documentation", "readme")):
++        c = checks.get(cid)
++        if c:
++            out.append({"name": name, "category": "Engineering practice", "verified": c["status"] == "pass",
++                        "level": 4 if c["status"] == "pass" else 2 if c["status"] == "warn" else 1, "evidence": [c["detail"]],
++                        "reason": "" if c["status"] == "pass" else f"{c['label']} check returned {c['status']}."})
++    iv = p.get("interview")
++    for name, dim in (("Technical communication", "clarity"), ("Evidence-based reasoning", "evidence")):
++        v = (iv or {}).get("dims", {}).get(dim)
++        out.append({"name": name, "category": "Communication", "verified": v is not None and v >= 3, "level": round(v) if v else 0,
++                    "evidence": [f"Interview average {v:.1f} / 5 on {dim}"] if v is not None else [],
++                    "reason": "Complete the AI interview to assess this skill." if v is None else "" if v >= 3 else f"Needs an average of 3 / 5 (currently {v:.1f})."})
++    return out
++
++# ---------------------------------------------------------
++# 7. 协作人员与状态 API
++# ---------------------------------------------------------
++COLLABORATORS = [
++    {"name": "Priya Shah", "handle": "priyash", "club": "Leeds Design Society", "skills": ["UI Design", "Figma", "User Research"],
++     "seeking": ["TypeScript", "Backend"], "project": "Accessible timetable app", "availability": "Weekends", "hue": 262},
++    {"name": "Tom Okafor", "handle": "tomok", "club": "Leeds Student Developers", "skills": ["Backend", "Python", "PostgreSQL"],
++     "seeking": ["UI Design", "TypeScript"], "project": "Society budget tracker", "availability": "Weekday evenings", "hue": 152},
++    {"name": "Mei Lin", "handle": "meilin", "club": "Product Management Society", "skills": ["User Research", "Product Strategy"],
++     "seeking": ["TypeScript", "Team collaboration"], "project": "Second-hand textbook exchange", "availability": "Flexible", "hue": 18},
++]
++USER_SEEKING = ["UI Design", "User Research", "Backend"]
++
++
++@app.get("/api/collaborators")
++def get_collaborators_endpoint(skills: Optional[str] = None):
++    mine = {s.strip().lower() for s in (skills or "").split(",") if s.strip()}
++    want = {s.lower() for s in USER_SEEKING}
++    out = []
++    for c in COLLABORATORS:
++        brings = [s for s in c["skills"] if s.lower() in want]
++        needs = [s for s in c["seeking"] if s.lower() in mine]
++        match = round(50 * len(brings) / max(1, len(want)) + 50 * len(needs) / max(1, len(c["seeking"])))
++        out.append({**c, "brings": brings, "needs": needs, "match": match})
++    return sorted(out, key=lambda c: -c["match"])
++
++@app.post("/api/collaborators/intro")
++def request_collaborator_intro(data: dict):
++    if not MATCHING["joined"]:
++        raise HTTPException(409, "Join matching before requesting an introduction.")
++    return {"success": True, "handle": data.get("handle"), "status": "requested", "message": "Intro request sent successfully"}
++
++@app.get("/api/matching")
++@app.get("/api/matches")
++def get_matching_endpoint():
++    joined = MATCHING["joined"]
++    return {"success": True, "joined": joined, "visible_to": len(COLLABORATORS) if joined else 0, "matches": []}
++
++@app.post("/api/matching")
++def post_matching_endpoint(req: MatchRequest):
++    MATCHING["joined"] = True if req.joined is None else bool(req.joined)
++    return get_matching_endpoint()
++
++@app.get("/api/verification/status")
++@app.get("/api/status")
++def get_status_placeholder():
++    now_str = get_iso_time()
++    return {"success": True, "status": "idle", "verified": False,
++            "project": {"project_id": "proj_default", "id": "proj_default", "pid": "proj_default", "trust_score": None,
++                        "created_at": now_str, "updated_at": now_str},
++            "matches": []}
++
++# ---------------------------------------------------------
++# 8. 启动入口
++# ---------------------------------------------------------
++if __name__ == "__main__":
++    import uvicorn
++    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
