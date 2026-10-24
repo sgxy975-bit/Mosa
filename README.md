@@ -1,67 +1,123 @@
 # Mosa
-mosa: Find Your Talent. Piece by Piece.
-# 🎖️ Mosa — Proof of Skill Agent Platform
 
-> **Mosa (Multi-modal Omnichannel Skills Agent)** is an autonomous developer verification platform. It validates true code ownership and technical proficiency for GitHub submissions using **Gemini 4 Argon**, isolated **Antigravity Linux sandboxes**, **MongoDB Atlas Vector Search**, and **WebGPU 3D skill badges**.
+**Find Your Talent. Piece by Piece.**
 
-[![Build with Gemini 4 Argon](https://img.shields.io/badge/Google%20DeepMind-Gemini%204%20Argon-4285F4?style=for-the-badge&logo=google)](https://deepmind.google/)
-[![Powered by MongoDB Atlas](https://img.shields.io/badge/MongoDB-Atlas%20Vector%20Search-47A248?style=for-the-badge&logo=mongodb)](https://www.mongodb.com/atlas)
+> **Mosa (Multi-modal Omnichannel Skills Agent)** is a proof-of-skill platform for university clubs and student developers. It checks that a submitted GitHub project is real, interviews the person who built it with AI, and turns what they show into verified skills that collaborators can trust.
 
----
+[![Gemini](https://img.shields.io/badge/Google-Gemini%203.8%20Flash-4285F4?style=for-the-badge&logo=google)](https://ai.google.dev/)
+[![MongoDB Atlas](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=for-the-badge&logo=mongodb)](https://www.mongodb.com/atlas)
+[![FastAPI](https://img.shields.io/badge/FastAPI-backend-009688?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
 
-## 🎯 The Problem & Real-World Impact
-
-* **Target User**: **Alex** (Tech Lead & Open-Source Community Manager).
-* **The Problem**: In the era of LLM coding assistants, resumes and GitHub portfolios are saturated with AI-generated code. Traditional static analysis or basic RAG cannot tell if a developer **truly understands** the codebase they submitted.
-* **The Mosa solution**: 
-  1. **Sandbox Autonomy**: Executes unit tests and runtime checks inside an isolated Linux sandbox to obtain concrete pass/fail signals.
-  2. **Anti-Copilot Q&A Engine**: Feeds 1M tokens of codebase + test logs into **Gemini 4 Argon** to identify non-trivial architecture choices and generate targeted deep Q&A.
-  3. **Multimodal Oral Defense**: Conducts real-time voice verification via **Gemini 3.8 Live**.
-  4. **Proof-of-Skill On-Chain/3D Medals**: Generates dynamic WebGPU badges backed by **MongoDB Atlas** vector profile indexing.
+**Live demo:** `https://<your-username>.github.io/<repo-name>/`. It runs in the browser with no backend.
 
 ---
 
-## 🛠️ DeepMind Toolkit & MongoDB Integration
+## 🎯 The problem
 
-| Technology / Model | Role in Mosa System |
+- **Target user:** **Alex**, a tech lead and open-source community manager, and the students who want to join Alex's team.
+- **The problem:** Now that AI coding assistants are everywhere, GitHub portfolios are full of code the submitter may not understand. Star counts and static analysis can't show whether someone actually built and understands their project.
+- **Mosa's answer:**
+  1. **Scan the repository.** Read the public repo's metadata, file tree, languages and commit history to confirm it is real, active work.
+  2. **Run an AI interview.** Gemini writes questions about *this* repository, mixing multiple choice and short answers, and grades the answers.
+  3. **Issue verified skills.** Only skills backed by both the code and the interview are shown.
+  4. **Match collaborators.** Students who opt in are matched on verified skills, not on what they claim.
+
+---
+
+## 📱 How it works
+
+| Step | What happens |
 | :--- | :--- |
-| **`gemini-4-argon`** | **Lead Orchestrator**: Leverages 1M token context to process full repo histories, dependency graphs, and test logs to formulate anti-copilot technical questions. |
-| **`antigravity-preview-09-2026`** | **Linux Sandbox Agent**: Executes test suites and compiler checks to pass deterministic verification signals back to Argon. |
-| **`gemini-3.8-live`** | **Voice Interrogator**: Powers real-time interactive audio defense during the candidate AI interview. |
-| **MongoDB Atlas** | **Developer Data Platform**: Utilizes Atlas Vector Search, Hybrid Search, and Automated Embeddings to query codebase chunks and index candidate skill profiles. |
+| **1 · Submit & scan** | Paste a public GitHub URL. A four-phase scan agent validates the repo, maps its architecture (donut chart and directory tree), detects the tech stack, and reads activity (7, 30 or 90-day filter and branch selector). When the scan reaches **Ready**, the interview unlocks. |
+| **2 · AI interview** | Five questions generated from the repository (3 short answer, 2 multiple choice). You can move back and forth between questions freely. |
+| **3 · Report & skills** | Evidence checks, an interview score and readiness, plus a list of verified skills. |
+| **Find Collaborators** | Join matching, browse students with complementary verified skills, and request an introduction. |
 
 ---
 
-## 📱 Features & App Walkthrough
+## 🛠️ Tech stack
 
-- 🔍 **GitHub Repository Ingestion**: Submit any repository URL or Markdown documentation for deep contextual parsing.
-- 🧪 **Autonomous Sandbox Execution**: Isolated build & test execution capturing real runtime verification logs.
-- 🎙️ **Live AI Technical Interview**: Multi-modal voice Q&A challenging candidate understanding of edge cases and lock contention.
-- 🏅 **Dynamic 3D Skill Badges**: Interactive WebGPU medals with audio stems generated via **Lyria 3.5**.
-- 🤝 **Proof-of-Skill Collaborator Matching**: Vector-similarity powered team matching based on verified GitHub credentials.
+| Part | Technology | Role |
+| :--- | :--- | :--- |
+| Frontend | Single-file HTML/CSS/JS, WebGL fluid intro | Runs anywhere, including GitHub Pages. Reads GitHub directly when there is no backend. |
+| Backend | Python, FastAPI | Scan, verification, interview, skills and matching APIs |
+| AI | Google Gemini (`gemini-3.8-flash`, JSON mode) | Writes repository-specific questions and grades answers. Built-in rules are used when no key is set. |
+| Data | MongoDB Atlas | Stores projects, verifications and interview results. Falls back to in-memory storage when no database is set. |
+| Source data | GitHub REST API | Repository, tree, languages, commits, contributors, branches |
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Quick start
 
-### Prerequisites
-- Node.js 18+ / Python 3.11+
-- Google Gemini API Key (with `gemini-4-argon` access)
-- MongoDB Atlas Connection String
+### Option A: frontend only (no setup)
 
-### Setup & Launch
+Open `index.html` in a browser, or use the GitHub Pages link above.
+- The example repositories (`octo-club/...`) use built-in demo data.
+- Any other public repository is read live from GitHub in the browser.
+- Anonymous GitHub access allows 60 requests an hour. You can add a token under **Mock Data → API settings**; it is kept for the current tab only.
+
+### Option B: with the backend (Gemini + MongoDB)
+
+Requires Python 3.11+.
 
 ```bash
-# 1. Clone the repository
-git clone [https://github.com/your-username/mosa.git](https://github.com/your-username/mosa.git)
-cd mosa
+git clone https://github.com/<your-username>/<repo-name>.git
+cd <repo-name>/backend
 
-# 2. Configure Environment Variables
-cp .env.example .env
+python -m venv .venv
+# Windows: .venv\Scripts\activate    macOS/Linux: source .venv/bin/activate
+pip install -r requirements.txt
 
-# Fill in your API keys in .env
-# GEMINI_API_KEY="your-gemini-api-key"
-# MONGODB_ATLAS_URI="mongodb+srv://..."
+cp .env.example .env      # then fill in your keys
+uvicorn main:app --reload --port 8000
+```
 
-# 3. Start Frontend & Backend
-npm install && npm run dev
+Check `http://localhost:8000/api/health`. It reports whether the database, Gemini and the GitHub token are ready.
+
+Connect the frontend in either of two ways:
+- **Mock Data → API settings → Live API**, then enter the backend URL.
+- Open `index.html?api=https://your-backend-url`. This is the easiest way to share a working link.
+
+> `localhost` only points to the computer that opens the page. Before others can use your backend, deploy it publicly (Render, Railway, Fly.io…) or use a tunnel (`cloudflared tunnel --url http://localhost:8000`). If the frontend is served over https, the backend must be https too.
+
+### Environment variables (`backend/.env`)
+
+| Variable | Required | Notes |
+| :--- | :--- | :--- |
+| `MONGODB_ATLAS_URI` | Optional | Without it, data is kept in memory and cleared on restart |
+| `GEMINI_API_KEY` | Optional | Without it, questions and grading use built-in rules |
+| `GEMINI_MODEL` | Optional | Defaults to `gemini-3.8-flash`. If a model is retired for your account, the backend switches to the one Google suggests |
+| `GITHUB_TOKEN` | Recommended | Raises the GitHub limit from 60 to 5,000 requests an hour |
+
+`.env` is listed in `.gitignore`. **Never commit it.**
+
+---
+
+## 📁 Project structure
+
+```
+index.html              Frontend (single file)
+backend/main.py         FastAPI backend
+backend/requirements.txt
+backend/.env.example    Environment variable template
+docs/CHANGES.md         Notes on backend API changes
+FLUID-LICENSE.txt       Licence for the WebGL fluid intro
+```
+
+---
+
+## 🧭 Roadmap
+
+These ideas are planned but **not built yet**:
+
+- 🧪 **Sandbox execution**: run the project's tests in an isolated Linux sandbox to get real pass/fail signals.
+- 🧠 **Whole-repository context**: send full code, dependency graphs and test logs to a long-context model for deeper "anti-copilot" questions.
+- 🎙️ **Voice interview**: real-time spoken technical Q&A.
+- 🔎 **Vector matching**: MongoDB Atlas Vector Search over skill profiles for collaborator matching.
+- 🏅 **3D skill badges**: interactive WebGPU medals for verified skills.
+
+---
+
+## 🙏 Credits
+
+The intro animation is adapted from [WebGL Fluid Simulation](https://github.com/PavelDoGreat/WebGL-Fluid-Simulation) by Pavel Dobryakov (MIT License). See `FLUID-LICENSE.txt`.
