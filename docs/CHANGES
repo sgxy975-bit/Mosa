@@ -1,0 +1,32 @@
+# Mosa 后端修改说明（main.py）
+
+原文件保留为 `main.original.py`，全部改动见 `main.diff`。原有接口（`/api/generate-question`、`/api/evaluate-and-save` 等）都保留，行为不变。
+
+## 为什么之前接不上
+| 前端调用 | 原后端的问题 |
+|---|---|
+| `GET /api/tasks/{id}` | 返回固定的 `proj_demo`，没有 `payload.project_id`，前端读不到是哪个项目，轮询 3 次后报错 |
+| `GET /api/projects/{id}` | 不管传什么 ID 都返回默认仓库 `sgxy975-bit/Mosa`；没配 MongoDB 时项目根本没被保存 |
+| `GET /api/projects/{id}/scan/{phase}` | 不存在（Step 1 扫描需要） |
+| `POST /api/interviews`、`/answer`、`/finish` | 不存在（Step 2 面试需要） |
+| `GET /api/projects/{id}/skills` | 不存在（Step 3 技能需要） |
+| `POST /api/matching` | 不返回 `joined`，前端一直显示“未加入匹配” |
+| 项目统计（stars、commits…） | 写死的假数字 |
+
+## 改了什么
+1. **内存存储兜底**：没有 MongoDB 也能完整跑通；有 MongoDB 时照常写入。
+2. **真实 GitHub 读取**（带 5 分钟缓存）：创建项目时填入真实统计；仓库不存在或私有时直接返回 404/403 给前端。
+3. **新增扫描接口** `GET /api/projects/{id}/scan/{validate|architecture|stack|activity}`：返回架构、目录树、技术栈、提交活动，不打分。
+4. **验证 `/verify`**：用真实仓库数据生成 7 项检查；有 Gemini 时把 Gemini 分和证据分取平均，没有时只用证据分（不再用随机 hash）。任务保存下来，`/api/tasks/{id}` 返回真实结果。
+5. **新增面试接口** `/api/interviews`：Gemini 根据仓库生成 5 道题（3 简答 + 2 选择，混合顺序）；简答由 Gemini 按清晰、证据、深度、切题打分，选择题按最佳答案评分；答题记录照常写入 MongoDB `verifications`。没有 Gemini 时自动用题库和规则评分。
+6. **新增技能接口** `GET /api/projects/{id}/skills`。
+7. **匹配**：记住加入/退出状态；未加入时不能申请介绍。
+8. `GET /api/health` 显示数据库、Gemini、GitHub token 是否就绪。
+
+## 运行
+```bash
+pip install -r requirements.txt
+cp .env.example .env   # 填入需要的 key
+python main.py         # 或 uvicorn main:app --port 8000
+```
+前端：Mock Data → API settings → Data source 选 **Live API**，Base URL 填 `http://localhost:8000`。
