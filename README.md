@@ -8,6 +8,10 @@
 [![MongoDB Atlas](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=for-the-badge&logo=mongodb)](https://www.mongodb.com/atlas)
 [![FastAPI](https://img.shields.io/badge/FastAPI-backend-009688?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
 
+<img width="694" height="637" alt="Mosa人才拼图图标设计 (1)" src="https://github.com/user-attachments/assets/8991087b-ae64-46e1-89e3-4eff7b1685e8" />
+
+
+
 **Live demo:** `https://<your-username>.github.io/<repo-name>/`. It runs in the browser with no backend.
 
 ---
