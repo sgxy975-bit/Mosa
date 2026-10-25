@@ -11,7 +11,6 @@
 <img width="694" height="637" alt="Mosa人才拼图图标设计 (1)" src="https://github.com/user-attachments/assets/8991087b-ae64-46e1-89e3-4eff7b1685e8" />
 
 
-**Live demo:** `https://sgxy975-bit.github.io/Mosa/`. It runs in the browser with no backend.
 Live demo: [https://sgxy975-bit.github.io/Mosa/](https://sgxy975-bit.github.io/Mosa/) . It runs in the browser with no backend.
 
 ---
