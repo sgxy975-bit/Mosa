@@ -12,6 +12,7 @@
 
 
 **Live demo:** `https://sgxy975-bit.github.io/Mosa/`. It runs in the browser with no backend.
+Live demo: [https://sgxy975-bit.github.io/Mosa/](https://sgxy975-bit.github.io/Mosa/) . It runs in the browser with no backend.
 
 ---
 
